@@ -1,28 +1,63 @@
 package com.example.elice_3rd.member.entity;
 
 import com.example.elice_3rd.common.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.example.elice_3rd.member.dto.MemberResponseDto;
+import com.example.elice_3rd.member.dto.MemberUpdateDto;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDateTime;
 
 @Entity
 @SuperBuilder
 @NoArgsConstructor
+@DynamicInsert
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
+    @Column(nullable = false, unique = true)
+    private String email;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private String contact;
+    @Column(nullable = false)
     private String password;
+    @Column(nullable = false)
+    @ColumnDefault("false")
     private Boolean isDeleted;
+    @Column(nullable = false)
+    @ColumnDefault("'USER'")
+    @Enumerated(EnumType.STRING)
     private Role role;
     private LocalDateTime deletedDate;
     private Long hospitalId;
+
+    public MemberResponseDto toResponseDto(){
+        return MemberResponseDto.builder()
+                .email(email)
+                .name(name)
+                .contact(contact)
+                .role(role)
+                .build();
+    }
+
+    public void updatePassword(String password){
+        this.password = password;
+    }
+
+    public void updateInfo(MemberUpdateDto updateDto){
+        email = updateDto.getEmail();
+        name = updateDto.getName();
+        contact = updateDto.getContact();
+    }
+
+    public void quit(){
+        isDeleted = true;
+    }
 }
