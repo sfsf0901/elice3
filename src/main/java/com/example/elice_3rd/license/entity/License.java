@@ -1,21 +1,25 @@
 package com.example.elice_3rd.license.entity;
 
 import com.example.elice_3rd.common.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.example.elice_3rd.member.entity.Member;
+import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @SuperBuilder
 @NoArgsConstructor
+@DynamicInsert
 public class License extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long licenseId;
-    private String email;
-    private Boolean status;
-    private String businessRegistration;
+    private Long memberId;
+
+    @MapsId("memberId")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+    @Column(nullable = false)
+    private String licenseNumber;
 }

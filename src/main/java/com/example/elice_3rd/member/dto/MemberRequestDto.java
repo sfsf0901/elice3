@@ -2,6 +2,7 @@ package com.example.elice_3rd.member.dto;
 
 import com.example.elice_3rd.member.entity.Role;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -16,4 +17,6 @@ public class MemberRequestDto {
     private String contact;
     @NotBlank
     private String password;
+    @NotNull
+    private Role role;
 }

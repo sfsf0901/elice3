@@ -1,10 +1,13 @@
 package com.example.elice_3rd.member.entity;
 
 import com.example.elice_3rd.common.BaseEntity;
+import com.example.elice_3rd.license.entity.License;
 import com.example.elice_3rd.member.dto.MemberResponseDto;
 import com.example.elice_3rd.member.dto.MemberUpdateDto;
+import com.example.elice_3rd.security.CustomMemberDetails;
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
@@ -16,6 +19,7 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @NoArgsConstructor
 @DynamicInsert
+@Getter
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +41,8 @@ public class Member extends BaseEntity {
     private Role role;
     private LocalDateTime deletedDate;
     private Long hospitalId;
+//    @OneToOne()
+//    private License license;
 
     public MemberResponseDto toResponseDto(){
         return MemberResponseDto.builder()
