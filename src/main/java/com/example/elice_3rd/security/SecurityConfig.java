@@ -1,5 +1,6 @@
 package com.example.elice_3rd.security;
 
+import com.example.elice_3rd.security.jwt.JWTFilter;
 import com.example.elice_3rd.security.jwt.JWTUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -31,9 +32,11 @@ public class SecurityConfig {
         http.httpBasic(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(authorize -> {
-            authorize.requestMatchers("/**").permitAll();
+            authorize
+                    .requestMatchers("/doctor").hasRole("DOCTOR");
         });
 
+        http.addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
         http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

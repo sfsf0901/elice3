@@ -16,4 +16,9 @@ public class MemberViewController {
     public String login(){
         return "/member/login";
     }
+
+    @GetMapping("/doctor")
+    public String test(){
+        return "/member/temp-page";
+    }
 }

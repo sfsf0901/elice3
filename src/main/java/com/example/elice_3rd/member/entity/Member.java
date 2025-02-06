@@ -1,12 +1,10 @@
 package com.example.elice_3rd.member.entity;
 
 import com.example.elice_3rd.common.BaseEntity;
-import com.example.elice_3rd.license.entity.License;
 import com.example.elice_3rd.member.dto.MemberResponseDto;
 import com.example.elice_3rd.member.dto.MemberUpdateDto;
-import com.example.elice_3rd.security.CustomMemberDetails;
+import com.example.elice_3rd.security.MemberDetail;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -50,6 +48,14 @@ public class Member extends BaseEntity {
                 .name(name)
                 .contact(contact)
                 .role(role)
+                .build();
+    }
+
+    public MemberDetail toDetail(){
+        return MemberDetail.builder()
+                .email(email)
+                .password(password)
+                .role(role.getKey())
                 .build();
     }
 

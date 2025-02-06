@@ -1,20 +1,16 @@
 package com.example.elice_3rd.security;
 
-import com.example.elice_3rd.member.dto.MemberRequestDto;
-import com.example.elice_3rd.member.dto.MemberResponseDto;
-import com.example.elice_3rd.member.entity.Member;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 //TODO member 객체에 getter를 안쓸 수 있는 방법 모색
 @AllArgsConstructor
-public class CustomMemberDetails implements UserDetails {
-    private final Member member;
+public class CustomUserDetails implements UserDetails {
+    private final MemberDetail memberDetail;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -22,7 +18,7 @@ public class CustomMemberDetails implements UserDetails {
         authorities.add(new GrantedAuthority() {
             @Override
             public String getAuthority() {
-                return member.getRole().toString();
+                return memberDetail.getRole();
             }
         });
 
@@ -31,12 +27,12 @@ public class CustomMemberDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return member.getPassword();
+        return memberDetail.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return member.getEmail();
+        return memberDetail.getEmail();
     }
 
 //    @Override

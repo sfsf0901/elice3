@@ -12,13 +12,13 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class CustomMemberService implements UserDetailsService {
+public class CustomUserService implements UserDetailsService {
     private final MemberRepository memberRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         log.warn("email = {}", email);
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않음!@1@#"));
-        return new CustomMemberDetails(member);
+        return new CustomUserDetails(member.toDetail());
     }
 }
