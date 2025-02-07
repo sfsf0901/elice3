@@ -1,6 +1,5 @@
 package com.example.elice_3rd.security.jwt;
 
-import com.example.elice_3rd.member.entity.Member;
 import com.example.elice_3rd.security.CustomUserDetails;
 import com.example.elice_3rd.security.MemberDetail;
 import jakarta.servlet.FilterChain;
@@ -18,8 +17,8 @@ import java.io.IOException;
 
 @Slf4j
 @AllArgsConstructor
-public class JWTFilter extends OncePerRequestFilter {
-    private final JWTUtil jwtUtil;
+public class JwtFilter extends OncePerRequestFilter {
+    private final JwtUtil jwtUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

@@ -1,11 +1,14 @@
 package com.example.elice_3rd.security;
 
-import com.example.elice_3rd.security.jwt.JWTUtil;
+import com.example.elice_3rd.security.jwt.JwtUtil;
+import com.example.elice_3rd.security.jwt.repository.TokenRedisRepository;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,7 +23,7 @@ import java.util.Iterator;
 @AllArgsConstructor
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
-    private final JWTUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -37,16 +40,29 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
         CustomUserDetails memberDetails = (CustomUserDetails) authentication.getPrincipal();
         String email = memberDetails.getUsername();
+
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
 
         String role = auth.getAuthority();
 
-        String token = jwtUtil.createJwt(email, role, 1000 * 60L);
+        String accessToken = jwtUtil.createJwt("access", email, role, 1000 * 60L);
+        String refreshToken = jwtUtil.createJwt("refresh", email, role, 1000 * 60L);
 
-        response.addHeader("Authorization", "Bearer " + token);
+        response.setHeader("access", accessToken);
+        response.addCookie(createCookie("refresh", refreshToken));
+        response.setStatus(HttpStatus.OK.value());
+//        response.addHeader("Authorization", "Bearer " + token);
 
+    }
+
+    private Cookie createCookie(String key, String value){
+        Cookie cookie = new Cookie(key, value);
+        cookie.setMaxAge(24 * 60 * 60);
+        cookie.setHttpOnly(true);
+
+        return cookie;
     }
 
     //로그인 실패시 실행하는 메소드

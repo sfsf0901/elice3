@@ -1,7 +1,8 @@
 package com.example.elice_3rd.security;
 
-import com.example.elice_3rd.security.jwt.JWTFilter;
-import com.example.elice_3rd.security.jwt.JWTUtil;
+import com.example.elice_3rd.security.jwt.JwtFilter;
+import com.example.elice_3rd.security.jwt.JwtUtil;
+import com.example.elice_3rd.security.jwt.repository.TokenRedisRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +24,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
-    private final JWTUtil jwtUtil;
+    private final JwtUtil jwtUtil;
+    private final TokenRedisRepository tokenRedisRepository;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -32,11 +34,20 @@ public class SecurityConfig {
         http.httpBasic(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(authorize -> {
-            authorize
-                    .requestMatchers("/doctor").hasRole("DOCTOR");
+            authorize.requestMatchers("/doctor").hasRole("DOCTOR")
+                    .requestMatchers("/login", "/", "register").permitAll()
+                    .anyRequest().authenticated();
         });
 
-        http.addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
+        http.logout(logout -> {
+            logout.logoutUrl("/logout")
+//                    .logoutSuccessHandler(logout.getLogoutSuccessHandler())
+                    .deleteCookies("JSESSIONID")
+                    .invalidateHttpSession(true)
+                    .permitAll();
+        });
+
+        http.addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class);
         http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

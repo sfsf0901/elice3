@@ -1,4 +1,4 @@
-package com.example.elice_3rd.security;
+package com.example.elice_3rd.security.jwt;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
