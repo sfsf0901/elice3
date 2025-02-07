@@ -2,6 +2,7 @@ package com.example.elice_3rd.security.jwt;
 
 import com.example.elice_3rd.security.CustomUserDetails;
 import com.example.elice_3rd.security.MemberDetail;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 @Slf4j
 @AllArgsConstructor
@@ -22,25 +24,35 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authorization = request.getHeader("Authorization");
+        String accessToken = request.getHeader("access");
 
-        if(authorization == null || !authorization.startsWith("Bearer")){
+        if(accessToken == null){
             log.error("token is null");
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = authorization.split(" ")[1];
+        try {
+            jwtUtil.isExpired(accessToken);
+        } catch (ExpiredJwtException e){
+            PrintWriter writer = response.getWriter();
+            writer.print("access token is expired");
 
-        if(jwtUtil.isExpired(token)){
-            log.error("token is expired");
-            filterChain.doFilter(request, response);
-
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
-        String email = jwtUtil.getEmail(token);
-        String role = jwtUtil.getRole(token);
+        String category = jwtUtil.getCategory(accessToken);
+        if(!category.equals("access")){
+            PrintWriter writer = response.getWriter();
+            writer.print("invalid access token");
+
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        String email = jwtUtil.getEmail(accessToken);
+        String role = jwtUtil.getRole(accessToken);
 
         MemberDetail memberDetail = MemberDetail.builder()
                 .email(email)

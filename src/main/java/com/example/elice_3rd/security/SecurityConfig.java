@@ -35,7 +35,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(authorize -> {
             authorize.requestMatchers("/doctor").hasRole("DOCTOR")
-                    .requestMatchers("/login", "/", "register").permitAll()
+                    .requestMatchers("/login", "/", "register", "/reissue").permitAll()
                     .anyRequest().authenticated();
         });
 

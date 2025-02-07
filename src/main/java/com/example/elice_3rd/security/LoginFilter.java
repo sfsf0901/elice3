@@ -47,8 +47,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         String role = auth.getAuthority();
 
-        String accessToken = jwtUtil.createJwt("access", email, role, 1000 * 60L);
-        String refreshToken = jwtUtil.createJwt("refresh", email, role, 1000 * 60L);
+        String accessToken = jwtUtil.createJwt("access", email, role, 1000 * 20L);
+        String refreshToken = jwtUtil.createJwt("refresh", email, role, 1000 * 60 * 20L);
 
         response.setHeader("access", accessToken);
         response.addCookie(createCookie("refresh", refreshToken));
