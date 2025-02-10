@@ -1,13 +1,15 @@
 package com.example.elice_3rd.security.jwt;
 
+import com.example.elice_3rd.security.jwt.entity.RefreshToken;
+import com.example.elice_3rd.security.jwt.repository.RefreshTokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Key;
 import java.util.Date;
@@ -16,22 +18,25 @@ import java.util.Date;
 public class JwtUtil {
 
     private final Key key;
+    private final RefreshTokenRepository tokenRepository;
 
     @Value("${jwt.token.access-expiration-time}")
     private long accessExpirationTime;
     @Value("${jwt.token.refresh-expiration-time}")
     private long refreshExpirationTime;
 
-    public JwtUtil(@Value("${jwt.token.secret}") String secret) {
+    public JwtUtil(@Value("${jwt.token.secret}") String secret, RefreshTokenRepository tokenRepository) {
+        this.tokenRepository = tokenRepository;
         byte[] byteSecretKey = Decoders.BASE64.decode(secret);
         this.key = Keys.hmacShaKeyFor(byteSecretKey);
     }
 
-    public String createAccessToken(String email, String role, Authentication authentication){
-        Claims claims = Jwts.claims().setSubject(authentication.getName());
+    public String createAccessToken(String email, String role) {
+        Claims claims = Jwts.claims();
+        claims.put("category", "access");
         claims.put("email", email);
         claims.put("role", role);
-        Date now = new Date();
+        Date now = new Date(System.currentTimeMillis());
         Date expireDate = new Date(now.getTime() + accessExpirationTime);
 
         return Jwts.builder()
@@ -42,11 +47,12 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String createRefreshToken(String email, String role, Authentication authentication){
-        Claims claims = Jwts.claims().setSubject(authentication.getName());
+    public String createRefreshToken(String email, String role) {
+        Claims claims = Jwts.claims();
+        claims.put("category", "refresh");
         claims.put("email", email);
         claims.put("role", role);
-        Date now = new Date();
+        Date now = new Date(System.currentTimeMillis());
         Date expireDate = new Date(now.getTime() + refreshExpirationTime);
 
         String refreshToken = Jwts.builder()
@@ -66,7 +72,7 @@ public class JwtUtil {
         return refreshToken;
     }
 
-    public String getEmail(String token){
+    public String getEmail(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
@@ -75,7 +81,7 @@ public class JwtUtil {
                 .get("email", String.class);
     }
 
-    public String getRole(String token){
+    public String getRole(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
@@ -84,7 +90,7 @@ public class JwtUtil {
                 .get("role", String.class);
     }
 
-    public Boolean isExpired(String token){
+    public Boolean isExpired(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
@@ -94,7 +100,7 @@ public class JwtUtil {
                 .before(new Date());
     }
 
-    public String getCategory(String token){
+    public String getCategory(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
@@ -103,17 +109,16 @@ public class JwtUtil {
                 .get("category", String.class);
     }
 
-    public String createJwt(String category, String email, String role, Long expiredMs){
-        Claims claims = Jwts.claims();
-        claims.put("category", category);
-        claims.put("email", email);
-        claims.put("role", role);
+    @Transactional
+    public void deleteRefreshToken(String refreshToken) {
+        tokenRepository.deleteByRefreshToken(refreshToken);
+    }
 
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiredMs))
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
+    public void addRefreshToken(String email, String refreshToken) {
+        tokenRepository.save(RefreshToken.builder()
+                .email(email)
+                .refreshToken(refreshToken)
+                .expiration(new Date(System.currentTimeMillis() + refreshExpirationTime).toString())
+                .build());
     }
 }

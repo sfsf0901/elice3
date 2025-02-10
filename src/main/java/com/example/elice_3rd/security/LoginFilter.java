@@ -1,7 +1,8 @@
 package com.example.elice_3rd.security;
 
 import com.example.elice_3rd.security.jwt.JwtUtil;
-import com.example.elice_3rd.security.jwt.repository.TokenRedisRepository;
+import com.example.elice_3rd.security.jwt.entity.RefreshToken;
+import com.example.elice_3rd.security.jwt.repository.RefreshTokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -47,8 +48,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         String role = auth.getAuthority();
 
-        String accessToken = jwtUtil.createJwt("access", email, role, 1000 * 20L);
-        String refreshToken = jwtUtil.createJwt("refresh", email, role, 1000 * 60 * 20L);
+        String accessToken = jwtUtil.createAccessToken(email, role);
+        String refreshToken = jwtUtil.createRefreshToken(email, role);
+
+        jwtUtil.addRefreshToken(email, refreshToken);
 
         response.setHeader("access", accessToken);
         response.addCookie(createCookie("refresh", refreshToken));

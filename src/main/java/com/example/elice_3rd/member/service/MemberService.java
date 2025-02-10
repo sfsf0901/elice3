@@ -6,8 +6,6 @@ import com.example.elice_3rd.member.dto.MemberUpdateDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
-
 @Service
 @AllArgsConstructor
 public class MemberService {

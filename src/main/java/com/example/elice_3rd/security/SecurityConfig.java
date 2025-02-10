@@ -2,7 +2,7 @@ package com.example.elice_3rd.security;
 
 import com.example.elice_3rd.security.jwt.JwtFilter;
 import com.example.elice_3rd.security.jwt.JwtUtil;
-import com.example.elice_3rd.security.jwt.repository.TokenRedisRepository;
+import com.example.elice_3rd.security.jwt.repository.RefreshTokenRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +25,6 @@ public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtUtil jwtUtil;
-    private final TokenRedisRepository tokenRedisRepository;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -35,7 +34,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(authorize -> {
             authorize.requestMatchers("/doctor").hasRole("DOCTOR")
-                    .requestMatchers("/login", "/", "register", "/reissue").permitAll()
+                    .requestMatchers("/**").permitAll()
                     .anyRequest().authenticated();
         });
 
