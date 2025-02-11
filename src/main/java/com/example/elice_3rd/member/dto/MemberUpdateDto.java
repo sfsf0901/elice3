@@ -8,8 +8,6 @@ import lombok.Getter;
 @Getter
 public class MemberUpdateDto {
     @NotBlank
-    private String email;
-    @NotBlank
     private String name;
     @NotBlank
     private String contact;
