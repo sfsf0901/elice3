@@ -7,7 +7,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RefreshTokenRepository extends CrudRepository<RefreshToken, String> {
-    List<RefreshToken> findAll();
     Optional<RefreshToken> findByEmail(String email);
-    void deleteByRefreshToken(String refreshToken);
 }

@@ -10,7 +10,6 @@ import org.springframework.data.redis.core.RedisHash;
 @Builder
 public class RefreshToken {
     @Id
-    private String id;
     private String email;
     private String refreshToken;
     private String expiration;

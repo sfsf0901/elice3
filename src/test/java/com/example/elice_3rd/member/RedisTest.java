@@ -24,12 +24,11 @@ public class RedisTest {
 
         refreshTokenRepository.save(refreshToken);
 
-        log.info("size = {}", refreshTokenRepository.findAll().size());
+//        log.info("size = {}", refreshTokenRepository.findAll().size());
 
         for(RefreshToken token : refreshTokenRepository.findAll()){
             if(token == null)
                 continue;
-            log.info("id : {} \n", token.getId());
             log.info("email: {} \n", token.getEmail());
         }
 

@@ -47,7 +47,7 @@ public class ReissueController {
         String newRefreshToken = jwtUtil.createRefreshToken(email, role);
 
         // 기존의 refresh token 삭제 후 새로운 토큰 추가
-        jwtUtil.deleteRefreshToken(refreshToken);
+//        jwtUtil.deleteRefreshToken(email);
         jwtUtil.addRefreshToken(email, newRefreshToken);
 
         response.setHeader("access", newAccessToken);

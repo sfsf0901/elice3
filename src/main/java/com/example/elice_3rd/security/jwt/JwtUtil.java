@@ -7,6 +7,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.Key;
 import java.util.Date;
 
+@Slf4j
 @Component
 public class JwtUtil {
 
@@ -109,9 +111,14 @@ public class JwtUtil {
                 .get("category", String.class);
     }
 
+    public Boolean isExist(String token) {
+        return tokenRepository.existsById(getEmail(token));
+    }
+
     @Transactional
-    public void deleteRefreshToken(String refreshToken) {
-        tokenRepository.deleteByRefreshToken(refreshToken);
+    public void deleteRefreshToken(String token) {
+//        log.warn("refresh token 삭제! {}", email);
+        tokenRepository.deleteById(getEmail(token));
     }
 
     public void addRefreshToken(String email, String refreshToken) {
