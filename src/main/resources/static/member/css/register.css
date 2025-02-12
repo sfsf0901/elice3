@@ -1,0 +1,110 @@
+/* 기본적인 마진과 패딩 리셋 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 화면 전체에 중앙 정렬을 위해 전체 레이아웃 */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: white;
+    font-family: Arial, sans-serif;
+}
+
+/* 회원가입 컨테이너 */
+.signup-container {
+    width: 100%;
+    max-width: 400px;
+    background-color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+/* 제목 스타일 */
+h1 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+}
+
+/* 폼 그룹 스타일 */
+.form-group {
+    margin-bottom: 15px;
+}
+
+/* 라벨 스타일 */
+label {
+    display: block;
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+/* 입력 필드 스타일 */
+.input-field {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.input-field:focus {
+    border-color: #007BFF;
+    outline: none;
+}
+
+/* 회원가입 버튼 스타일 */
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #FF8D00;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background-color: #ff720a;
+}
+
+/* 에러 메시지 스타일 */
+.error-message {
+    color: red;
+    font-size: 12px;
+    display: none;
+}
+
+/* 간편 가입 섹션 스타일 */
+.simple-signup {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.simple-signup .separator {
+    width: 38%;
+    height: 1px;
+    background-color: #ddd;
+}
+
+.simple-signup-text {
+    margin: 0 10px;
+    color: #888;
+}
+
+/* 간편 가입 텍스트 스타일 */
+.simple-signup .separator + .simple-signup-text {
+    font-weight: bold;
+}
+
+.margin10{
+    margin: 5px;
+}

@@ -32,7 +32,11 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
         OAuth2User oauth2User = oauthToken.getPrincipal();
-        Map<String, Object> userInfo = oauth2User.getAttribute("response");
+        Map<String, Object> userInfo = oauth2User.getAttributes();
+        if(userInfo.get("kakao_account") != null)
+            userInfo = (Map<String, Object>) userInfo.get("kakao_account");
+        else if(userInfo.get("response") != null)
+            userInfo = (Map<String, Object>) userInfo.get("response");
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -42,7 +46,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         String email = userInfo.get("email").toString();
         String role = "USER";
 
-        log.warn(objectMapper.writeValueAsString(oauth2User));
+        log.warn(objectMapper.writeValueAsString(oauth2User) + "\n");
+        log.warn(objectMapper.writeValueAsString(userInfo));
         log.warn("email = {}", email);
         log.warn("role = {}", role);
 

@@ -40,7 +40,6 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(authorize -> {
             authorize.requestMatchers("/doctor").hasRole("DOCTOR")
-                    .requestMatchers("/register").authenticated()
                     .anyRequest().permitAll();
         });
 
