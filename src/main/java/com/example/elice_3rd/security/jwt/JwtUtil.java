@@ -131,6 +131,7 @@ public class JwtUtil {
     }
 
     public String getRefreshToken(String accessToken){
+        // 예외 메시지 더욱 상세하게 코드를 몰르는 사람도 메시지를 보고 알아볼 수 있을 정도로
         RefreshToken refreshToken = tokenRepository.findByEmail(getEmail(accessToken)).orElseThrow(
                 () -> new IllegalArgumentException("refresh token does not exist")
         );

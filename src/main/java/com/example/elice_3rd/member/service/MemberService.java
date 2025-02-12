@@ -4,10 +4,11 @@ import com.example.elice_3rd.member.dto.MemberRequestDto;
 import com.example.elice_3rd.member.dto.MemberResponseDto;
 import com.example.elice_3rd.member.dto.MemberUpdateDto;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MemberService {
     private final MemberManagementService managementService;
     private final MemberRetrieveService retrieveService;

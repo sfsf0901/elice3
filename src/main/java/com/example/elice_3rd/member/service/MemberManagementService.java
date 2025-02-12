@@ -5,12 +5,13 @@ import com.example.elice_3rd.member.dto.MemberUpdateDto;
 import com.example.elice_3rd.member.entity.Member;
 import com.example.elice_3rd.member.repository.MemberRepository;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MemberManagementService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;

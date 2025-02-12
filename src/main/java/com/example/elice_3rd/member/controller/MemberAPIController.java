@@ -4,7 +4,8 @@ import com.example.elice_3rd.member.dto.MemberRequestDto;
 import com.example.elice_3rd.member.dto.MemberResponseDto;
 import com.example.elice_3rd.member.dto.MemberUpdateDto;
 import com.example.elice_3rd.member.service.MemberService;
-import lombok.AllArgsConstructor;
+import com.example.elice_3rd.security.jwt.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +15,11 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping("api/v1/members")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MemberAPIController {
     private final MemberService memberService;
+    // component를 주입 시키는 것에는 정답은 없음
+    private final JwtUtil jwtUtil;
 
     @PostMapping("register")
     public ResponseEntity<MemberResponseDto> register(@RequestBody @Validated MemberRequestDto requestDto){
@@ -25,8 +28,8 @@ public class MemberAPIController {
     }
 
     @GetMapping("info")
-    public ResponseEntity<MemberResponseDto> retrieve(@RequestBody String email){
-        return ResponseEntity.ok(memberService.retrieveMember(email));
+    public ResponseEntity<MemberResponseDto> retrieve(Principal principal){
+        return ResponseEntity.ok(memberService.retrieveMember(principal.getName()));
     }
 
     @PutMapping("password")

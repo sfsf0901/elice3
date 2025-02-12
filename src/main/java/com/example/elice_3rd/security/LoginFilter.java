@@ -1,14 +1,10 @@
 package com.example.elice_3rd.security;
 
 import com.example.elice_3rd.security.jwt.JwtUtil;
-import com.example.elice_3rd.security.jwt.entity.RefreshToken;
-import com.example.elice_3rd.security.jwt.repository.RefreshTokenRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,7 +19,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
