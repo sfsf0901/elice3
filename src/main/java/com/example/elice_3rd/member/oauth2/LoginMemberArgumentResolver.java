@@ -1,8 +1,9 @@
 package com.example.elice_3rd.member.oauth2;
 
 import com.example.elice_3rd.member.dto.MemberRequestDto;
+import com.example.elice_3rd.security.jwt.JwtUtil;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -14,7 +15,8 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @Component
 @RequiredArgsConstructor
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
-    private final HttpSession httpSession;
+    // 메서드의 매개변수를 해당 resolver가 지원하는지를 체크하는 과정
+    private final JwtUtil jwtUtil;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -24,13 +26,15 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         return isLoginMemberAnnotation && isMemberClass;
     }
 
+    // 매개 변수를 넣어줄 값을 제공함
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        HttpSession session = request.getSession(false);
-        if(session == null)
-            return null;
+        Cookie[] cookies = request.getCookies();
+        for(Cookie cookie : cookies)
+            if(cookie.getName().equals("access") && cookie.getValue() != null)
+                return jwtUtil.getEmail(cookie.getValue());
 
-        return session.getAttribute("member");
+        return null;
     }
 }

@@ -31,9 +31,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
             filterChain.doFilter(request, response);
             return;
         }
-        log.warn("requestUri = {}", requestUri);
         String requestMethod = request.getMethod();
-        log.warn("requestMethod = {}", requestMethod);
         if (!requestMethod.equals("POST")) {
             filterChain.doFilter(request, response);
             return;
@@ -48,8 +46,6 @@ public class CustomLogoutFilter extends GenericFilterBean {
                     break;
                 }
         }
-
-        log.warn("accessToken = {}", accessToken);
 
         if (accessToken == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -84,5 +80,6 @@ public class CustomLogoutFilter extends GenericFilterBean {
 
         response.addCookie(cookie);
         response.setStatus(HttpServletResponse.SC_OK);
+        response.sendRedirect("/");
     }
 }

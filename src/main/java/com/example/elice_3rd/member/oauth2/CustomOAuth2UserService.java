@@ -7,7 +7,6 @@ import com.example.elice_3rd.member.repository.MemberRepository;
 import com.example.elice_3rd.security.jwt.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -28,7 +27,6 @@ import java.util.Collections;
 @Transactional
 public class CustomOAuth2UserService implements OAuth2UserService {
     private final MemberRepository memberRepository;
-    private final HttpSession session;
     private final JwtUtil jwtUtil;
     private final ObjectMapper objectMapper;
 

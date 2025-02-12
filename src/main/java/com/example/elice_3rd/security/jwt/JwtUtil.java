@@ -7,6 +7,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -134,5 +135,14 @@ public class JwtUtil {
                 () -> new IllegalArgumentException("refresh token does not exist")
         );
         return refreshToken.getRefreshToken();
+    }
+
+    public Cookie createCookie(String key, String value){
+        Cookie cookie = new Cookie(key, value);
+        cookie.setMaxAge((int) accessExpirationTime / 1000);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+
+        return cookie;
     }
 }

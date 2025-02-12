@@ -55,19 +55,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         jwtUtil.addRefreshToken(email, refreshToken);
 
-//        response.sendRedirect("/");
-//        response.setHeader("access", accessToken);
-        response.addCookie(createCookie("access", accessToken));
+        response.addCookie(jwtUtil.createCookie("access", accessToken));
         response.setStatus(HttpStatus.OK.value());
-
-    }
-
-    private Cookie createCookie(String key, String value){
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(60 * 60);
-        cookie.setHttpOnly(true);
-
-        return cookie;
+        response.sendRedirect("/");
     }
 
     //로그인 실패시 실행하는 메소드

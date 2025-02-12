@@ -1,6 +1,7 @@
 package com.example.elice_3rd.security;
 
 import com.example.elice_3rd.member.oauth2.CustomOAuth2UserService;
+import com.example.elice_3rd.member.oauth2.OAuth2LoginSuccessHandler;
 import com.example.elice_3rd.security.jwt.JwtFilter;
 import com.example.elice_3rd.security.jwt.JwtUtil;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,7 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtUtil jwtUtil;
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -52,7 +54,7 @@ public class SecurityConfig {
 
         http.oauth2Login(oauth2 -> {
             oauth2.loginPage("/login");
-            oauth2.defaultSuccessUrl("/");
+            oauth2.successHandler(oAuth2LoginSuccessHandler);
             oauth2.userInfoEndpoint(userInfoEndpointConfig -> {
                 userInfoEndpointConfig.userService(customOAuth2UserService);
             });
@@ -61,8 +63,6 @@ public class SecurityConfig {
         http.addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class);
         http.addFilterBefore(new CustomLogoutFilter(jwtUtil), LogoutFilter.class);
         http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
-
-        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }
