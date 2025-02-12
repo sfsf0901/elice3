@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"><head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+테스트 화면입니다
+    <div th:each="diagnosisSubject : ${medicalDepartments}">
+        <a th:text="${diagnosisSubject.name}" th:data-department="${diagnosisSubject.name}" onclick="goToSearch(event, this)"></a>
+    </div>
+
+    <script>
+        function goToSearch(event, element) {
+            event.preventDefault(); // 기본 이벤트 막기 (중요)
+
+            let department = element.getAttribute("data-department");
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    let latitude = position.coords.latitude;
+                    let longitude = position.coords.longitude;
+
+                    let targetUrl = `/search/department?department=${encodeURIComponent(department)}&lat=${latitude}&lng=${longitude}`;
+                    console.log("🚀 병원 검색 URL:", targetUrl); // 디버깅 로그 추가
+
+                    // 병원 검색 페이지로 이동
+                    window.location.href = targetUrl;
+                }, function (error) {
+                    alert("위치 정보를 가져올 수 없습니다.");
+                });
+            } else {
+                alert("이 브라우저에서는 위치 정보를 지원하지 않습니다.");
+            }
+        }
+    </script>
+</body>
+</html>
