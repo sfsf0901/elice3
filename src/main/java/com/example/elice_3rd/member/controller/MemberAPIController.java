@@ -18,7 +18,7 @@ import java.security.Principal;
 public class MemberAPIController {
     private final MemberService memberService;
 
-    @PostMapping
+    @PostMapping("register")
     public ResponseEntity<MemberResponseDto> register(@RequestBody @Validated MemberRequestDto requestDto){
         memberService.register(requestDto);
         return ResponseEntity.created(URI.create("/")).build();

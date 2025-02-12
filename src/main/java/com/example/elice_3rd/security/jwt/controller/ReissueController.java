@@ -20,11 +20,17 @@ public class ReissueController {
 
     @PostMapping("/reissue")
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response){
-        String refreshToken = null;
+        String accessToken = null;
         Cookie[] cookies = request.getCookies();
-        for(Cookie cookie : cookies)
-            if(cookie.getName().equals("refresh"))
-                refreshToken = cookie.getValue();
+        if (cookies != null) {
+            for (Cookie cookie : cookies)
+                if (cookie.getName().equals("access")) {
+                    accessToken = cookie.getValue();
+                    break;
+                }
+        }
+
+        String refreshToken = jwtUtil.getRefreshToken(accessToken);
 
         if(refreshToken == null)
             return new ResponseEntity<>("refresh token is null", HttpStatus.BAD_REQUEST);

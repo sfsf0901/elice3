@@ -1,7 +1,6 @@
 package com.example.elice_3rd.security;
 
 import com.example.elice_3rd.security.jwt.JwtUtil;
-import com.example.elice_3rd.security.jwt.repository.RefreshTokenRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -11,11 +10,13 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
 
 @AllArgsConstructor
+@Slf4j
 public class CustomLogoutFilter extends GenericFilterBean {
     private final JwtUtil jwtUtil;
 
@@ -26,51 +27,58 @@ public class CustomLogoutFilter extends GenericFilterBean {
 
     private void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         String requestUri = request.getRequestURI();
-        if(!requestUri.matches("^\\/logout$")){
+        if (!requestUri.matches("^\\/logout$")) {
             filterChain.doFilter(request, response);
             return;
         }
+        log.warn("requestUri = {}", requestUri);
         String requestMethod = request.getMethod();
-        if(!requestMethod.equals("POST")){
+        log.warn("requestMethod = {}", requestMethod);
+        if (!requestMethod.equals("POST")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String refreshToken = null;
+        String accessToken = null;
         Cookie[] cookies = request.getCookies();
-        for(Cookie cookie : cookies)
-            if(cookie.getName().equals("refresh")){
-                refreshToken = cookie.getValue();
-                break;
-            }
+        if (cookies != null) {
+            for (Cookie cookie : cookies)
+                if (cookie.getName().equals("access")) {
+                    accessToken = cookie.getValue();
+                    break;
+                }
+        }
 
-        if(refreshToken == null){
+        log.warn("accessToken = {}", accessToken);
+
+        if (accessToken == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
-        try{
-            jwtUtil.isExpired(refreshToken);
-        } catch (ExpiredJwtException e){
+        try {
+            jwtUtil.isExpired(accessToken);
+        } catch (ExpiredJwtException e) {
+            response.getWriter().print("access token is expired");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
-        String category = jwtUtil.getCategory(refreshToken);
-        if(!category.equals("refresh")){
+        String category = jwtUtil.getCategory(accessToken);
+        if (!category.equals("access")) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
-        Boolean isExist = jwtUtil.isExist(refreshToken);
-        if(!isExist){
+        Boolean isExist = jwtUtil.isExist(accessToken);
+        if (!isExist) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
-        jwtUtil.deleteRefreshToken(refreshToken);
+        jwtUtil.deleteRefreshToken(accessToken);
 
-        Cookie cookie = new Cookie("refresh", null);
+        Cookie cookie = new Cookie("access", null);
         cookie.setMaxAge(0);
         cookie.setPath("/");
 

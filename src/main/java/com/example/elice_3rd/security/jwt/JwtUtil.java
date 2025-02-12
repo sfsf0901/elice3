@@ -117,7 +117,7 @@ public class JwtUtil {
 
     @Transactional
     public void deleteRefreshToken(String token) {
-//        log.warn("refresh token 삭제! {}", email);
+        log.warn("access token 삭제! email = {}", getEmail(token));
         tokenRepository.deleteById(getEmail(token));
     }
 
@@ -127,5 +127,12 @@ public class JwtUtil {
                 .refreshToken(refreshToken)
                 .expiration(new Date(System.currentTimeMillis() + refreshExpirationTime).toString())
                 .build());
+    }
+
+    public String getRefreshToken(String accessToken){
+        RefreshToken refreshToken = tokenRepository.findByEmail(getEmail(accessToken)).orElseThrow(
+                () -> new IllegalArgumentException("refresh token does not exist")
+        );
+        return refreshToken.getRefreshToken();
     }
 }

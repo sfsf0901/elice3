@@ -3,6 +3,7 @@ package com.example.elice_3rd.security;
 import com.example.elice_3rd.security.jwt.JwtUtil;
 import com.example.elice_3rd.security.jwt.entity.RefreshToken;
 import com.example.elice_3rd.security.jwt.repository.RefreshTokenRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,6 +18,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -38,7 +40,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
         CustomUserDetails memberDetails = (CustomUserDetails) authentication.getPrincipal();
         String email = memberDetails.getUsername();
 
@@ -53,16 +55,16 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         jwtUtil.addRefreshToken(email, refreshToken);
 
-        response.setHeader("access", accessToken);
-        response.addCookie(createCookie("refresh", refreshToken));
+//        response.sendRedirect("/");
+//        response.setHeader("access", accessToken);
+        response.addCookie(createCookie("access", accessToken));
         response.setStatus(HttpStatus.OK.value());
-//        response.addHeader("Authorization", "Bearer " + token);
 
     }
 
     private Cookie createCookie(String key, String value){
         Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24 * 60 * 60);
+        cookie.setMaxAge(60 * 60);
         cookie.setHttpOnly(true);
 
         return cookie;
