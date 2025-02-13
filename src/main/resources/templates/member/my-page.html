@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>마이페이지</title>
+  <link rel="stylesheet" href="/member/css/my-page.css">
+</head>
+<body>
+<div class="mypage-container">
+  <h1 class="user-info">
+    <span id="name">사용자 이름</span> <span id="email" class="user-email">(user@example.com)</span>
+  </h1>
+
+  <ul class="menu-list">
+    <li onclick="showSection('consult-history')">상담 내역</li>
+    <li onclick="showSection('live-consult')">실시간 상담 내역</li>
+    <li onclick="showSection('favorites')">찜한 병원</li>
+    <li onclick="showSection('edit-profile')">회원 정보 수정</li>
+    <li onclick="showSection('change-password')">비밀번호 수정</li>
+    <li onclick="confirmWithdrawal()">회원 탈퇴</li>
+  </ul>
+
+  <div class="content-section" id="consult-history">
+    <h2>상담 내역</h2>
+    <p>등록된 상담 내역이 없습니다.</p>
+  </div>
+
+  <div class="content-section" id="live-consult">
+    <h2>실시간 상담 내역</h2>
+    <p>현재 진행 중인 상담이 없습니다.</p>
+  </div>
+
+  <div class="content-section" id="favorites">
+    <h2>찜한 병원</h2>
+    <p>찜한 병원이 없습니다.</p>
+  </div>
+
+  <div class="content-section" id="edit-profile">
+    <h2>회원 정보 수정</h2>
+    <form id="editProfileForm">
+      <label for="edit-name">이름</label>
+      <input type="text" id="edit-name" name="edit-name">
+
+      <label for="edit-contact">연락처</label>
+      <input type="text" id="edit-contact" name="edit-contact">
+
+      <button type="submit">수정하기</button>
+    </form>
+  </div>
+
+  <div class="content-section" id="change-password">
+    <h2>비밀번호 수정</h2>
+    <form id="changePasswordForm">
+      <label for="current-password">현재 비밀번호</label>
+      <input type="password" id="current-password" name="current-password">
+
+      <label for="new-password">새 비밀번호</label>
+      <input type="password" id="new-password" name="new-password">
+
+      <label for="confirm-new-password">새 비밀번호 확인</label>
+      <input type="password" id="confirm-new-password" name="confirm-new-password">
+
+      <button type="submit">변경하기</button>
+    </form>
+  </div>
+</div>
+
+<script src="/member/js/my-page.js"></script>
+</body>
+</html>

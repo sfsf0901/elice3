@@ -18,8 +18,8 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
-application.properties
-application.yml
+*.properties
+*.yml
 .idea
 *.iws
 *.iml
@@ -37,3 +37,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Ignore ###
+application.properties
