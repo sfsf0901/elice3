@@ -1,13 +1,81 @@
 package com.example.elice_3rd.member.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.example.elice_3rd.common.BaseEntity;
+import com.example.elice_3rd.member.dto.MemberResponseDto;
+import com.example.elice_3rd.member.dto.MemberUpdateDto;
+import com.example.elice_3rd.security.MemberDetail;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDateTime;
 
 @Entity
-public class Member {
+@SuperBuilder
+@NoArgsConstructor
+@DynamicInsert
+@Getter
+public class Member extends BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long memberId;
+    @Column(nullable = false, unique = true)
+    private String email;
+    @Column(nullable = false)
+    private String name;
+    @Column(nullable = false)
+    private String contact;
+    @Column(nullable = false)
+    private String password;
+    @Column(nullable = false)
+    @ColumnDefault("false")
+    private Boolean isDeleted;
+    @Column(nullable = false)
+    @ColumnDefault("'USER'")
+    @Enumerated(EnumType.STRING)
+    private Role role;
+    private LocalDateTime deletedDate;
+    @Column
+    @ColumnDefault("'none'")
+    private String provider;
+    @Column
+    @ColumnDefault("'none'")
+    private String providerId;
+//    @OneToOne()
+//    private License license;
 
+    public MemberResponseDto toResponseDto(){
+        return MemberResponseDto.builder()
+                .email(email)
+                .name(name)
+                .contact(contact)
+                .role(role)
+                .build();
+    }
+
+    public MemberDetail toDetail(){
+        return MemberDetail.builder()
+                .email(email)
+                .password(password)
+                .role(role.getKey())
+                .build();
+    }
+
+    public void updatePassword(String password){
+        this.password = password;
+    }
+
+    public Member updateInfo(MemberUpdateDto updateDto){
+        name = updateDto.getName();
+        contact = updateDto.getContact();
+
+        return this;
+    }
+
+    public void quit(){
+        isDeleted = true;
+    }
 }
