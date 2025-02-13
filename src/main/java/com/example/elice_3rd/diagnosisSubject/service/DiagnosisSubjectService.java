@@ -65,4 +65,9 @@ public class DiagnosisSubjectService {
         return diagnosisSubjectRepository.findById(diagnosisSubjectId).orElseThrow(() -> new IllegalArgumentException("해당 진료과목은 존재하지 않습니다. diagnosisSubjectId: " + diagnosisSubjectId));
     }
 
+    @Transactional(readOnly = true)
+    public List<DiagnosisSubject> findAll() {
+        return diagnosisSubjectRepository.findAll();
+    }
+
 }
