@@ -5,7 +5,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,17 +14,23 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @ResponseBody
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ReissueController {
     private final JwtUtil jwtUtil;
 
     @PostMapping("/reissue")
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response){
-        String refreshToken = null;
+        String accessToken = null;
         Cookie[] cookies = request.getCookies();
-        for(Cookie cookie : cookies)
-            if(cookie.getName().equals("refresh"))
-                refreshToken = cookie.getValue();
+        if (cookies != null) {
+            for (Cookie cookie : cookies)
+                if (cookie.getName().equals("access")) {
+                    accessToken = cookie.getValue();
+                    break;
+                }
+        }
+
+        String refreshToken = jwtUtil.getRefreshToken(accessToken);
 
         if(refreshToken == null)
             return new ResponseEntity<>("refresh token is null", HttpStatus.BAD_REQUEST);
@@ -43,7 +49,12 @@ public class ReissueController {
         String email = jwtUtil.getEmail(refreshToken);
         String role = jwtUtil.getRole(refreshToken);
 
-        String newAccessToken = jwtUtil.createJwt("access", email, role, 1000 * 60 * 20L);
+        String newAccessToken = jwtUtil.createAccessToken(email, role);
+        String newRefreshToken = jwtUtil.createRefreshToken(email, role);
+
+        // 기존의 refresh token 삭제 후 새로운 토큰 추가
+//        jwtUtil.deleteRefreshToken(email);
+        jwtUtil.addRefreshToken(email, newRefreshToken);
 
         response.setHeader("access", newAccessToken);
 

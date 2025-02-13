@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>통합 간편 인증</title>
+    <link rel="stylesheet" href="/member/css/auth.css">
+</head>
+<body>
+
+<div class="auth-container">
+    <h1>통합 간편 인증</h1>
+    <p>원하는 인증 방식을 선택하세요.</p>
+
+    <div class="auth-buttons">
+        <button class="auth-btn kakao" onclick="authHandler.kakao()">
+            <img src="/auth/icons/kakao.png" alt="카카오 인증"> 카카오 인증
+        </button>
+        <button class="auth-btn naver" onclick="authHandler.naver()">
+            <img src="/auth/icons/naver.png" alt="네이버 인증"> 네이버 인증
+        </button>
+        <button class="auth-btn pass" onclick="authHandler.pass()">
+            <img src="/auth/icons/pass.png" alt="PASS 인증"> PASS 인증
+        </button>
+        <button class="auth-btn sign" onclick="authHandler.certificate()">
+            <img src="/auth/icons/certificate.png" alt="공동인증서"> 공동인증서
+        </button>
+    </div>
+</div>
+
+<script src="/member/js/auth.js"></script>
+</body>
+</html>

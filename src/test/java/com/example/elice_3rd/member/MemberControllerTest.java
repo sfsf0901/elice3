@@ -18,10 +18,10 @@ public class MemberControllerTest {
     @DisplayName("회원가입 테스트")
     void register() {
         MemberRequestDto requestDto = MemberRequestDto.builder()
-                .email("test email")
+                .email("test")
                 .name("test name")
                 .contact("test contact")
-                .password("test password")
+                .password("test")
                 .build();
         memberService.register(requestDto);
     }
@@ -39,7 +39,6 @@ public class MemberControllerTest {
     void updateInfo() {
         String email = "test email";
         MemberUpdateDto updateDto = MemberUpdateDto.builder()
-                .email("new email")
                 .name("new name")
                 .build();
 

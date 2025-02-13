@@ -38,7 +38,12 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
     private LocalDateTime deletedDate;
-    private Long hospitalId;
+    @Column
+    @ColumnDefault("'none'")
+    private String provider;
+    @Column
+    @ColumnDefault("'none'")
+    private String providerId;
 //    @OneToOne()
 //    private License license;
 
@@ -63,10 +68,11 @@ public class Member extends BaseEntity {
         this.password = password;
     }
 
-    public void updateInfo(MemberUpdateDto updateDto){
-        email = updateDto.getEmail();
+    public Member updateInfo(MemberUpdateDto updateDto){
         name = updateDto.getName();
         contact = updateDto.getContact();
+
+        return this;
     }
 
     public void quit(){

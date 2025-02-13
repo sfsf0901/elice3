@@ -11,12 +11,27 @@ public class MemberViewController {
         return "member/register";
     }
 
-    @GetMapping("/login")
-    public String login(){
-        return "/member/login";
+    @GetMapping("/doctor/register")
+    public String doctorRegister(){
+        return "member/doctor-register";
     }
 
-    @GetMapping("/doctor")
+    @GetMapping("/login")
+    public String login(){
+        return "/member/another-login";
+    }
+
+    @GetMapping("/my-page")
+    public String myPage() {
+        return "/member/my-page";
+    }
+
+    @GetMapping("/auth")
+    public String auth(){
+        return "/member/auth";
+    }
+
+    @GetMapping("/")
     public String test(){
         return "/member/temp-page";
     }

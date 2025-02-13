@@ -5,9 +5,10 @@ import com.example.elice_3rd.security.MemberDetail;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,15 +19,28 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String accessToken = request.getHeader("access");
+        String accessToken = null;
+        Cookie[] cookies = request.getCookies();
 
-        if(accessToken == null){
+        if(cookies != null){
+            for (Cookie cookie : cookies){
+                if(cookie.getName().equals("access")){
+                    accessToken = cookie.getValue();
+                    break;
+                }
+            }
+            if(accessToken == null) {
+                log.error("token is null");
+                filterChain.doFilter(request, response);
+                return;
+            }
+        } else {
             log.error("token is null");
             filterChain.doFilter(request, response);
             return;
