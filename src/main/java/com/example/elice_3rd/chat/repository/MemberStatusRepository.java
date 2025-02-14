@@ -10,12 +10,10 @@ import java.util.Optional;
 @Repository
 public interface MemberStatusRepository extends JpaRepository<MemberStatus, Long> {
 
-    Optional<MemberStatus> findByChatRoomChatRoomIdAndMemberMemberId(Long chatRoomId, Long memberId);
-
     Optional<MemberStatus> findOneByMemberMemberId(Long memberId);
 
     List<MemberStatus> findByMemberMemberId(Long memberId);
 
-    Optional<MemberStatus> findByChatRoomIdAndMemberId(Long chatRoomId, Long memberId);
+    Optional<MemberStatus> findByChatRoomChatRoomIdAndMemberMemberId(Long chatRoomId, Long memberId);
 
 }

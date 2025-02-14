@@ -12,7 +12,7 @@ import java.util.Set;
 @Repository
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
-    List<ChatRoom> findByStatus(RoomStatus status);
+    List<ChatRoom> findByRoomStatus(RoomStatus roomStatus);
 
-    Optional<ChatRoom> findByMembers_IdIn(Set<Long> memberIds);
+    Optional<ChatRoom> findByMembers_MemberIdIn(Set<Long> memberIds);
 }

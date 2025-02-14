@@ -24,8 +24,8 @@ public class ChatMessageDto {
 
     public static ChatMessageDto toDto(ChatMessage chatMessage) {
         return ChatMessageDto.builder()
-                .chatRoom(chatMessage.getChatRoom())
-                .sender(chatMessage.getSender())
+                .chatRoom(chatMessage.getChatRoomId())
+                .sender(chatMessage.getSenderId())
                 .message(chatMessage.getMessage())
                 .createdDate(chatMessage.getCreatedDate())
                 .build();
@@ -33,8 +33,8 @@ public class ChatMessageDto {
 
     public ChatMessage toEntity () {
         return ChatMessage.builder()
-                .chatRoom(chatRoom)
-                .sender(sender)
+                .chatRoomId(chatRoom)
+                .senderId(sender)
                 .message(message)
                 .build();
     }

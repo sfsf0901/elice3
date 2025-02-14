@@ -29,6 +29,7 @@ public class MemberStatus {
     private Member member;
 
     @Column(nullable = false)
+    @Builder.Default
     private MemberStatusType status = MemberStatusType.ONLINE;
 
     @CreatedDate

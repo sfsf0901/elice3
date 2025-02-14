@@ -43,7 +43,7 @@ public class NotificationService {
 
         for (Member receiver : chatRoom.getMembers()) {
             if (receiver.getMemberId() != senderId) { // 보낸 사람 제외
-                MemberStatus memberStatus = memberStatusRepository.findByChatRoomIdAndMemberId(chatRoomId, receiver.getMemberId())
+                MemberStatus memberStatus = memberStatusRepository.findByChatRoomChatRoomIdAndMemberMemberId(chatRoomId, receiver.getMemberId())
                         .orElseThrow(() -> new EntityNotFoundException("MemberStatus not found"));
 
                 // 오프라인 상태인 경우에만 알림 생성
@@ -74,7 +74,7 @@ public class NotificationService {
     // 멤버별 확인되지 않은 알림 목록
     public List<NotificationDto> getUnreadNotificationsForMember(Long memberId) {
         // 멤버의 읽지 않은 알림 목록 조회
-        List<Notification> unreadNotifications = notificationRepository.findByReceiverIdAndReadStatus(
+        List<Notification> unreadNotifications = notificationRepository.findByReceiver_memberIdAndReadStatus(
                 memberId, false);
 
         return unreadNotifications.stream()

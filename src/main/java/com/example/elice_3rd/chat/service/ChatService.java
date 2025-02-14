@@ -15,6 +15,7 @@ import com.example.elice_3rd.chat.repository.ChatReadStatusRepository;
 import com.example.elice_3rd.chat.repository.ChatRoomRepository;
 import com.example.elice_3rd.chat.repository.MemberStatusRepository;
 import com.example.elice_3rd.member.entity.Member;
+import com.example.elice_3rd.member.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +49,7 @@ public class ChatService {
     */
 
     private final KafkaProducer kafkaProducer;
+    private final MemberRepository memberRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final MemberStatusRepository memberStatusRepository;
@@ -59,7 +61,7 @@ public class ChatService {
         // 요청이 1:1 채팅이라면 기존 채팅방을 확인 (그룹 채팅 기능 확장 가능하게 코드 구성)
         if (request.getMemberIds().size() == 2) {
             // 1:1 채팅방이 이미 존재하는지 확인
-            Optional<ChatRoom> existingChatRoom = chatRoomRepository.findByMembers_IdIn(request.getMemberIds());
+            Optional<ChatRoom> existingChatRoom = chatRoomRepository.findByMembers_MemberIdIn(request.getMemberIds());
 
             if (existingChatRoom.isPresent()) {
                 // 기존 1:1 채팅방이 있으면 해당 채팅방으로 연결
@@ -139,7 +141,7 @@ public class ChatService {
                     if (memberStatus.getStatus() == MemberStatusType.ONLINE &&
                             !chatMessage.getCreatedDate().isAfter(memberStatus.getStatusChangedDate())) {
                         // 온라인 상태로 변경된 시점 이전에 발송된 메시지들을 읽음 처리
-                        ChatReadStatus readStatus = chatReadStatusRepository.findByChatMessageIdAndReceiverId(
+                        ChatReadStatus readStatus = chatReadStatusRepository.findByChatMessageIdAndReceiver_memberId(
                                         chatMessage.getChatMessageId(), memberId)
                                 .orElseThrow(() -> new EntityNotFoundException("ChatReadStatus not found"));
 
@@ -160,7 +162,7 @@ public class ChatService {
         chatMessageRepository.save(chatMessage);
 
         // ChatRoom의 멤버들 조회
-        ChatRoom chatRoom = chatRoomRepository.findById(chatMessage.getChatRoom())
+        ChatRoom chatRoom = chatRoomRepository.findById(chatMessage.getChatRoomId())
                 .orElseThrow(() -> new EntityNotFoundException("ChatRoom not found"));
 
         // 각 멤버에 대해 ChatReadStatus 초기화
@@ -172,7 +174,7 @@ public class ChatService {
             chatReadStatusRepository.save(readStatus);
 
             // 수신자가 온라인 상태일 경우 즉시 읽음 처리
-            MemberStatus memberStatus = memberStatusRepository.findByChatRoomIdAndMemberId(chatMessage.getChatRoom(), receiver.getMemberId())
+            MemberStatus memberStatus = memberStatusRepository.findByChatRoomChatRoomIdAndMemberMemberId(chatMessage.getChatRoomId(), receiver.getMemberId())
                     .orElseThrow(() -> new EntityNotFoundException("MemberStatus not found"));
 
             if (memberStatus.getStatus() == MemberStatusType.ONLINE) {

@@ -22,11 +22,11 @@ public class ChatRoomCleanupScheduler {
     @Scheduled(cron = "0 0 4 ? * TUE")  // 매주 화요일 새벽 4시에 실행
     public void cleanupInactiveChatRooms() {
         // INACTIVE 상태인 채팅방들을 조회
-        List<ChatRoom> inactiveChatRooms = chatRoomRepository.findByStatus(RoomStatus.INACTIVE);
+        List<ChatRoom> inactiveChatRooms = chatRoomRepository.findByRoomStatus(RoomStatus.INACTIVE);
 
         for (ChatRoom chatRoom : inactiveChatRooms) {
             // 해당 채팅방의 메시지 삭제
-            chatMessageRepository.deleteByChatRoom(chatRoom.getChatRoomId());
+            chatMessageRepository.deleteByChatRoomId(chatRoom.getChatRoomId());
             log.info("Messages in chat room {} have been deleted.", chatRoom.getChatRoomId());
 
             // 채팅방 삭제

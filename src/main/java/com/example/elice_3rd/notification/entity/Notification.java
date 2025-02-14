@@ -1,6 +1,7 @@
 package com.example.elice_3rd.notification.entity;
 
 import com.example.elice_3rd.chat.entity.ChatRoom;
+import com.example.elice_3rd.common.BaseEntity;
 import com.example.elice_3rd.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -13,7 +14,7 @@ import lombok.Setter;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Notification {
+public class Notification extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

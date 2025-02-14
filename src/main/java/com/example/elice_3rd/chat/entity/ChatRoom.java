@@ -2,6 +2,7 @@ package com.example.elice_3rd.chat.entity;
 
 import com.example.elice_3rd.chat.entity.status.MemberStatusType;
 import com.example.elice_3rd.chat.entity.status.RoomStatus;
+import com.example.elice_3rd.common.BaseEntity;
 import com.example.elice_3rd.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,7 +17,7 @@ import java.util.Set;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatRoom {
+public class ChatRoom extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +34,7 @@ public class ChatRoom {
 
     @OneToMany(mappedBy = "chatRoom", fetch = FetchType.LAZY)
     private Set<MemberStatus> memberStatuses;
+
     public boolean checkAndCloseRoomIfAllMembersLeft() {
         boolean allMembersLeft = memberStatuses.stream()
                 .allMatch(status -> status.getStatus() == MemberStatusType.LEFT);

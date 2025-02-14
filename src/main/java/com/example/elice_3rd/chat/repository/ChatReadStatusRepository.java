@@ -9,6 +9,6 @@ import java.util.Optional;
 @Repository
 public interface ChatReadStatusRepository extends JpaRepository<ChatReadStatus, Long> {
 
-    Optional<ChatReadStatus> findByChatMessageIdAndReceiverId(String chatMessageId, Long receiverId);
+    Optional<ChatReadStatus> findByChatMessageIdAndReceiver_memberId(String chatMessageId, Long receiverId);
 
 }

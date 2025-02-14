@@ -19,9 +19,9 @@ public class ChatMessage {
     @Id
     private String chatMessageId;
 
-    private Long chatRoom;
+    private Long chatRoomId;
 
-    private Long sender;
+    private Long senderId;
 
     private String message;
 
