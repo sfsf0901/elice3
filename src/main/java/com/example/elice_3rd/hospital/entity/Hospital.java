@@ -35,8 +35,8 @@ public class Hospital {
     private String address;
     private String phone;
     private String homepage;
-    private String latitude;
-    private String longitude;
+    private Double latitude;
+    private Double longitude;
 
     private String hasNightEmergency;
     private String emergencyContact;
@@ -72,8 +72,8 @@ public class Hospital {
         hospital.address = hospitalInfo.getAddr();
         hospital.phone = hospitalInfo.getTelno();
         hospital.homepage = hospitalInfo.getHospUrl();
-        hospital.latitude = hospitalInfo.getXPos();
-        hospital.longitude = hospitalInfo.getYPos();
+        hospital.latitude = hospitalInfo.getLatitudeAsDouble();
+        hospital.longitude = hospitalInfo.getLongitudeAsDouble();
         return hospital;
     }
 
