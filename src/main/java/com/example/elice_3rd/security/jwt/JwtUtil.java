@@ -3,16 +3,24 @@ package com.example.elice_3rd.security.jwt;
 import com.example.elice_3rd.security.jwt.entity.RefreshToken;
 import com.example.elice_3rd.security.jwt.repository.RefreshTokenRepository;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 
+import java.io.IOException;
 import java.security.Key;
 import java.util.Date;
 
@@ -76,12 +84,17 @@ public class JwtUtil {
     }
 
     public String getEmail(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .get("email", String.class);
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .get("email", String.class);
+        } catch (ExpiredJwtException e){
+            return e.getClaims().get("email", String.class);
+        }
+
     }
 
     public String getRole(String token) {
@@ -122,28 +135,72 @@ public class JwtUtil {
         tokenRepository.deleteById(getEmail(token));
     }
 
-    public void addRefreshToken(String email, String refreshToken) {
+    public void addRefreshToken(String accessToken, String refreshToken) {
         tokenRepository.save(RefreshToken.builder()
-                .email(email)
+                .email(accessToken)
                 .refreshToken(refreshToken)
                 .expiration(new Date(System.currentTimeMillis() + refreshExpirationTime).toString())
                 .build());
     }
 
-    public String getRefreshToken(String accessToken){
-        // 예외 메시지 더욱 상세하게 코드를 몰르는 사람도 메시지를 보고 알아볼 수 있을 정도로
+    public String getRefreshToken(String accessToken) {
+        // 예외 메시지 더욱 상세하게 코드를 모르는 사람도 메시지를 보고 알아볼 수 있을 정도로
         RefreshToken refreshToken = tokenRepository.findByEmail(getEmail(accessToken)).orElseThrow(
                 () -> new IllegalArgumentException("refresh token does not exist")
         );
         return refreshToken.getRefreshToken();
     }
 
-    public Cookie createCookie(String key, String value){
+    public Cookie createCookie(String key, String value) {
         Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge((int) accessExpirationTime / 1000);
+        cookie.setMaxAge((int) refreshExpirationTime / 1000);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
 
         return cookie;
+    }
+
+    public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String accessToken = null;
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies)
+                if (cookie.getName().equals("access")) {
+                    accessToken = cookie.getValue();
+                    break;
+                }
+        }
+
+        String refreshToken = null;
+        try {
+            refreshToken = getRefreshToken(accessToken);
+        } catch (RuntimeException e){
+            throw new InsufficientAuthenticationException("Refresh token does not exist");
+        }
+
+        if(refreshToken == null)
+            return new ResponseEntity<>("refresh token is null", HttpStatus.BAD_REQUEST);
+
+        try {
+            isExpired(refreshToken);
+        } catch (ExpiredJwtException e){
+            return new ResponseEntity<>("refresh token is expired", HttpStatus.BAD_REQUEST);
+        }
+
+        String category = getCategory(refreshToken);
+
+        if(!category.equals("refresh"))
+            return new ResponseEntity<>("invalid refresh token", HttpStatus.BAD_REQUEST);
+
+        String email = getEmail(refreshToken);
+        String role = getRole(refreshToken);
+
+        String newAccessToken = createAccessToken(email, role);
+        String newRefreshToken = createRefreshToken(email, role);
+
+        addRefreshToken(email, newRefreshToken);
+        response.addCookie(createCookie("access", newAccessToken));
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

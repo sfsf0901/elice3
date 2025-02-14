@@ -1,4 +1,4 @@
-package com.example.elice_3rd.member.oauth2;
+package com.example.elice_3rd.security.oauth2;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
