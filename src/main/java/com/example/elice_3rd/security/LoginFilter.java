@@ -49,7 +49,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String accessToken = jwtUtil.createAccessToken(email, role);
         String refreshToken = jwtUtil.createRefreshToken(email, role);
 
-        jwtUtil.addRefreshToken(accessToken, refreshToken);
+        jwtUtil.addRefreshToken(email, refreshToken);
 
         response.addCookie(jwtUtil.createCookie("access", accessToken));
         response.setStatus(HttpStatus.OK.value());

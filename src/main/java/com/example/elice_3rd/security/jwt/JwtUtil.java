@@ -135,9 +135,9 @@ public class JwtUtil {
         tokenRepository.deleteById(getEmail(token));
     }
 
-    public void addRefreshToken(String accessToken, String refreshToken) {
+    public void addRefreshToken(String email, String refreshToken) {
         tokenRepository.save(RefreshToken.builder()
-                .email(accessToken)
+                .email(email)
                 .refreshToken(refreshToken)
                 .expiration(new Date(System.currentTimeMillis() + refreshExpirationTime).toString())
                 .build());
