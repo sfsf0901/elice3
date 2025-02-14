@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class MemberViewController {
     @GetMapping("/register")
     public String register(){
-        return "member/register";
+        return "user-register";
     }
 
     @GetMapping("/doctor/register")
