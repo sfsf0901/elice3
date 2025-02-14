@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"><head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+테스트 화면입니다
+    <div th:each="category : ${categories}">
+        <a th:text="${category.name}" onclick="goToSearch(event, this)"></a>
+
+        <form method="post" th:action="@{/search/{categoryName}(categoryName=${category.name})}" style="display:none;">
+            <input type="hidden" name="categoryId" id="categoryId" th:value="${category.id}">
+            <input type="hidden" name="lat" id="latInput">
+            <input type="hidden" name="lng" id="lngInput">
+        </form>
+    </div>
+
+    <script>
+        function goToSearch(event, element) {
+            event.preventDefault();
+
+            let form = element.nextElementSibling; // <a> 바로 다음에 있는 form 찾아냄
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    let latitude = position.coords.latitude;
+                    let longitude = position.coords.longitude;
+
+                    // 폼 안의 hidden input 값 설정
+                    form.querySelector("#latInput").value = latitude;
+                    form.querySelector("#lngInput").value = longitude;
+
+                    // 폼 제출 (POST)
+                    form.submit();
+                }, function (error) {
+                    alert("위치 정보를 가져올 수 없습니다.");
+                });
+            } else {
+                alert("이 브라우저에서는 위치 정보를 지원하지 않습니다.");
+            }
+        }
+    </script>
+</body>
+</html>

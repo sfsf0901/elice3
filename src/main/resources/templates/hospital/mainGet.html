@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>병원 검색</title>
+</head>
+<body>
+<h1>카테고리 선택</h1>
+<div th:each="category : ${categories}">
+    <a th:text="${category.name}"
+       th:data-category-id="${category.id}"
+       th:data-category-name="${category.name}"
+       href="#"
+       onclick="goToSearch(event, this)"></a>
+</div>
+
+<script>
+    function goToSearch(event, element) {
+        event.preventDefault();
+
+        let categoryId = element.getAttribute("data-category-id");
+        let categoryName = element.getAttribute("data-category-name");
+
+        console.log("categoryName:", categoryName);
+        console.log("Encoded categoryName:", encodeURIComponent(categoryName));
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                let latitude = position.coords.latitude;
+                let longitude = position.coords.longitude;
+
+                let url = `/search/${encodeURIComponent(categoryName)}?categoryId=${categoryId}&latitude=${latitude}&longitude=${longitude}`;
+                console.log("최종 URL:", url);
+
+                window.location.href = url;
+            }, function (error) {
+                // 위치 정보를 가져오지 못했을 때 (서울 시청 좌표 사용)
+                let latitude = 37.5665;
+                let longitude = 126.9780;
+
+                let url = `/search/${encodeURIComponent(categoryName)}?categoryId=${categoryId}&latitude=${latitude}&longitude=${longitude}`;
+                console.log("위치정보 실패 - 기본값 사용 URL:", url);
+
+                window.location.href = url;
+            });
+        } else {
+            alert("이 브라우저에서는 위치 정보를 지원하지 않습니다.");
+        }
+    }
+</script>
+</body>
+</html>

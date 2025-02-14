@@ -69,8 +69,6 @@ public class HospitalService {
         return parseXmlResponse(responseBody, diagnosisSubject);
     }
 
-
-
     private List<HospitalInfo> parseXmlResponse(String xml, DiagnosisSubject diagnosisSubject) {
         List<HospitalInfo> hospitals = new ArrayList<>();
         try {
@@ -114,5 +112,4 @@ public class HospitalService {
     public List<Hospital> findAllByYkihoIn(List<String> ykihoList) {
         return hospitalRepository.findAllByYkihoIn(ykihoList);
     }
-
 }
