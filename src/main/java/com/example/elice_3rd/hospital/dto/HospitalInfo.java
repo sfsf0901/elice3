@@ -17,10 +17,17 @@ public class HospitalInfo {
     private String addr;
     private String telno;
     private String hospUrl;
-    private String YPos;
-    private String XPos;
+    private String yPos;
+    private String xPos;
 
     private DiagnosisSubject diagnosisSubject;
     private Category category;
 
+    public Double getLatitudeAsDouble() {
+        return yPos != null && !yPos.isEmpty() ? Double.parseDouble(yPos) : null;
+    }
+
+    public Double getLongitudeAsDouble() {
+        return xPos != null && !xPos.isEmpty() ? Double.parseDouble(xPos) : null;
+    }
 }
