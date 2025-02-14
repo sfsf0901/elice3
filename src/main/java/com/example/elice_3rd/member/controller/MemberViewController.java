@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 //@RequestMapping("/members")
 public class MemberViewController {
-    @GetMapping("/register")
+    @GetMapping("/user/register")
     public String register(){
-        return "member/register";
+        return "member/user-register";
     }
 
     @GetMapping("/doctor/register")
