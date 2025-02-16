@@ -14,8 +14,8 @@ public class LicenseViewController {
         return "license/register-license";
     }
 
-    @GetMapping
+    @GetMapping("progress")
     public String progress(){
-
+        return "/license/in-progress";
     }
 }

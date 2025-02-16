@@ -28,4 +28,9 @@ document.getElementById("licenseForm").addEventListener("submit", async function
     })).json();
 
     console.log(response);
+
+    localStorage.setItem("callbackId", response.data.callbackId);
+    localStorage.setItem("callbackType", response.data.callbackType);
+
+    location.href = "/license/progress";
 });
