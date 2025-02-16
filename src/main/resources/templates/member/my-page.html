@@ -14,6 +14,7 @@
   </h1>
 
   <ul class="menu-list">
+    <li onclick="location.href=">의사 등록</li>
     <li onclick="showSection('consult-history')">상담 내역</li>
     <li onclick="showSection('live-consult')">실시간 상담 내역</li>
     <li onclick="showSection('favorites')">찜한 병원</li>
@@ -67,6 +68,16 @@
   </div>
 </div>
 
+<button onclick="popup()">의사 인증</button>
+
 <script src="/member/js/my-page.js"></script>
+<script>
+  function popup(){
+    let url = "/license";
+    let name = "면허 인증";
+    let option = "width = 700, height = 500, top = 100, left = 200, location = no, resizable = no"
+    window.open(url, name, option);
+  }
+</script>
 </body>
 </html>

@@ -11,11 +11,6 @@ public class MemberViewController {
         return "member/user-register";
     }
 
-    @GetMapping("/doctor/register")
-    public String doctorRegister(){
-        return "member/doctor-register";
-    }
-
     @GetMapping("/login")
     public String login(){
         return "/member/another-login";
