@@ -5,70 +5,95 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>마이페이지</title>
   <link rel="stylesheet" href="/member/css/my-page.css">
+  <link rel="stylesheet" href="/common/css/bootstrap.min.css">
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
-<div class="mypage-container">
-  <h1 class="user-info">
-    <span id="name">사용자 이름</span> <span id="email" class="user-email">(user@example.com)</span>
-  </h1>
-
-  <ul class="menu-list">
-    <li onclick="location.href=">의사 등록</li>
-    <li onclick="showSection('consult-history')">상담 내역</li>
-    <li onclick="showSection('live-consult')">실시간 상담 내역</li>
-    <li onclick="showSection('favorites')">찜한 병원</li>
-    <li onclick="showSection('edit-profile')">회원 정보 수정</li>
-    <li onclick="showSection('change-password')">비밀번호 수정</li>
-    <li onclick="confirmWithdrawal()">회원 탈퇴</li>
-  </ul>
-
-  <div class="content-section" id="consult-history">
-    <h2>상담 내역</h2>
-    <p>등록된 상담 내역이 없습니다.</p>
+<div class="wrap container w-25">
+  <div class="orangeContainer">
+    <div>
+      <div class="grade">GOLD</div>
+      <div class="name">Jaden</div>
+    </div>
+    <div class="modify">i</div>
   </div>
-
-  <div class="content-section" id="live-consult">
-    <h2>실시간 상담 내역</h2>
-    <p>현재 진행 중인 상담이 없습니다.</p>
+  <div class="summaryContainer">
+    <div class="item">
+      <div class="number">354</div>
+      <div>상담 내역</div>
+    </div>
+    <div class="item">
+      <div class="number">354</div>
+      <div>실시간 상담 내역 <span class="circle"></span></div>
+    </div>
+    <div class="item">
+      <div class="number">354</div>
+      <div>적립금(BLCT)</div>
+    </div>
   </div>
-
-  <div class="content-section" id="favorites">
-    <h2>찜한 병원</h2>
-    <p>찜한 병원이 없습니다.</p>
+  <div class="listContainer">
+    <a href="#" class="item">
+      <div class="icon">🏥</div>
+      <div class="text">찜한 병원</div>
+      <div class="right"> > </div>
+    </a>
+    <a href="#" class="item">
+      <div class="icon">ii</div>
+      <div class="text">회원 정보 수정</div>
+      <div class="right"> > </div>
+    </a>
+    <a href="#" class="item">
+      <div class="icon">ii</div>
+      <div class="text">비밀번호 변경</div>
+      <div class="right"> > </div>
+    </a>
+    <a href="#" class="item">
+      <div class="icon">ii</div>
+      <div class="text">의사 인증하기</div>
+      <div class="right"> > </div>
+    </a>
+    <a href="#" class="item">
+      <div class="icon">ii</div>
+      <div class="text"></div>
+      <div class="right"> > </div>
+    </a>
   </div>
-
-  <div class="content-section" id="edit-profile">
-    <h2>회원 정보 수정</h2>
-    <form id="editProfileForm">
-      <label for="edit-name">이름</label>
-      <input type="text" id="edit-name" name="edit-name">
-
-      <label for="edit-contact">연락처</label>
-      <input type="text" id="edit-contact" name="edit-contact">
-
-      <button type="submit">수정하기</button>
-    </form>
+  <div class="listContainer">
+<!--    <a href="#" class="item">-->
+<!--      <div class="icon">ii</div>-->
+<!--      <div class="text">-->
+<!--        <span>내지갑</span>-->
+<!--        <span class="smallLight">-->
+<!--            <span>|</span>-->
+<!--            <span>보유 적립금</span>-->
+<!--          </span>-->
+<!--      </div>-->
+<!--      <div class="right">-->
+<!--        <span class="blct">175 BLCT</span>-->
+<!--        > </div>-->
+<!--    </a>-->
+    <a href="#" class="item">
+      <div class="icon">ii</div>
+      <div class="text">회원 탈퇴</div>
+      <div class="right"> > </div>
+    </a>
   </div>
-
-  <div class="content-section" id="change-password">
-    <h2>비밀번호 수정</h2>
-    <form id="changePasswordForm">
-      <label for="current-password">현재 비밀번호</label>
-      <input type="password" id="current-password" name="current-password">
-
-      <label for="new-password">새 비밀번호</label>
-      <input type="password" id="new-password" name="new-password">
-
-      <label for="confirm-new-password">새 비밀번호 확인</label>
-      <input type="password" id="confirm-new-password" name="confirm-new-password">
-
-      <button type="submit">변경하기</button>
-    </form>
+  <div class="infoContainer">
+    <a href="#" class="item">
+      <div>icon</div>
+      <div>공지사항</div>
+    </a>
+    <a href="#" class="item">
+      <div>icos</div>
+      <div>이용안내</div>
+    </a>
+    <a href="#" class="item">
+      <div>icon</div>
+      <div>고객센터</div>
+    </a>
   </div>
+  <button onclick="popup()">의사 인증</button>
 </div>
-
-<button onclick="popup()">의사 인증</button>
 
 <script src="/member/js/my-page.js"></script>
 <script>

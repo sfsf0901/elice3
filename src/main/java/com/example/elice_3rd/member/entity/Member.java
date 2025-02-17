@@ -76,4 +76,8 @@ public class Member extends BaseEntity {
     public void quit(){
         isDeleted = true;
     }
+
+    public void updateRoleDoctor(){
+        role = Role.DOCTOR;
+    }
 }
