@@ -7,63 +7,63 @@
 </head>
 <body>
 
-<div id="hospitalList">
-    <div th:each="hospital : ${hospitals}">
-        <p th:text="${hospital.placeName}"></p>
-        <p th:text="${hospital.distanceFromUser}"></p>
+    <div id="hospitalList">
+        <div th:each="hospital : ${hospitals}">
+            <p th:text="${hospital.placeName}"></p>
+            <p th:text="${hospital.distanceFromUser}"></p>
+        </div>
     </div>
-</div>
 
-<!-- 더보기 버튼 -->
-<button id="loadMoreBtn"
-        th:data-next-page="${hospitals.number + 1}"
-        th:data-category-id="${categoryId}"
-        th:data-category-name="${categoryName}"
-        th:data-lat="${latitude}"
-        th:data-lng="${longitude}"
-        th:if="${!hospitals.last}">
-    더보기
-</button>
+    <!-- 더보기 버튼 -->
+    <button id="loadMoreBtn"
+            th:data-next-page="${hospitals.number + 1}"
+            th:data-category-id="${categoryId}"
+            th:data-category-name="${categoryName}"
+            th:data-lat="${latitude}"
+            th:data-lng="${longitude}"
+            th:if="${!hospitals.last}">
+        더보기
+    </button>
 
-<script>
-    $(document).on('click', '#loadMoreBtn', function () {
-        const nextPage = $(this).data('next-page');
-        const categoryId = $(this).data('category-id');
-        const categoryName = $(this).data('category-name');
-        const lat = $(this).data('lat');
-        const lng = $(this).data('lng');
+    <script>
+        $(document).on('click', '#loadMoreBtn', function () {
+            const nextPage = $(this).data('next-page');
+            const categoryId = $(this).data('category-id');
+            const categoryName = $(this).data('category-name');
+            const lat = $(this).data('lat');
+            const lng = $(this).data('lng');
 
-        $.ajax({
-            url: `/api/search/${categoryName}`,
-            type: 'GET',
-            data: {
-                categoryId: categoryId,
-                lat: lat,
-                lng: lng,
-                page: nextPage
-            },
-            success: function (response) {
-                response.hospitals.forEach(hospital => {
-                    const hospitalHtml = `
-                        <div>
-                            <p>${hospital.placeName}</p>
-                            <p>${hospital.distanceFromUser}</p>
-                        </div>
-                    `;
-                    $('#hospitalList').append(hospitalHtml);
-                });
+            $.ajax({
+                url: `/api/search/${categoryName}`,
+                type: 'GET',
+                data: {
+                    categoryId: categoryId,
+                    lat: lat,
+                    lng: lng,
+                    page: nextPage
+                },
+                success: function (response) {
+                    response.hospitals.forEach(hospital => {
+                        const hospitalHtml = `
+                            <div>
+                                <p>${hospital.placeName}</p>
+                                <p>${hospital.distanceFromUser}</p>
+                            </div>
+                        `;
+                        $('#hospitalList').append(hospitalHtml);
+                    });
 
-                if (response.nextPage !== null) {
-                    $('#loadMoreBtn').data('next-page', response.nextPage);
-                } else {
-                    $('#loadMoreBtn').remove();
+                    if (response.nextPage !== null) {
+                        $('#loadMoreBtn').data('next-page', response.nextPage);
+                    } else {
+                        $('#loadMoreBtn').remove();
+                    }
+                },
+                error: function () {
+                    alert('데이터를 불러오는데 실패했습니다.');
                 }
-            },
-            error: function () {
-                alert('데이터를 불러오는데 실패했습니다.');
-            }
+            });
         });
-    });
-</script>
+    </script>
 </body>
 </html>
