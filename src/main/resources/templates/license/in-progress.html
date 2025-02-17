@@ -24,7 +24,19 @@
             body: JSON.stringify(request)
         })).json();
 
+        // 인증 안하고 버튼 눌렀을 때 에러코드 2090
+        if(response.data.ECODE !== "ERR_MLCOM_MSG50255") {
+            localStorage.removeItem("callbackId");
+            localStorage.removeItem("callbackType");
+        }
+
+        alert(response.data.ERRMSG)
         console.log(response)
+
+        if(response.data.ECODE === "ERR_MLMOG_MSG00001") {
+            window.close();
+        }
+
     }
 </script>
 </html>

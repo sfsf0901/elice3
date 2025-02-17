@@ -13,12 +13,8 @@ import java.util.Base64;
 @Slf4j
 @Component
 public class AES256Util {
-    private final String encData = "eigiSlhRCNOMcJiAxrnk0tZTc6EkLuGe6spR6wu1nkk=";
-    private final String encSpec = "AES_CBC_PKCS5PADDING/256";
     private final String encType = "AES/CBC/PKCS5PADDING";
-
     private final static String encKey = "YRhyjZ.xy.R.=v.bBx0e.=jUZZ!ZR+!P"; //32byte
-
     // 초기화 벡터
     private final static String encIv = "8eeIe0!0!xZBs2IZ"; //16byte
 
