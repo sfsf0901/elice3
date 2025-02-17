@@ -16,4 +16,5 @@ public interface MemberStatusRepository extends JpaRepository<MemberStatus, Long
 
     Optional<MemberStatus> findByChatRoomChatRoomIdAndMemberMemberId(Long chatRoomId, Long memberId);
 
+    void deleteByChatRoom_ChatRoomId(Long chatRoomId);
 }

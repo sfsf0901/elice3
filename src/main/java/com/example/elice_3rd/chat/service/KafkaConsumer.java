@@ -15,6 +15,10 @@ public class KafkaConsumer {
 
     @KafkaListener(topics = "${spring.kafka.topic}", groupId = "${spring.kafka.consumer.group-id}")
     public void listen(ChatMessage chatMessage) {
-        log.info("Received message : " + chatMessage);
+        try {
+            log.debug("Received message : {}", chatMessage);
+        } catch (Exception e) {
+            log.error("Error processing Kafka message: {}", chatMessage, e);
+        }
     }
 }

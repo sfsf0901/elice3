@@ -14,9 +14,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ChatMessageDto {
 
-    private Long chatRoom;
+    private Long chatRoomId;
 
-    private Long sender;
+    private Long senderId;
 
     private String message;
 
@@ -24,8 +24,8 @@ public class ChatMessageDto {
 
     public static ChatMessageDto toDto(ChatMessage chatMessage) {
         return ChatMessageDto.builder()
-                .chatRoom(chatMessage.getChatRoomId())
-                .sender(chatMessage.getSenderId())
+                .chatRoomId(chatMessage.getChatRoomId())
+                .senderId(chatMessage.getSenderId())
                 .message(chatMessage.getMessage())
                 .createdDate(chatMessage.getCreatedDate())
                 .build();
@@ -33,8 +33,8 @@ public class ChatMessageDto {
 
     public ChatMessage toEntity () {
         return ChatMessage.builder()
-                .chatRoomId(chatRoom)
-                .senderId(sender)
+                .chatRoomId(chatRoomId)
+                .senderId(senderId)
                 .message(message)
                 .build();
     }

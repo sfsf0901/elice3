@@ -11,4 +11,5 @@ public interface ChatReadStatusRepository extends JpaRepository<ChatReadStatus, 
 
     Optional<ChatReadStatus> findByChatMessageIdAndReceiver_memberId(String chatMessageId, Long receiverId);
 
+    void deleteByChatMessageId(String chatMessageId);
 }

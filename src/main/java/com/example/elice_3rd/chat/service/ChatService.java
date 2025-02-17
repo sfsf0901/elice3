@@ -58,6 +58,10 @@ public class ChatService {
     // 기존 채팅방이 있는지 확인하고 채팅방 개설 혹은 연결
     @Transactional
     public ChatRoomResponseDto checkChatRoom(ChatRoomRequestDto request) {
+        if (request.getMemberIds() == null || request.getMemberIds().isEmpty()) {
+            throw new IllegalArgumentException("Member IDs cannot be null or empty");
+        }
+
         // 요청이 1:1 채팅이라면 기존 채팅방을 확인 (그룹 채팅 기능 확장 가능하게 코드 구성)
         if (request.getMemberIds().size() == 2) {
             // 1:1 채팅방이 이미 존재하는지 확인
@@ -116,6 +120,11 @@ public class ChatService {
                 .collect(Collectors.toList());
     }
 
+    public boolean isChatRoomExist(Long chatRoomId) {
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findById(chatRoomId);
+        return chatRoom.isPresent();  // 존재하면 true, 없으면 false 반환
+    }
+
     // 채팅방 메시지 가져오기
     public Flux<ChatMessageDto> getChatRoomMessages(Long chatRoomId, Long memberId) {
         // 채팅방과 멤버의 상태 정보를 가져옴
@@ -153,39 +162,47 @@ public class ChatService {
                 .subscribeOn(Schedulers.boundedElastic());
     }
 
-
     // 채팅방 메시지 Kafka로 전송
     @Transactional
     public void sendMessageToKafka(ChatMessageDto chatMessageDto) {
-        // mongoDB에 저장
-        ChatMessage chatMessage = chatMessageDto.toEntity();
-        chatMessageRepository.save(chatMessage);
+        try {
+            // mongoDB에 저장
+            ChatMessage chatMessage = chatMessageDto.toEntity();
+            chatMessageRepository.save(chatMessage);
 
-        // ChatRoom의 멤버들 조회
-        ChatRoom chatRoom = chatRoomRepository.findById(chatMessage.getChatRoomId())
-                .orElseThrow(() -> new EntityNotFoundException("ChatRoom not found"));
+            // ChatRoom의 멤버들 조회
+            ChatRoom chatRoom = chatRoomRepository.findById(chatMessage.getChatRoomId())
+                    .orElseThrow(() -> new EntityNotFoundException("ChatRoom not found"));
 
-        // 각 멤버에 대해 ChatReadStatus 초기화
-        for (Member receiver : chatRoom.getMembers()) {
-            ChatReadStatus readStatus = new ChatReadStatus();
-            readStatus.setChatMessageId(chatMessage.getChatMessageId());
-            readStatus.setReceiver(receiver);
-            readStatus.setReadStatus(false); // 기본값: 읽지 않음
-            chatReadStatusRepository.save(readStatus);
-
-            // 수신자가 온라인 상태일 경우 즉시 읽음 처리
-            MemberStatus memberStatus = memberStatusRepository.findByChatRoomChatRoomIdAndMemberMemberId(chatMessage.getChatRoomId(), receiver.getMemberId())
-                    .orElseThrow(() -> new EntityNotFoundException("MemberStatus not found"));
-
-            if (memberStatus.getStatus() == MemberStatusType.ONLINE) {
-                readStatus.setReadStatus(true); // 온라인이면 읽음 상태로 처리
+            // 각 멤버에 대해 ChatReadStatus 초기화
+            for (Member receiver : chatRoom.getMembers()) {
+                ChatReadStatus readStatus = new ChatReadStatus();
+                readStatus.setChatMessageId(chatMessage.getChatMessageId());
+                readStatus.setReceiver(receiver);
+                readStatus.setReadStatus(false); // 기본값: 읽지 않음
                 chatReadStatusRepository.save(readStatus);
-            }
-        }
 
-        // Kafka로 메시지 전송
-        kafkaProducer.sendMessage(chatMessage);
-        log.info("Message sent to Kafka: " + chatMessage);
+                // 수신자가 온라인 상태일 경우 즉시 읽음 처리
+                MemberStatus memberStatus = memberStatusRepository.findByChatRoomChatRoomIdAndMemberMemberId(chatMessage.getChatRoomId(), receiver.getMemberId())
+                        .orElseThrow(() -> new EntityNotFoundException("MemberStatus not found"));
+
+                if (memberStatus.getStatus() == MemberStatusType.ONLINE) {
+                    readStatus.setReadStatus(true); // 온라인이면 읽음 상태로 처리
+                    chatReadStatusRepository.save(readStatus);
+                }
+            }
+
+            // Kafka로 메시지 전송
+            kafkaProducer.sendMessage(chatMessage)
+                    .exceptionally(e -> {
+                        log.error("Failed to send message to Kafka: {}", chatMessage, e);
+                        return null;
+                    });
+
+        } catch (Exception e) {
+            log.error("Error processing chat message: {}", chatMessageDto.getMessage(), e);
+            throw new RuntimeException("Error processing chat message", e);
+        }
     }
 
     // 채팅방 나가기 처리

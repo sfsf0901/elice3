@@ -32,5 +32,5 @@ public class Notification extends BaseEntity {
     private String message;
 
     @Column(nullable = false)
-    private Boolean readStatus = false;
+    private boolean readStatus = false;
 }

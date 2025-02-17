@@ -23,5 +23,6 @@ public class ChatReadStatus {
     private Member receiver;
 
     @Column(nullable = false)
+    @Builder.Default
     private boolean readStatus = false;
 }

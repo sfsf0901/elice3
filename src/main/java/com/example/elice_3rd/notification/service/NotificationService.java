@@ -82,7 +82,7 @@ public class NotificationService {
                         notification.getNotificationId(),
                         notification.getReceiver().getMemberId(),
                         notification.getMessage(),
-                        notification.getReadStatus()))
+                        notification.isReadStatus()))
                 .collect(Collectors.toList());
     }
 }
