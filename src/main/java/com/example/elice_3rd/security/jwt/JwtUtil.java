@@ -92,6 +92,7 @@ public class JwtUtil {
                     .getBody()
                     .get("email", String.class);
         } catch (ExpiredJwtException e){
+            // 만료가 되었어도 이메일 정보는 반환
             return e.getClaims().get("email", String.class);
         }
 
@@ -146,7 +147,7 @@ public class JwtUtil {
     public String getRefreshToken(String accessToken) {
         // 예외 메시지 더욱 상세하게 코드를 모르는 사람도 메시지를 보고 알아볼 수 있을 정도로
         RefreshToken refreshToken = tokenRepository.findByEmail(getEmail(accessToken)).orElseThrow(
-                () -> new IllegalArgumentException("refresh token does not exist")
+                () -> new IllegalArgumentException("getRefreshToken failed: 토큰 정보와 일치하는 refresh token이 존재하지 않습니다.")
         );
         return refreshToken.getRefreshToken();
     }
