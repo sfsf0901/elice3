@@ -16,7 +16,8 @@
       height: 100vh;
       background-color: #f4f4f4;
     }
-    .container {
+
+    .separate{
       display: flex;
       background: white;
       padding: 20px;
@@ -24,6 +25,22 @@
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       gap: 30px;
     }
+    .platformContainer {
+      display: flex;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .inputContainer {
+      display: flex;
+      background: #f0f0ff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
     .icon-section {
       display: flex;
       flex-direction: column;
@@ -70,7 +87,7 @@
     }
     .button-container {
       display: flex;
-      justify-content: space-between;
+      justify-content: end;
       margin-top: 10px;
     }
     .btn {
@@ -94,8 +111,8 @@
 </head>
 <body>
 <form id="licenseForm">
-  <div class="container">
-    <div class="icon-section">
+  <div class="separate">
+    <div class="platformContainer icon-section">
       <h3>민간 인증서</h3>
       <div class="icon-grid rounded-border">
         <label>
@@ -121,10 +138,10 @@
       </div>
     </div>
 
-    <div class="form-section d-flex">
+    <div class="inputContainer form-section d-flex">
       <h3>본인인증 정보 입력</h3>
       <label for="dsn">이름</label>
-      <input type="text" id="dsn" name="dsn" required placeholder="이름 입력">
+      <input style="width: 90%" type="text" id="dsn" name="dsn" required placeholder="이름 입력">
 
       <label for="jumin1">주민등록번호</label>
       <div style="display: flex; gap: 10px;">
@@ -138,8 +155,8 @@
         <input type="text" id="phoneNum" name="phoneNum" required maxlength="11" placeholder="12341234">
       </div>
 
-      <div class="button-container d-flex align-items-end">
-        <button type="submit" class="btn submit align-items-end" align="end">인증 요청</button>
+      <div class="button-container">
+        <button type="submit" class="btn submit" align="end">인증 요청</button>
       </div>
     </div>
   </div>

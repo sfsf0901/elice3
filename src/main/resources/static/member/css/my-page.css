@@ -26,12 +26,13 @@ div{
 .wrap{
     background-color: #F8F8F8;
 }
-/* 녹색배경 */
+
 .orangeContainer{
-    height: 132px;
+    height: 90px;
     background-color: #FF8D00;
 
     display: flex;
+    justify-content: space-around;
     align-items: flex-end;
     padding: 16px;
 }
@@ -127,6 +128,7 @@ div{
     text-decoration: none;
     height: 56px;
     box-sizing: border-box;
+    cursor: pointer;
 }
 .listContainer .icon{
     margin-right: 14px;
@@ -187,4 +189,13 @@ div{
 }
 .infoContainer .item:hover{
     /*   background-color: #f8f8f8; */
+}
+
+.wave {
+    position: absolute;
+    bottom: -1px;  /* 정확히 아래쪽 경계에 맞추기 */
+    left: 0;
+    width: 100%;
+    height: 50px;
+    z-index: 1;
 }
