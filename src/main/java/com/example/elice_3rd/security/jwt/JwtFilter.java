@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -49,10 +50,15 @@ public class JwtFilter extends OncePerRequestFilter {
         try {
             jwtUtil.isExpired(accessToken);
         } catch (ExpiredJwtException e){
-            PrintWriter writer = response.getWriter();
-            writer.print("access token is expired");
+//            PrintWriter writer = response.getWriter();
+//            writer.print("access token is expired");
 
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            // 토큰 재발급
+            try {
+                jwtUtil.reissue(request, response);
+            } catch (RuntimeException e1){
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            }
             return;
         }
 

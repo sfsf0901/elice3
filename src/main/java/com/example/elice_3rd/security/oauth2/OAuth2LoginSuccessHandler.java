@@ -1,4 +1,4 @@
-package com.example.elice_3rd.member.oauth2;
+package com.example.elice_3rd.security.oauth2;
 
 import com.example.elice_3rd.security.CustomUserDetails;
 import com.example.elice_3rd.security.MemberDetail;
@@ -38,26 +38,14 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         else if(userInfo.get("response") != null)
             userInfo = (Map<String, Object>) userInfo.get("response");
 
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        log.warn("OAUTH 로그인 성공 메서드 호출!");
-
-
-        // email null check
+        // TODO email null check 필요
         String email = userInfo.get("email").toString();
         String role = "USER";
-
-        log.warn(objectMapper.writeValueAsString(oauth2User) + "\n");
-        log.warn(objectMapper.writeValueAsString(userInfo));
-        log.warn("email = {}", email);
-        log.warn("role = {}", role);
 
         String accessToken = jwtUtil.createAccessToken(email, role);
         String refreshToken = jwtUtil.createRefreshToken(email, role);
 
         jwtUtil.addRefreshToken(email, refreshToken);
-
-        log.warn("accessToken = {}", accessToken);
 
         response.addCookie(jwtUtil.createCookie("access", accessToken));
         response.setStatus(HttpStatus.OK.value());
