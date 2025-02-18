@@ -1,5 +1,6 @@
 package com.example.elice_3rd.counsel.service;
 
+import com.example.elice_3rd.comment.repository.CommentRepository;
 import com.example.elice_3rd.common.exception.NoSuchDataException;
 import com.example.elice_3rd.counsel.dto.CounselRequestDto;
 import com.example.elice_3rd.counsel.entity.Counsel;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CounselManagementService {
     private final CounselRepository counselRepository;
     private final MemberRepository memberRepository;
+    private final CommentRepository commentRepository;
 
     private Member findByEmail(String email) {
         return memberRepository.findByEmail(email).orElseThrow(
@@ -38,6 +40,8 @@ public class CounselManagementService {
         );
         if(!counsel.isAuthorMatched(email))
             throw new IllegalArgumentException("상담 게시글의 작성자가 일치하지 않습니다.");
+        if(commentRepository.findByCounsel(counsel).isPresent())
+            throw new IllegalArgumentException("상담에 대한 답변이 존재할 경우 게시글 수정 및 삭제가 불가합니다.");
 
         counsel.update(requestDto);
     }
@@ -49,6 +53,8 @@ public class CounselManagementService {
         );
         if(!counsel.isAuthorMatched(email))
             throw new IllegalArgumentException("상담 게시글의 작성자가 일치하지 않습니다.");
+        if(commentRepository.findByCounsel(counsel).isPresent())
+            throw new IllegalArgumentException("상담에 대한 답변이 존재할 경우 게시글 수정 및 삭제가 불가합니다.");
 
         counselRepository.delete(counsel);
     }

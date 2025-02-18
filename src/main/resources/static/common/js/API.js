@@ -28,10 +28,8 @@ function test401(){
   api.get("/members/401");
 }
 
-document.getElementById("401").addEventListener("click", () => {
-  api.get("/members/401")
-})
-
 const memberAPI = {
   REGISTER: "api/v1/members",
 }
+
+export default api

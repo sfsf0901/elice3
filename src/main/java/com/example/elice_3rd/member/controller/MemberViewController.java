@@ -22,11 +22,6 @@ public class MemberViewController {
         return "/member/my-page";
     }
 
-    @GetMapping("/auth")
-    public String auth(){
-        return "/member/auth";
-    }
-
     @GetMapping("/")
     public String test(){
         return "/member/temp-page";
