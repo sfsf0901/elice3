@@ -15,7 +15,7 @@ public class MemberManagementService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-    Member toEntity(MemberRequestDto requestDto) {
+    private Member toEntity(MemberRequestDto requestDto) {
         return Member.builder()
                 .email(requestDto.getEmail())
                 .name(requestDto.getName())
