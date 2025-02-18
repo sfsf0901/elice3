@@ -10,4 +10,6 @@ import java.util.Optional;
 
 public interface CounselRepository extends JpaRepository<Counsel, Long> {
     Optional<Counsel> findByMember(Member member);
+    Page<Counsel> findAll(Pageable pageable);
+    Page<Counsel> findAllByMember(Member member, Pageable pageable);
 }
