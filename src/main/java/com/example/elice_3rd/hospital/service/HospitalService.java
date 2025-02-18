@@ -80,6 +80,7 @@ public class HospitalService {
             for (int i = 0; i < nodeList.getLength(); i++) {
                 Element element = (Element) nodeList.item(i);
                 String ykiho = getTagValue("ykiho", element);
+                String clCdNm = getTagValue("clCdNm", element);
                 String yadmNm = getTagValue("yadmNm", element);
                 String postNo = getTagValue("postNo", element);
                 String addr = getTagValue("addr", element);
@@ -88,7 +89,7 @@ public class HospitalService {
                 String yPos = getTagValue("YPos", element);
                 String xPos = getTagValue("XPos", element);
 
-                hospitals.add(new HospitalInfo(ykiho, yadmNm, postNo, addr, telno, hospUrl, yPos, xPos, diagnosisSubject, diagnosisSubject.getCategory()));
+                hospitals.add(new HospitalInfo(ykiho, clCdNm, yadmNm, postNo, addr, telno, hospUrl, yPos, xPos, diagnosisSubject, diagnosisSubject.getCategory()));
             }
         } catch (Exception e) {
             e.printStackTrace();
