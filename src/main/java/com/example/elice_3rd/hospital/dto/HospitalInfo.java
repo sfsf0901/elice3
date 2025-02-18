@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class HospitalInfo {
 
     private String ykiho;
+    private String clCdNm;
     private String yadmNm;
     private String postNo;
     private String addr;

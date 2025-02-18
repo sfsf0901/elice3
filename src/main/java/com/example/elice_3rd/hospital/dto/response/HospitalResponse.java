@@ -17,6 +17,7 @@ public class HospitalResponse {
     private Long id;
 
     private String ykiho;
+    private String hospitalType;
     private String placeName;
     private String postNumber;
     private String address;
@@ -57,6 +58,7 @@ public class HospitalResponse {
     public HospitalResponse(Hospital hospital, double distanceFromUser) {
         this.id = hospital.getId();
         this.ykiho = hospital.getYkiho();
+        this.hospitalType = hospital.getHospitalType();
         this.placeName = hospital.getPlaceName();
         this.postNumber = hospital.getPostNumber();
         this.address = hospital.getAddress();
