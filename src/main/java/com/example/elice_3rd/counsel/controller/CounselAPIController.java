@@ -30,14 +30,14 @@ public class CounselAPIController {
 
     @PatchMapping
     public ResponseEntity<Void> update(Principal principal, Long id, @RequestBody CounselRequestDto requestDto) {
-        counselService.update(id, requestDto);
+        counselService.update(principal.getName(), id, requestDto);
         // TODO update 이후 상담 목록 URI 설정
         return ResponseEntity.ok().location(URI.create("/")).build();
     }
 
     @DeleteMapping
     public ResponseEntity<Void> delete(Principal principal, Long id){
-        counselService.delete(id);
+        counselService.delete(principal.getName(), id);
         return ResponseEntity.noContent().location(URI.create("/")).build();
     }
 

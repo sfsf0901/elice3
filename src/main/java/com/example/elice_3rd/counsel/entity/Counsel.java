@@ -34,4 +34,8 @@ public class Counsel extends BaseEntity {
                 .content(content)
                 .build();
     }
+
+    public Boolean isAuthorMatched(String email){
+        return email.equals(member.getEmail());
+    }
 }

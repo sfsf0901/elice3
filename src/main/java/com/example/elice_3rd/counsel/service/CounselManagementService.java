@@ -32,19 +32,23 @@ public class CounselManagementService {
     }
 
     @Transactional
-    public void update(Long id, CounselRequestDto requestDto) {
+    public void update(String email, Long id, CounselRequestDto requestDto) {
         Counsel counsel = counselRepository.findById(id).orElseThrow(
                 () -> new NoSuchDataException("수정 실패: 요청 파라미터와 일치하는 상담 게시글이 없습니다.")
         );
+        if(!counsel.isAuthorMatched(email))
+            throw new IllegalArgumentException("상담 게시글의 작성자가 일치하지 않습니다.");
 
         counsel.update(requestDto);
     }
 
     @Transactional
-    public void delete(Long id){
+    public void delete(String email, Long id){
         Counsel counsel = counselRepository.findById(id).orElseThrow(
                 () -> new NoSuchDataException("삭제 실패: 요청 파라미터와 일치하는 상담 게시글이 없습니다.")
         );
+        if(!counsel.isAuthorMatched(email))
+            throw new IllegalArgumentException("상담 게시글의 작성자가 일치하지 않습니다.");
 
         counselRepository.delete(counsel);
     }

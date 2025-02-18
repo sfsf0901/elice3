@@ -1,15 +1,10 @@
 package com.example.elice_3rd.counsel.service;
 
-import com.example.elice_3rd.common.exception.NoSuchDataException;
 import com.example.elice_3rd.counsel.dto.CounselRequestDto;
 import com.example.elice_3rd.counsel.dto.CounselResponseDto;
-import com.example.elice_3rd.counsel.entity.Counsel;
-import com.example.elice_3rd.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,12 +17,12 @@ public class CounselService {
         managementService.create(email, requestDto);
     }
 
-    public void update(Long id, CounselRequestDto requestDto){
-        managementService.update(id, requestDto);
+    public void update(String email, Long id, CounselRequestDto requestDto){
+        managementService.update(email, id, requestDto);
     }
 
-    public void delete(Long id){
-        managementService.delete(id);
+    public void delete(String email, Long id){
+        managementService.delete(email, id);
     }
 
     // 기본 정렬 최신순
