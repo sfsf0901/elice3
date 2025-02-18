@@ -1,9 +1,9 @@
 package com.example.elice_3rd.security;
 
-import com.example.elice_3rd.member.oauth2.CustomOAuth2UserService;
-import com.example.elice_3rd.member.oauth2.OAuth2LoginSuccessHandler;
 import com.example.elice_3rd.security.jwt.JwtFilter;
 import com.example.elice_3rd.security.jwt.JwtUtil;
+import com.example.elice_3rd.security.oauth2.CustomOAuth2UserService;
+import com.example.elice_3rd.security.oauth2.OAuth2LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -50,13 +50,24 @@ public class SecurityConfig {
                     .permitAll();
         });
 
-        http.oauth2Login(oauth2 -> {
-            oauth2.loginPage("/login");
-            oauth2.successHandler(oAuth2LoginSuccessHandler);
-            oauth2.userInfoEndpoint(userInfoEndpointConfig -> {
-                userInfoEndpointConfig.userService(customOAuth2UserService);
-            });
+//        http.oauth2Login(oauth2 -> {
+//            oauth2.loginPage("/login");
+//            oauth2.successHandler(oAuth2LoginSuccessHandler);
+//            oauth2.userInfoEndpoint(userInfoEndpointConfig -> {
+//                userInfoEndpointConfig.userService(customOAuth2UserService);
+//            });
+//        });
+
+        http.exceptionHandling(e -> {
+            e.authenticationEntryPoint(((request, response, authException) -> {
+                System.out.println("called!123213");
+                response.sendRedirect("/login");
+            }));
+            e.accessDeniedHandler(((request, response, accessDeniedException) -> {
+                System.out.println("Denied!@!#@!");
+            }));
         });
+
 
         http.addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class);
         http.addFilterBefore(new CustomLogoutFilter(jwtUtil), LogoutFilter.class);

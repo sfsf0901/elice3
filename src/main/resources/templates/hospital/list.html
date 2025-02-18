@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>병원 목록</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div layout:fragment="content">
+
+        <div class="d-flex align-items-center">
+            <a href="/main" class="text-decoration-none text-dark">
+                <i class="fa-solid fa-chevron-left me-3 fs-4"></i>
+            </a>
+            <p class="mb-0 fs-4" th:text="${categoryName}"></p>
+        </div>
+
+        <!-- 병원 리스트 & 더보기 버튼 -->
+        <div id="hospitalList" class="mt-4">
+            <div th:each="hospital : ${hospitals}">
+                <h5 th:text="${hospital.placeName}" class="pt-2"></h5>
+                <div>
+                    <small class="text-muted" th:text="${hospital.hospitalType}"></small>
+                </div>
+
+                <div th:data-monday-open-time="${hospital.mondayOpenTime}"
+                     th:data-monday-close-time="${hospital.mondayCloseTime}"
+                     th:data-tuesday-open-time="${hospital.tuesdayOpenTime}"
+                     th:data-tuesday-close-time="${hospital.tuesdayCloseTime}"
+                     th:data-wednesday-open-time="${hospital.wednesdayOpenTime}"
+                     th:data-wednesday-close-time="${hospital.wednesdayCloseTime}"
+                     th:data-thursday-open-time="${hospital.thursdayOpenTime}"
+                     th:data-thursday-close-time="${hospital.thursdayCloseTime}"
+                     th:data-friday-open-time="${hospital.fridayOpenTime}"
+                     th:data-friday-close-time="${hospital.fridayCloseTime}"
+                     th:data-saturday-open-time="${hospital.saturdayOpenTime}"
+                     th:data-saturday-close-time="${hospital.saturdayCloseTime}"
+                     th:data-sunday-open-time="${hospital.sundayOpenTime}"
+                     th:data-sunday-close-time="${hospital.sundayCloseTime}"
+                     class="clinic-status">
+                    <i class="fa-solid fa-circle fa-xs status-icon text-success" style="font-size: 0.45em;"></i>
+                    <small class="status-text text-success">진료중</small>
+                    <small class="text-muted"> | </small>
+                    <small class="text-muted schedule-text"></small>
+                </div>
+
+                <div class="text-muted pb-2">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <small class="distance-text" th:data-distance="${hospital.distanceFromUser}"></small>
+                    <small class="text-muted address-text" th:data-address="${hospital.address}"></small>
+                </div>
+                <hr>
+            </div>
+
+            <!-- 더보기 버튼을 감싸는 래퍼에 ID 추가 -->
+            <div th:if="${hospitals != null and not hospitals.empty}"
+                 class="d-flex justify-content-center mt-3"
+                 th:style="${hospitals.last} ? 'display:none;' : ''"
+                 id="loadMoreWrapper">
+                <button id="loadMoreBtn" class="btn btn-outline-secondary"
+                        th:data-next-page="${hospitals.number + 1}"
+                        th:data-category-id="${categoryId}"
+                        th:data-category-name="${categoryName}"
+                        th:data-lat="${latitude}"
+                        th:data-lng="${longitude}">
+                    더보기
+                </button>
+            </div>
+        </div>
+
+
+        <div th:if="${hospitals != null and hospitals.empty}" class="alert alert-light my-5" role="alert">
+            <div class="d-flex flex-column align-items-center justify-content-center text-center" style="height: 20vh;">
+                <i class="fa-solid fa-triangle-exclamation h2"></i>
+                <h5 class="mt-2">찾으시는 병원이 없어요.</h5>
+            </div>
+        </div>
+
+        <script>
+            $('#hospitalList').on('click', '#loadMoreBtn', function () {
+                const nextPage = $(this).data('next-page');
+                const categoryId = $(this).data('category-id');
+                const categoryName = $(this).data('category-name');
+                const lat = $(this).data('lat');
+                const lng = $(this).data('lng');
+
+                $.ajax({
+                    url: `/api/search/${categoryName}`,
+                    type: 'GET',
+                    data: {categoryId, lat, lng, page: nextPage},
+                    success: function (response) {
+                        response.hospitals.forEach(hospital => {
+                            const hospitalHtml = `
+                    <div>
+                        <h5 class="pt-2">${hospital.placeName}</h5>
+                        <div>
+                            <small class="text-muted">${hospital.hospitalType}</small>
+                        </div>
+
+                        <div class="clinic-status"
+                             data-monday-open-time="${hospital.mondayOpenTime || ''}"
+                             data-monday-close-time="${hospital.mondayCloseTime || ''}"
+                             data-tuesday-open-time="${hospital.tuesdayOpenTime || ''}"
+                             data-tuesday-close-time="${hospital.tuesdayCloseTime || ''}"
+                             data-wednesday-open-time="${hospital.wednesdayOpenTime || ''}"
+                             data-wednesday-close-time="${hospital.wednesdayCloseTime || ''}"
+                             data-thursday-open-time="${hospital.thursdayOpenTime || ''}"
+                             data-thursday-close-time="${hospital.thursdayCloseTime || ''}"
+                             data-friday-open-time="${hospital.fridayOpenTime || ''}"
+                             data-friday-close-time="${hospital.fridayCloseTime || ''}"
+                             data-saturday-open-time="${hospital.saturdayOpenTime || ''}"
+                             data-saturday-close-time="${hospital.saturdayCloseTime || ''}"
+                             data-sunday-open-time="${hospital.sundayOpenTime || ''}"
+                             data-sunday-close-time="${hospital.sundayCloseTime || ''}"
+                        >
+                            <i class="fa-solid fa-circle fa-xs status-icon text-success" style="font-size: 0.45em;"></i>
+                            <small class="status-text text-success">진료중</small>
+                            <small class="text-muted"> | </small>
+                            <small class="text-muted schedule-text"></small>
+                        </div>
+
+                        <div class="text-muted pb-2">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <small class="distance-text" data-distance="${hospital.distanceFromUser}"></small>
+                            <small class="text-muted address-text" data-address="${hospital.address}"></small>
+                        </div>
+                        <hr>
+                    </div>
+                    `;
+                            $('#loadMoreWrapper').before(hospitalHtml);
+                        });
+
+                        if (response.nextPage !== null) {
+                            $('#loadMoreBtn').data('next-page', response.nextPage);
+                        } else {
+                            $('#loadMoreWrapper').remove();
+                        }
+
+                        // 더보기로 불러온 데이터에도 상태 업데이트 실행
+                        updateClinicStatus();
+                        formatDistanceText();
+                        formatAddressText();
+                    },
+                    error: function () {
+                        alert('데이터를 불러오는데 실패했습니다.');
+                    }
+                });
+            });
+
+            function updateClinicStatus() {
+                $('.clinic-status').each(function () {
+                    const dayOfWeek = new Date().getDay();
+                    let openTime, closeTime;
+
+                    switch (dayOfWeek) {
+                        case 0:
+                            openTime = $(this).data('sunday-open-time');
+                            closeTime = $(this).data('sunday-close-time');
+                            break;
+                        case 1:
+                            openTime = $(this).data('monday-open-time');
+                            closeTime = $(this).data('monday-close-time');
+                            break;
+                        case 2:
+                            openTime = $(this).data('tuesday-open-time');
+                            closeTime = $(this).data('tuesday-close-time');
+                            break;
+                        case 3:
+                            openTime = $(this).data('wednesday-open-time');
+                            closeTime = $(this).data('wednesday-close-time');
+                            break;
+                        case 4:
+                            openTime = $(this).data('thursday-open-time');
+                            closeTime = $(this).data('thursday-close-time');
+                            break;
+                        case 5:
+                            openTime = $(this).data('friday-open-time');
+                            closeTime = $(this).data('friday-close-time');
+                            break;
+                        case 6:
+                            openTime = $(this).data('saturday-open-time');
+                            closeTime = $(this).data('saturday-close-time');
+                            break;
+                    }
+
+                    const statusText = $(this).find('.status-text');
+                    const statusIcon = $(this).find('.status-icon');
+                    const scheduleTextElement = $(this).find('.schedule-text');
+
+                    openTime = openTime != null ? String(openTime).trim() : '';
+                    closeTime = closeTime != null ? String(closeTime).trim() : '';
+
+                    if (!openTime || !closeTime) {
+                        $(this).hide();
+                        return;
+                    }
+
+                    const formattedOpenTime = openTime.replace(/(\d{2})(\d{2})/, '$1:$2');
+                    const formattedCloseTime = closeTime.replace(/(\d{2})(\d{2})/, '$1:$2');
+
+                    const now = new Date();
+                    const currentTime = now.getHours() * 60 + now.getMinutes();
+                    const openMinutes = parseInt(openTime.substring(0, 2)) * 60 + parseInt(openTime.substring(2));
+                    const closeMinutes = parseInt(closeTime.substring(0, 2)) * 60 + parseInt(closeTime.substring(2));
+
+                    if (currentTime >= openMinutes && currentTime < closeMinutes) {
+                        statusText.text('진료중');
+                        statusText.removeClass('text-muted').addClass('text-success');
+                        statusIcon.removeClass('text-muted').addClass('text-success');
+                    } else {
+                        statusText.text('진료종료');
+                        statusText.removeClass('text-success').addClass('text-muted');
+                        statusIcon.removeClass('text-success').addClass('text-muted');
+                    }
+
+                    scheduleTextElement.text(`${formattedOpenTime}~${formattedCloseTime}`);
+                });
+            }
+
+            function formatDistanceText() {
+                $('.distance-text').each(function () {
+                    const distance = parseInt($(this).data('distance'), 10);
+                    if (distance >= 1000) {
+                        $(this).text((distance / 1000).toFixed(1) + 'km');
+                    } else {
+                        $(this).text(distance + 'm');
+                    }
+                });
+            }
+
+            function formatAddressText() {
+                $('.address-text').each(function () {
+                    const fullAddress = $(this).data('address');
+                    const words = fullAddress.split(' ');
+
+                    if (words.length >= 3) {
+                        $(this).text(words.slice(0, 3).join(' '));
+                    } else {
+                        $(this).text(fullAddress);
+                    }
+                });
+            }
+
+            $(document).ready(function () {
+                updateClinicStatus();
+                formatDistanceText();
+                formatAddressText();
+            });
+        </script>
+
+        <script>
+            $(document).ready(function () {
+                $('.distance-text').each(function () {
+                    const distance = parseInt($(this).data('distance'), 10);
+                    if (distance >= 1000) {
+                        $(this).text((distance / 1000).toFixed(1) + 'km');
+                    } else {
+                        $(this).text(distance + 'm');
+                    }
+                });
+            });
+        </script>
+        <script>
+            $(document).ready(function () {
+                $('.address-text').each(function () {
+                    const fullAddress = $(this).data('address');
+                    const words = fullAddress.split(' ');
+
+                    if (words.length >= 3) {
+                        $(this).text(words.slice(0, 3).join(' '));
+                    } else {
+                        $(this).text(fullAddress);
+                    }
+                });
+            });
+        </script>
+        <script>
+            $(document).ready(function () {
+                $('.clinic-status').each(function () {
+                    const dayOfWeek = new Date().getDay();
+                    let openTime, closeTime;
+
+                    switch (dayOfWeek) {
+                        case 0:
+                            openTime = $(this).data('sunday-open-time');
+                            closeTime = $(this).data('sunday-close-time');
+                            break;
+                        case 1:
+                            openTime = $(this).data('monday-open-time');
+                            closeTime = $(this).data('monday-close-time');
+                            break;
+                        case 2:
+                            openTime = $(this).data('tuesday-open-time');
+                            closeTime = $(this).data('tuesday-close-time');
+                            break;
+                        case 3:
+                            openTime = $(this).data('wednesday-open-time');
+                            closeTime = $(this).data('wednesday-close-time');
+                            break;
+                        case 4:
+                            openTime = $(this).data('thursday-open-time');
+                            closeTime = $(this).data('thursday-close-time');
+                            break;
+                        case 5:
+                            openTime = $(this).data('friday-open-time');
+                            closeTime = $(this).data('friday-close-time');
+                            break;
+                        case 6:
+                            openTime = $(this).data('saturday-open-time');
+                            closeTime = $(this).data('saturday-close-time');
+                            break;
+                    }
+
+                    const statusText = $(this).find('.status-text');
+                    const statusIcon = $(this).find('.status-icon');
+                    const scheduleTextElement = $(this).find('.schedule-text');
+
+                    // null, undefined, 숫자 대비 강제 문자열 변환
+                    openTime = openTime != null ? String(openTime) : '';
+                    closeTime = closeTime != null ? String(closeTime) : '';
+
+                    if (!openTime.trim() || !closeTime.trim()) {
+                        console.log('숨김 처리:', openTime, closeTime);
+                        $(this).hide();
+                        return;
+                    }
+
+                    const formattedOpenTime = openTime.replace(/(\d{2})(\d{2})/, '$1:$2');
+                    const formattedCloseTime = closeTime.replace(/(\d{2})(\d{2})/, '$1:$2');
+
+                    const now = new Date();
+                    const currentTime = now.getHours() * 60 + now.getMinutes();
+                    const openMinutes = parseInt(openTime.substring(0, 2)) * 60 + parseInt(openTime.substring(2));
+                    const closeMinutes = parseInt(closeTime.substring(0, 2)) * 60 + parseInt(closeTime.substring(2));
+
+                    if (currentTime >= openMinutes && currentTime < closeMinutes) {
+                        statusText.text('진료중');
+                        statusText.removeClass('text-muted').addClass('text-success');
+                        statusIcon.removeClass('text-muted').addClass('text-success');
+                    } else {
+                        statusText.text('진료종료');
+                        statusText.removeClass('text-success').addClass('text-muted');
+                        statusIcon.removeClass('text-success').addClass('text-muted');
+                    }
+
+                    scheduleTextElement.text(`${formattedOpenTime}~${formattedCloseTime}`);
+                });
+            });
+
+        </script>
+    </div>
+</body>
+</html>
+

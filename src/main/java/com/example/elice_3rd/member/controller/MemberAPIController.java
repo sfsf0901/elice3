@@ -5,7 +5,10 @@ import com.example.elice_3rd.member.dto.MemberResponseDto;
 import com.example.elice_3rd.member.dto.MemberUpdateDto;
 import com.example.elice_3rd.member.service.MemberService;
 import com.example.elice_3rd.security.jwt.JwtUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.security.Principal;
 
+@Slf4j
 @RestController
 @RequestMapping("api/v1/members")
 @RequiredArgsConstructor
@@ -22,9 +26,11 @@ public class MemberAPIController {
     private final JwtUtil jwtUtil;
 
     @PostMapping("register")
-    public ResponseEntity<MemberResponseDto> register(@RequestBody @Validated MemberRequestDto requestDto){
+    public ResponseEntity<MemberResponseDto> register(@RequestBody @Validated MemberRequestDto requestDto) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        log.warn(objectMapper.writeValueAsString(requestDto));
         memberService.register(requestDto);
-        return ResponseEntity.created(URI.create("/")).build();
+        return ResponseEntity.created(URI.create("/login")).build();
     }
 
     @GetMapping("info")

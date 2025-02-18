@@ -44,8 +44,6 @@ public class Member extends BaseEntity {
     @Column
     @ColumnDefault("'none'")
     private String providerId;
-//    @OneToOne()
-//    private License license;
 
     public MemberResponseDto toResponseDto(){
         return MemberResponseDto.builder()

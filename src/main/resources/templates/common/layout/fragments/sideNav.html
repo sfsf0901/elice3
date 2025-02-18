@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<nav th:fragment="sideNavFragment(currentMenu)" class="nav flex-column">
+  <a class="nav-link" th:classappend="${currentMenu == 'password'} ? 'active'" th:href="@{/}">실시간 의료 상담</a>
+  <a class="nav-link" th:classappend="${currentMenu == 'orders'} ? 'active'" th:href="@{/}">진료중인 병원 찾기</a>
+  <a class="nav-link" th:classappend="${currentMenu == 'address'} ? 'active'" th:href="@{/}">응급실 정보</a>
+  <a class="nav-link" th:classappend="${currentMenu == 'info'} ? 'active'" th:href="@{/}">야간진료 병원 정보</a>
+  <a class="nav-link" th:classappend="${currentMenu == 'withdrawal'} ? 'active'" th:href="@{/}">마이페이지</a>
+</nav>
+</html>

@@ -7,26 +7,36 @@ import com.example.elice_3rd.member.repository.MemberRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
+
 @Service
 @AllArgsConstructor
 public class LicenseService {
     private final LicenseRepository licenseRepository;
     private final MemberRepository memberRepository;
 
-    private Member getMemberByEmail(String email){
+    private Member getMemberByEmail(String email) {
         return memberRepository.findByEmail(email).orElseThrow();
     }
 
-    public void createLicense(License license){
+    public void createLicense(Principal principal, String licenseNumber) {
+        Member member = memberRepository.findByEmail(principal.getName()).orElseThrow(
+                () -> new IllegalArgumentException("create license entity failed: member does not exist")
+        );
+        License license = License.builder()
+                .member(member)
+                .licenseNumber(licenseNumber)
+                .build();
         licenseRepository.save(license);
     }
 
-    // TODO entity 존재하지 않을 때 예외 처리
-    public License getLicense(String email){
-        return licenseRepository.findByMember(getMemberByEmail(email)).orElseThrow();
+    public License getLicense(String email) {
+        return licenseRepository.findByMember(getMemberByEmail(email)).orElseThrow(
+                () -> new IllegalArgumentException("retrieve license failed: license does not exist")
+        );
     }
 
-    public void delete(String email){
+    public void delete(String email) {
         License license = licenseRepository.findByMember(getMemberByEmail(email)).orElseThrow();
         licenseRepository.delete(license);
     }
