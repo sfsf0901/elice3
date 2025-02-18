@@ -30,7 +30,6 @@ public class MemberManagementService {
         memberRepository.save(toEntity(requestDto));
     }
 
-    // TODO Entity 없을 때 예외 처리
     @Transactional
     void updatePassword(String email, String password){
         Member member = memberRepository.findByEmail(email).orElseThrow(

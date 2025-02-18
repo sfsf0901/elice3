@@ -4,110 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>의사 면허 등록</title>
-  <link rel="stylesheet" href="">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: #f4f4f4;
-    }
-
-    .separate{
-      display: flex;
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      gap: 30px;
-    }
-    .platformContainer {
-      display: flex;
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .inputContainer {
-      display: flex;
-      background: #f0f0ff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .icon-section {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 250px;
-    }
-    .icon-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-      padding: 10px;
-      border-radius: 20%;
-    }
-    .icon-grid label {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      cursor: pointer;
-      border: 2px solid transparent;
-      padding: 5px;
-    }
-    .icon-grid input[type="radio"] {
-      display: none;
-    }
-    .icon-grid input[type="radio"]:checked + img {
-      border: 2px solid blue;
-      border-radius: 5px;
-    }
-    .form-section {
-      display: flex;
-      flex-direction: column;
-      width: 300px;
-    }
-    .form-section label {
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-    .form-section input, .form-section select {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    .button-container {
-      display: flex;
-      justify-content: end;
-      margin-top: 10px;
-    }
-    .btn {
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    .btn.cancel {
-      background-color: #ccc;
-    }
-    .btn.submit {
-      background-color: #0056b3;
-      color: white;
-    }
-    .rounded-border{
-      border-radius: 20%;
-    }
-  </style>
+  <link rel="stylesheet" href="/license/css/register-license.css">
 </head>
 <body>
 <form id="licenseForm">
@@ -161,6 +58,6 @@
     </div>
   </div>
 </form>
-<script src="/license/js/register-license.js"></script>
+<script type="module" src="/license/js/register-license.js"></script>
 </body>
 </html>

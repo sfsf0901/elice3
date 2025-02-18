@@ -63,4 +63,9 @@ public class MemberAPIController {
         memberService.updateRole(principal.getName());
         return ResponseEntity.ok().header("Location", "/my-page").build();
     }
+
+    @GetMapping("401")
+    public ResponseEntity<?> test401(){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("1234");
+    }
 }

@@ -1,4 +1,4 @@
-import memberAPI from "/common/js/APIUrl.js";
+import memberAPI from "/common/js/API.js";
 
 console.log(memberAPI.REGISTER)
 

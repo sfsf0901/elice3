@@ -18,22 +18,19 @@ div{
     left: 110%;
 }
 
-/* 녹색 텍스트 */
-.green{
-    color: #24855b;
-}
-
 .wrap{
     background-color: #F8F8F8;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
 }
 
 .orangeContainer{
-    height: 90px;
+    height: 120px;
     background-color: #FF8D00;
 
     display: flex;
     justify-content: space-around;
-    align-items: flex-end;
+    align-items: center;
     padding: 16px;
 }
 
