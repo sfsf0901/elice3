@@ -37,6 +37,9 @@ function renderPagination(data) {
         activePage.classList.remove("active");
       }
       pageItem.classList.add("active");
+
+      renderList()
+
       api.get("counsels", {
         params: {page: i}
       })

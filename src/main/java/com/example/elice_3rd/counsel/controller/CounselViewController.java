@@ -11,4 +11,14 @@ public class CounselViewController {
     public String list(){
         return "counsel/list";
     }
+
+    @GetMapping("/{id}")
+    public String detail() {
+        return "counsel/detail";
+    }
+
+    @GetMapping("write")
+    public String write() {
+        return "counsel/write";
+    }
 }

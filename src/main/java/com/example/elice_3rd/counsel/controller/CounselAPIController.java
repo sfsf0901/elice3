@@ -25,20 +25,20 @@ public class CounselAPIController {
     public ResponseEntity<Void> create(Principal principal, @RequestBody CounselRequestDto requestDto){
         counselService.create(principal.getName(), requestDto);
         // TODO create 이후 상담 목록 URI 설정
-        return ResponseEntity.created(URI.create("/")).build();
+        return ResponseEntity.created(URI.create("/counsels")).build();
     }
 
     @PatchMapping
     public ResponseEntity<Void> update(Principal principal, Long id, @RequestBody CounselRequestDto requestDto) {
         counselService.update(principal.getName(), id, requestDto);
         // TODO update 이후 상담 목록 URI 설정
-        return ResponseEntity.ok().location(URI.create("/")).build();
+        return ResponseEntity.ok().location(URI.create("/counsels")).build();
     }
 
     @DeleteMapping
     public ResponseEntity<Void> delete(Principal principal, Long id){
         counselService.delete(principal.getName(), id);
-        return ResponseEntity.noContent().location(URI.create("/")).build();
+        return ResponseEntity.noContent().location(URI.create("/my-page")).build();
     }
 
     @GetMapping("detail")

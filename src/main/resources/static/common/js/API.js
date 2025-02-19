@@ -24,12 +24,9 @@ api.interceptors.response.use(
   }
 )
 
-function test401(){
-  api.get("/members/401");
-}
-
 const memberAPI = {
   REGISTER: "api/v1/members",
+
 }
 
 export default api
