@@ -38,8 +38,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.springframework:spring-messaging'
-    implementation 'org.webjars:stomp-websocket:2.3.3'
-    implementation 'org.webjars:sockjs-client:1.5.1'
     implementation 'org.springframework.kafka:spring-kafka'
 //    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.+'
     annotationProcessor 'org.projectlombok:lombok'
@@ -48,6 +46,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'io.projectreactor:reactor-test:3.5.0'
 
     // cvs
     implementation 'org.apache.commons:commons-csv:1.10.0'

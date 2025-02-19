@@ -1,89 +1,31 @@
 package com.example.elice_3rd.chat.controller;
 
-import com.example.elice_3rd.chat.dto.*;
 import com.example.elice_3rd.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
-
-@Slf4j
-@RestController
+@Controller
+@RequestMapping("/chat")
 @RequiredArgsConstructor
-@RequestMapping("/api/chat")
 public class ChatController {
 
     private final ChatService chatService;
 
-    // 채팅방 연결
-    @PostMapping("/check-chat-room")
-    public ResponseEntity<ChatRoomResponseDto> checkChatRoom(@RequestBody ChatRoomRequestDto request) {
-        try {
-            ChatRoomResponseDto chatRoomDto = chatService.checkChatRoom(request);
-            return ResponseEntity.ok(chatRoomDto);
-        } catch (IllegalArgumentException e) {
-            log.error("Error checking chat room: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(null);
-        }
+    // TODO : 이후에 상담 상세 페이지로 해당 버튼 이전 필요
+    @GetMapping("/check-chat-room")
+    public String getChatRoomBtnPage() {
+        return "chat/create-chat-room";
     }
 
-    // 특정 멤버가 속한 모든 채팅방 목록 조회
-    @GetMapping("/chat-rooms/{memberId}")
-    public ResponseEntity<List<ChatRoomDto>> getMemberChatRooms(@PathVariable Long memberId) {
-        if (memberId == null || memberId <= 0) {
-            return ResponseEntity.badRequest().build();
-        }
-        List<ChatRoomDto> chatRooms = chatService.getMemberChatRooms(memberId);
-        return ResponseEntity.ok(chatRooms);
-    }
-
-    // 채팅방에 있는 모든 메시지 가져오기 (오프라인 상태에서 재입장 시) - SSE (Server-Sent Events) 방식
-    @GetMapping(value = "/{chatRoomId}/{memberId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public ResponseEntity<Flux<ChatMessageDto>> getChatRoomMessages(@PathVariable Long chatRoomId, @PathVariable Long memberId) {
-        if (chatRoomId <= 0) {
-            return ResponseEntity.badRequest().body(Flux.empty());
-        }
-
-        if (memberId == null || memberId <= 0) {
-            throw new IllegalArgumentException("Invalid memberId: " + memberId);
-        }
-
+    @GetMapping("/chat-room/{chatRoomId}/{memberId}")
+    public String getChatRoom(@PathVariable Long chatRoomId, @PathVariable Long memberId, Model model) {
         if (!chatService.isChatRoomExist(chatRoomId)) {
-            return ResponseEntity.notFound().build();
+            return "redirect:/";
         }
-        Flux<ChatMessageDto> messages = chatService.getChatRoomMessages(chatRoomId, memberId);
-        return ResponseEntity.ok(messages);
-    }
-
-    // WebSocket을 통한 실시간 메시지 브로드캐스트 (온라인 상태 / 채팅방 단위)
-    @MessageMapping("/send-chat/{chatRoomId}")  // 채팅방에 해당하는 메시지 보내기
-    @SendTo("/topic/{chatRoomId}")  // 채팅방에 입장 중인 유저에게 메시지 전달
-    public ChatMessageDto sendMessageToChatRoom(@Payload ChatMessageDto chatMessageDto, @DestinationVariable Long chatRoomId) {
-        if (chatRoomId == null ||chatRoomId <= 0) {
-            log.error("Invalid chatRoomId: " + chatRoomId);
-            throw new IllegalArgumentException("Invalid chatRoomId");
-        }
-        log.info("Sending message to chat room: " + chatRoomId);
-        chatService.sendMessageToKafka(chatMessageDto);
-        return chatMessageDto;
-    }
-
-    // 채팅방 나가기 버튼을 눌렀을 때 유저 상태를 LEFT로 변경
-    @PostMapping("/leave-room")
-    public ResponseEntity<Void> leaveChatRoom(@RequestBody LeaveRoomRequest request) {
-        if (request.getChatRoomId() == null || request.getMemberId() == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        chatService.leaveChatRoom(request.getChatRoomId(), request.getMemberId());
-        return ResponseEntity.ok().build();
+        return "chat/chat-room";
     }
 }
-

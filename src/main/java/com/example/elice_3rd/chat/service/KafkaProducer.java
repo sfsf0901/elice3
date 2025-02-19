@@ -21,32 +21,6 @@ public class KafkaProducer {
     @Value("${spring.kafka.topic}")
     private String topic;
 
-//    public void sendMessage(ChatMessage chatMessage) {
-//        kafkaTemplate.send(topic, chatMessage)
-//            .handle((result, e) -> {
-//                if (e != null) {
-//                    log.error("Failed to send message: {}", chatMessage, e);
-//                } else {
-//                    log.info("Produced message: {}", chatMessage);
-//                }
-//                return result;
-//            });
-//    }
-
-//    public CompletableFuture<Void> sendMessage(ChatMessage chatMessage) {
-//        return CompletableFuture.runAsync(() -> {
-//            kafkaTemplate.send(topic, chatMessage)
-//                .handle((result, e) -> {
-//                    if (e != null) {
-//                        log.error("Failed to send message: {}", chatMessage, e);
-//                    } else {
-//                        log.info("Produced message: {}", chatMessage);
-//                    }
-//                    return result;
-//                });
-//        });
-//    }
-
     public CompletableFuture<Void> sendMessage(ChatMessage chatMessage) {
         return sendMessageWithRetry(chatMessage, 3, 1000L); // 최대 3회 재시도, 1초 간격
     }
@@ -88,5 +62,4 @@ public class KafkaProducer {
             }
         }).thenCompose(result -> CompletableFuture.completedFuture(null));
     }
-
 }

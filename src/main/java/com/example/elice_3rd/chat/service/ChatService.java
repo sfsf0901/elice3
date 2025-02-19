@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.time.LocalDateTime;
@@ -57,7 +58,7 @@ public class ChatService {
 
     // 기존 채팅방이 있는지 확인하고 채팅방 개설 혹은 연결
     @Transactional
-    public ChatRoomResponseDto checkChatRoom(ChatRoomRequestDto request) {
+    public ChatRoomResponseDto checkChatRoom(ChatRoomRequestDto request, Long loggedInUserId) {
         if (request.getMemberIds() == null || request.getMemberIds().isEmpty()) {
             throw new IllegalArgumentException("Member IDs cannot be null or empty");
         }
@@ -68,17 +69,45 @@ public class ChatService {
             Optional<ChatRoom> existingChatRoom = chatRoomRepository.findByMembers_MemberIdIn(request.getMemberIds());
 
             if (existingChatRoom.isPresent()) {
-                // 기존 1:1 채팅방이 있으면 해당 채팅방으로 연결
-                return ChatRoomResponseDto.toDto(existingChatRoom.get());
+                ChatRoom chatRoom = existingChatRoom.get();
+
+                // 채팅방 상태가 INACTIVE인 경우 새로운 채팅방 생성
+                if (chatRoom.getRoomStatus() == RoomStatus.INACTIVE) {
+                    return createChatRoom(request, loggedInUserId);
+                }
+
+                // 로그인한 사용자의 상태가 LEFT인 경우 - 상태를 ONLINE으로 변경하고, 채팅방으로 재연결
+                boolean isUserLeft = chatRoom.getMemberStatuses().stream()
+                        .anyMatch(memberStatus -> memberStatus.getMember().getMemberId().equals(loggedInUserId) &&
+                                memberStatus.getStatus() == MemberStatusType.LEFT);
+                if (isUserLeft) {
+                    updateMemberStatusToOnline(chatRoom, loggedInUserId);
+                    return ChatRoomResponseDto.toDto(chatRoom, loggedInUserId);
+                }
+
+                // 상태가 ACTIVE라면 해당 채팅방으로 연결
+                return ChatRoomResponseDto.toDto(chatRoom, loggedInUserId);
             }
         }
 
         // 기존 채팅방이 없으면 새로운 채팅방 생성, 그룹 채팅인 경우에는 항상 새로운 채팅방 생성
-        return createChatRoom(request);
+        return createChatRoom(request, loggedInUserId);
+    }
+
+    private void updateMemberStatusToOnline(ChatRoom chatRoom, Long loggedInUserId) {
+        MemberStatus memberStatus = chatRoom.getMemberStatuses().stream()
+                .filter(status -> status.getMember().getMemberId().equals(loggedInUserId))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("MemberStatus not found"));
+
+        memberStatus.setStatus(MemberStatusType.ONLINE);
+        memberStatusRepository.save(memberStatus);
+
+        log.info("User {} status updated to ONLINE in chat room {}", loggedInUserId, chatRoom.getChatRoomId());
     }
 
     // 채팅방 개설 (새로운 채팅방 생성)
-    public ChatRoomResponseDto createChatRoom(ChatRoomRequestDto request) {
+    public ChatRoomResponseDto createChatRoom(ChatRoomRequestDto request, Long loggedInUserId) {
         // 채팅방 생성
         ChatRoom chatRoom = new ChatRoom();
         chatRoom.setRoomStatus(RoomStatus.ACTIVE);
@@ -106,7 +135,7 @@ public class ChatService {
 
         log.info("New chat room created with ID: " + chatRoom.getChatRoomId());
 
-        return ChatRoomResponseDto.toDto(chatRoom);
+        return ChatRoomResponseDto.toDto(chatRoom, loggedInUserId);
     }
 
     public List<ChatRoomDto> getMemberChatRooms(Long memberId) {
@@ -141,14 +170,19 @@ public class ChatService {
         }
 
         // 입장 시간을 기준으로 메시지 조회
-        LocalDateTime joinTime = memberStatus.getJoinedDate();
+        LocalDateTime messageFetchStartTime = memberStatus.getJoinedDate();
+
+        // statusLeftChangedDate가 있는 유저는 그 이후 시간으로 조회
+        if (memberStatus.getStatusLeftChangedDate() != null) {
+            messageFetchStartTime = memberStatus.getStatusLeftChangedDate();
+        }
 
         // 채팅방 메시지 조회와 동시에 읽음 상태를 업데이트
-        return chatMessageRepository.findByChatRoomIdAndCreatedDateAfter(chatRoomId, joinTime)
+        return chatMessageRepository.findByChatRoomIdAndCreatedDateAfter(chatRoomId, messageFetchStartTime)
                 .doOnNext(chatMessage -> {
                     // 상태가 ONLINE으로 변경된 시점 이전의 메시지들에 대해 읽음 상태 처리
                     if (memberStatus.getStatus() == MemberStatusType.ONLINE &&
-                            !chatMessage.getCreatedDate().isAfter(memberStatus.getStatusChangedDate())) {
+                            !chatMessage.getCreatedDate().isAfter(memberStatus.getStatusOnlineChangedDate())) {
                         // 온라인 상태로 변경된 시점 이전에 발송된 메시지들을 읽음 처리
                         ChatReadStatus readStatus = chatReadStatusRepository.findByChatMessageIdAndReceiver_memberId(
                                         chatMessage.getChatMessageId(), memberId)
@@ -161,7 +195,6 @@ public class ChatService {
                 .map(ChatMessageDto::toDto)
                 .subscribeOn(Schedulers.boundedElastic());
     }
-
     // 채팅방 메시지 Kafka로 전송
     @Transactional
     public void sendMessageToKafka(ChatMessageDto chatMessageDto) {
@@ -169,6 +202,7 @@ public class ChatService {
             // mongoDB에 저장
             ChatMessage chatMessage = chatMessageDto.toEntity();
             chatMessageRepository.save(chatMessage);
+            log.info("Saved chat message: {}", chatMessage);
 
             // ChatRoom의 멤버들 조회
             ChatRoom chatRoom = chatRoomRepository.findById(chatMessage.getChatRoomId())
@@ -179,7 +213,6 @@ public class ChatService {
                 ChatReadStatus readStatus = new ChatReadStatus();
                 readStatus.setChatMessageId(chatMessage.getChatMessageId());
                 readStatus.setReceiver(receiver);
-                readStatus.setReadStatus(false); // 기본값: 읽지 않음
                 chatReadStatusRepository.save(readStatus);
 
                 // 수신자가 온라인 상태일 경우 즉시 읽음 처리
@@ -192,18 +225,43 @@ public class ChatService {
                 }
             }
 
-            // Kafka로 메시지 전송
+            // Kafka 메시지 전송, 실패 시 롤백
             kafkaProducer.sendMessage(chatMessage)
                     .exceptionally(e -> {
                         log.error("Failed to send message to Kafka: {}", chatMessage, e);
-                        return null;
-                    });
+                        throw new RuntimeException("Transaction rollback due to Kafka message transmission failure.", e);
+                    })
+                    .join(); // 동기적으로 처리하여 예외 발생 시 트랜잭션 롤백
 
         } catch (Exception e) {
             log.error("Error processing chat message: {}", chatMessageDto.getMessage(), e);
             throw new RuntimeException("Error processing chat message", e);
         }
     }
+
+    // 채팅방 메시지 수정
+    public Mono<ChatMessageDto> updateChatMessage(String chatMessageId, String newMessage) {
+        return chatMessageRepository.findById(chatMessageId)
+                .switchIfEmpty(Mono.error(new EntityNotFoundException("ChatMessage not found")))
+                .flatMap(chatMessage -> {
+                    chatMessage.setMessage(newMessage);
+                    return chatMessageRepository.save(chatMessage)
+                            .doOnSuccess(updatedMessage ->
+                                    log.info("Chat message with ID {} updated successfully.", chatMessageId)
+                            );
+                })
+                .map(ChatMessageDto::toDto);
+    }
+
+    // 채팅방 메시지 삭제
+    public Mono<Void> deleteChatMessage(String chatMessageId) {
+        // 메시지 조회 및 삭제
+        return chatMessageRepository.findById(chatMessageId)
+                .switchIfEmpty(Mono.error(new EntityNotFoundException("ChatMessage not found")))
+                .flatMap(chatMessageRepository::delete)
+                .doOnSuccess(v -> log.info("Chat message with ID {} deleted successfully.", chatMessageId));
+    }
+
 
     // 채팅방 나가기 처리
     @Transactional

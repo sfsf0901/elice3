@@ -21,11 +21,6 @@ public class WebSocketEventListener {
         // STOMP 메시지를 래핑하여, 메시지의 헤더 정보에 접근
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
 
-        if (accessor.getUser() == null) {
-            log.error("User not found, unable to update status.");
-            throw new IllegalStateException("User information is missing in WebSocket session.");
-        }
-
         // 연결이 끊어진 유저의 ID를 가져옴
         String userName = accessor.getUser().getName();
         Long memberId = Long.valueOf(userName); // 유저 이름 또는 ID를 가져오는 방법
