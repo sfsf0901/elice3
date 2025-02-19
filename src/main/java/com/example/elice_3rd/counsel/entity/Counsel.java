@@ -29,9 +29,11 @@ public class Counsel extends BaseEntity {
 
     public CounselResponseDto toDto(){
         return CounselResponseDto.builder()
+                .counselId(counselId)
                 .email(member.getEmail())
                 .title(title)
                 .content(content)
+                .createdDate(getCreatedDate())
                 .build();
     }
 

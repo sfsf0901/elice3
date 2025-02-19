@@ -1,0 +1,63 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Arial', sans-serif;
+}
+
+body {
+  background-color: #f9f9f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.counsel-container {
+  width: 100%;
+  max-width: 600px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.counsel-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.counsel-item {
+  padding: 15px 0;
+  border-bottom: 1px solid #ddd;
+  transition: background 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.counsel-item:hover {
+  background: #f0f0f0;
+}
+
+.counsel-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.counsel-summary {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.counsel-date {
+  font-size: 12px;
+  color: #999;
+  display: block;
+  text-align: right;
+}

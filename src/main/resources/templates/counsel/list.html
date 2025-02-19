@@ -3,10 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <title>상담 리스트</title>
+  <link rel="stylesheet" href="/counsel/css/list.css">
+  <link rel="stylesheet" href="/common/css/bootstrap.min.css">
 </head>
 <body>
-<div id="list-container"></div>
-
+<div style="width: 600px" class="d-flex flex-column justify-content-center">
+  <div id="list-container" class="counsel-container"></div>
+  <nav aria-label="..." class="d-flex justify-content-center">
+    <ul id="pagination" class="pagination">
+<!--      <li class="page-item disabled">-->
+<!--        <a class="page-link">←</a>-->
+<!--      </li>-->
+<!--      <li class="page-item active"><a class="page-link" href="#">1</a></li>-->
+<!--      <li class="page-item active" aria-current="page">-->
+<!--        <a class="page-link" href="#">2</a>-->
+<!--      </li>-->
+<!--      <li class="page-item"><a class="page-link" href="#">3</a></li>-->
+<!--      <li class="page-item">-->
+<!--        <a class="page-link" href="#">→</a>-->
+<!--      </li>-->
+    </ul>
+  </nav>
+</div>
 <script type="module" src="/counsel/js/list.js"></script>
 </body>
 </html>

@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 @Builder
 @Getter
 public class CounselResponseDto {
+    @NotNull
+    private Long counselId;
     @NotBlank
     @Size(min = 3)
     private String title;
@@ -19,5 +21,5 @@ public class CounselResponseDto {
     @NotBlank
     private String email;
     @NotNull
-    private LocalDateTime lastModifiedDate;
+    private LocalDateTime createdDate;
 }
