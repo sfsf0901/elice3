@@ -30,6 +30,7 @@ public class Hospital {
     @Column(nullable = false)
     private String ykiho;
 
+    private String hospitalType;
     private String placeName;
     private String postNumber;
     private String address;
@@ -67,6 +68,7 @@ public class Hospital {
         hospital.category = hospitalInfo.getCategory();
         hospital.diagnosisSubject = hospitalInfo.getDiagnosisSubject();
         hospital.ykiho = hospitalInfo.getYkiho();
+        hospital.hospitalType = hospitalInfo.getClCdNm();
         hospital.placeName = hospitalInfo.getYadmNm();
         hospital.postNumber = hospitalInfo.getPostNo();
         hospital.address = hospitalInfo.getAddr();
