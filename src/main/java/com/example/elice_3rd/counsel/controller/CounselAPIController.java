@@ -4,9 +4,12 @@ import com.example.elice_3rd.category.entity.Category;
 import com.example.elice_3rd.category.service.CategoryService;
 import com.example.elice_3rd.counsel.dto.CounselRequestDto;
 import com.example.elice_3rd.counsel.dto.CounselResponseDto;
+import com.example.elice_3rd.counsel.dto.CounselUpdateDto;
 import com.example.elice_3rd.counsel.service.CounselService;
 import com.example.elice_3rd.diagnosisSubject.entity.DiagnosisSubject;
 import com.example.elice_3rd.diagnosisSubject.service.DiagnosisSubjectService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,9 +36,11 @@ public class CounselAPIController {
     }
 
     @PatchMapping
-    public ResponseEntity<Void> update(Principal principal, Long id, @RequestBody CounselRequestDto requestDto) {
-        counselService.update(principal.getName(), id, requestDto);
-        return ResponseEntity.ok().location(URI.create("/counsels")).build();
+    public ResponseEntity<Void> update(Principal principal, @RequestBody CounselUpdateDto updateDto) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        System.out.println(mapper.writeValueAsString(updateDto));
+        counselService.update(principal.getName(), updateDto);
+        return ResponseEntity.ok().location(URI.create("/counsels/" + updateDto.getCounselId())).build();
     }
 
     @DeleteMapping

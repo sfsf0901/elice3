@@ -4,6 +4,7 @@ import com.example.elice_3rd.category.entity.Category;
 import com.example.elice_3rd.common.BaseEntity;
 import com.example.elice_3rd.counsel.dto.CounselRequestDto;
 import com.example.elice_3rd.counsel.dto.CounselResponseDto;
+import com.example.elice_3rd.counsel.dto.CounselUpdateDto;
 import com.example.elice_3rd.diagnosisSubject.entity.DiagnosisSubject;
 import com.example.elice_3rd.member.entity.Member;
 import jakarta.persistence.*;
@@ -30,9 +31,9 @@ public class Counsel extends BaseEntity {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    public void update(CounselRequestDto requestDto, Category category){
-        title = requestDto.getTitle();
-        content = requestDto.getContent();
+    public void update(CounselUpdateDto updateDto, Category category){
+        title = updateDto.getTitle();
+        content = updateDto.getContent();
         this.category = category;
     }
 

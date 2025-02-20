@@ -30,12 +30,9 @@ public class CounselViewController {
     }
 
     @GetMapping("/{counselId}")
-    public String detail(Authentication authentication, Model model, @PathVariable Long counselId) throws JsonProcessingException {
+    public String detail(Model model, @PathVariable Long counselId) throws JsonProcessingException {
         model.addAttribute("counsel", counselService.retrieveDetail(counselId));
         model.addAttribute("isCommentExist", commentService.isExist(counselId));
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        ObjectMapper objectMapper = new ObjectMapper();
-        System.out.println(objectMapper.writeValueAsString(userDetails.getAuthorities()));
         return "counsel/detail";
     }
 

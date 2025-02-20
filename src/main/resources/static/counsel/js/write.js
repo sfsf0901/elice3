@@ -24,8 +24,6 @@ document.getElementById("submit-button").addEventListener("click", () => {
     category: document.getElementById("category").value
   }
 
-  console.log(request);
-
   api.post("/counsels", request)
     .then(response => {
       console.log(response);

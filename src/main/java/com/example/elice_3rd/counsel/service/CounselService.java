@@ -2,6 +2,7 @@ package com.example.elice_3rd.counsel.service;
 
 import com.example.elice_3rd.counsel.dto.CounselRequestDto;
 import com.example.elice_3rd.counsel.dto.CounselResponseDto;
+import com.example.elice_3rd.counsel.dto.CounselUpdateDto;
 import com.example.elice_3rd.diagnosisSubject.entity.DiagnosisSubject;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,8 +21,8 @@ public class CounselService {
         managementService.create(email, requestDto);
     }
 
-    public void update(String email, Long id, CounselRequestDto requestDto){
-        managementService.update(email, id, requestDto);
+    public void update(String email, CounselUpdateDto updateDto){
+        managementService.update(email, updateDto);
     }
 
     public void delete(String email, Long id){

@@ -5,6 +5,7 @@ import com.example.elice_3rd.category.repository.CategoryRepository;
 import com.example.elice_3rd.comment.repository.CommentRepository;
 import com.example.elice_3rd.common.exception.NoSuchDataException;
 import com.example.elice_3rd.counsel.dto.CounselRequestDto;
+import com.example.elice_3rd.counsel.dto.CounselUpdateDto;
 import com.example.elice_3rd.counsel.entity.Counsel;
 import com.example.elice_3rd.counsel.repository.CounselRepository;
 import com.example.elice_3rd.member.entity.Member;
@@ -43,12 +44,12 @@ public class CounselManagementService {
     }
 
     @Transactional
-    public void update(String email, Long id, CounselRequestDto requestDto) {
+    public void update(String email, CounselUpdateDto updateDto) {
         Category category;
         Counsel counsel;
         try {
-            counsel = counselRepository.findById(id).orElseThrow();
-            category = categoryRepository.findByName(requestDto.getCategory()).orElseThrow();
+            counsel = counselRepository.findById(updateDto.getCounselId()).orElseThrow();
+            category = categoryRepository.findByName(updateDto.getCategory()).orElseThrow();
         } catch (NoSuchElementException e) {
             throw new NoSuchDataException("수정 실패: 요청 파라미터와 일치하는 데이터가 없습니다.");
         }
@@ -57,7 +58,7 @@ public class CounselManagementService {
         if (commentRepository.findByCounsel(counsel).isPresent())
             throw new IllegalArgumentException("상담에 대한 답변이 존재할 경우 게시글 수정 및 삭제가 불가합니다.");
 
-        counsel.update(requestDto, category);
+        counsel.update(updateDto, category);
     }
 
     @Transactional
