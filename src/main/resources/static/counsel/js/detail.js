@@ -40,12 +40,35 @@ renderContent();
 renderComment();
 
 const commentBtn = document.getElementById("comment-btn");
+const deleteBtn = document.getElementById("delete");
+const updateBtn = document.getElementById("update");
 
-commentBtn.addEventListener("click", () => {
-  commentBtn.style.display = "none";
-  document.getElementById("comment-content").style.display = "block";
-  document.getElementById("confirm-btn").style.display = "block";
-});
+if(commentBtn !== null){
+  commentBtn.addEventListener("click", () => {
+    commentBtn.style.display = "none";
+    document.getElementById("comment-content").style.display = "block";
+    document.getElementById("confirm-btn").style.display = "block";
+  });
+}
+
+if(deleteBtn !== null){
+  deleteBtn.addEventListener("click", () => {
+    api.delete("counsels", {
+      params: {
+        id: location.pathname.split("/").pop()
+      }
+    })
+      .then(response => {
+        location.href = response.headers.location;
+      })
+  })
+}
+
+if(updateBtn !== null){
+  updateBtn.addEventListener("click", () => {
+    location.href = `/counsels/update/${location.pathname.split("/").pop()}`
+  });
+}
 
 document.getElementById("confirm-btn").addEventListener("click", () => {
   api.post("comments",{
@@ -56,14 +79,3 @@ document.getElementById("confirm-btn").addEventListener("click", () => {
       location.href = location.pathname;
     })
 });
-
-document.getElementById("delete").addEventListener("click", () => {
-  api.delete("counsels", {
-    params: {
-      id: location.pathname.split("/").pop()
-    }
-  })
-    .then(response => {
-      location.href = response.headers.location;
-    })
-})

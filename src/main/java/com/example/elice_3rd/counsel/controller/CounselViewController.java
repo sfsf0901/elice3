@@ -36,4 +36,9 @@ public class CounselViewController {
     public String write() {
         return "counsel/write";
     }
+
+    @GetMapping("update/{counselId}")
+    public String update() {
+        return "counsel/update";
+    }
 }
