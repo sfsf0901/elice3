@@ -8,6 +8,7 @@ async function renderContent() {
   document.getElementById("content").textContent = data.content;
   document.getElementById("name").textContent = data.email;
   document.getElementById("time").textContent = data.createdDate;
+  document.getElementById("category").textContent = data.category;
 
   console.log(data);
 }

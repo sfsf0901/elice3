@@ -43,6 +43,7 @@ public class Counsel extends BaseEntity {
                 .email(member.getEmail())
                 .title(title)
                 .content(content)
+                .category(category.getName())
                 .createdDate(getCreatedDate())
                 .build();
     }
