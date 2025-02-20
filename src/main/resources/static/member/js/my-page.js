@@ -1,5 +1,3 @@
-
-
 // 특정 섹션 보이기
 function showSection(sectionId) {
     document.querySelectorAll('.content-section').forEach(section => {
