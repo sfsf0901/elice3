@@ -16,17 +16,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CommentService {
     private final CommentManagementService managementService;
-    private final CommentRepository commentRepository;
-    private final CounselRepository counselRepository;
+    private final CommentRetrieveService retrieveService;
 
     public void create(String email,  CommentRequestDto requestDto){
         managementService.create(email, requestDto);
     }
 
     public Page<CommentResponseDto> retrieveAll(Long counselId, Pageable pageable){
-        // TODO exception 처리
-        Counsel counsel = counselRepository.findById(counselId).orElseThrow(() ->
-                new NoSuchDataException("답변 조회 실패: 상담 아이디와 일치하는 상담 게시글이 존재하지 않습니다."));
-        return commentRepository.findAllByCounsel(counsel, pageable).map(Comment::toDto);
+        return retrieveService.retrieveAll(counselId, pageable);
     }
 }

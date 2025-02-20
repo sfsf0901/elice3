@@ -11,7 +11,7 @@
 <div class="counsel-detail-container">
   <div class="d-flex justify-content-between">
     <div id="title" class="counsel-title">제목</div>
-    <div sec:authorize="isAuthenticated()" th:if="counsel.email == principal.username">
+    <div sec:authorize="isAuthenticated()" th:if="${#authentication.principal.username == counsel.email}">
       <button id="update">수정</button><button id="delete">삭제</button>
     </div>
   </div>

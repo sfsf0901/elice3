@@ -18,6 +18,7 @@ import java.security.Principal;
 @RequestMapping("/counsels")
 public class CounselViewController {
     private final CounselService counselService;
+    private final CommentService commentService;
 
     @GetMapping
     public String list(){
