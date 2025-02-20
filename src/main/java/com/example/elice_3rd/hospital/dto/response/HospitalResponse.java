@@ -1,7 +1,5 @@
 package com.example.elice_3rd.hospital.dto.response;
 
-import com.example.elice_3rd.category.entity.Category;
-import com.example.elice_3rd.diagnosisSubject.entity.DiagnosisSubject;
 import com.example.elice_3rd.hospital.entity.Hospital;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,7 +16,7 @@ public class HospitalResponse {
 
     private String ykiho;
     private String hospitalType;
-    private String placeName;
+    private String hospitalName;
     private String postNumber;
     private String address;
     private String phone;
@@ -26,17 +24,14 @@ public class HospitalResponse {
     private String latitude;
     private String longitude;
 
-    private String diagnosisSubjectCode;
-    private Long categoryId;
+//    private String diagnosisSubjectCode;
+//    private Long categoryId;
 
-    private String sundayClinicInfo;
-    private String holidayClinicInfo;
-
-    private String hasNightEmergency;
+    private Boolean hasNightEmergency;
     private String emergencyContact;
 
-    private String weekdayLunchTime;
-    private String saturdayLunchTime;
+    private Boolean hasNightClinic;
+    private Boolean hasSundayAndHolidayClinic;
 
     private String mondayOpenTime;
     private String mondayCloseTime;
@@ -53,25 +48,35 @@ public class HospitalResponse {
     private String sundayOpenTime;
     private String sundayCloseTime;
 
+    private String weekdayLunchTime;
+    private String saturdayLunchTime;
+
+    private String sundayClinicInfo;
+    private String holidayClinicInfo;
+
     private int distanceFromUser;
 
     public HospitalResponse(Hospital hospital, double distanceFromUser) {
         this.id = hospital.getId();
         this.ykiho = hospital.getYkiho();
         this.hospitalType = hospital.getHospitalType();
-        this.placeName = hospital.getPlaceName();
+        this.hospitalName = hospital.getHospitalName();
         this.postNumber = hospital.getPostNumber();
         this.address = hospital.getAddress();
         this.phone = hospital.getPhone();
         this.homepage = hospital.getHomepage();
         this.latitude = String.valueOf(hospital.getLatitude());
         this.longitude = String.valueOf(hospital.getLongitude());
-        this.diagnosisSubjectCode = hospital.getDiagnosisSubject().getDiagnosisSubjectCode();
-        this.categoryId = hospital.getCategory().getId();
-        this.sundayClinicInfo = hospital.getSundayClinicInfo();
-        this.holidayClinicInfo = hospital.getHolidayClinicInfo();
+
+//        this.diagnosisSubjectCode = hospital.getDiagnosisSubject().getDiagnosisSubjectCode();
+//        this.categoryId = hospital.getCategory().getId();
+
         this.hasNightEmergency = hospital.getHasNightEmergency();
         this.emergencyContact = hospital.getEmergencyContact();
+
+        this.hasNightClinic = hospital.getHasNightClinic();
+        this.hasSundayAndHolidayClinic = hospital.getHasSundayAndHolidayClinic();
+
         this.weekdayLunchTime = hospital.getWeekdayLunchTime();
         this.saturdayLunchTime = hospital.getSaturdayLunchTime();
         this.mondayOpenTime = hospital.getMondayOpenTime();
@@ -88,6 +93,10 @@ public class HospitalResponse {
         this.saturdayCloseTime = hospital.getSaturdayCloseTime();
         this.sundayOpenTime = hospital.getSundayOpenTime();
         this.sundayCloseTime = hospital.getSundayCloseTime();
+
+        this.sundayClinicInfo = hospital.getSundayClinicInfo();
+        this.holidayClinicInfo = hospital.getHolidayClinicInfo();
+
         this.distanceFromUser = (int) distanceFromUser;
     }
 

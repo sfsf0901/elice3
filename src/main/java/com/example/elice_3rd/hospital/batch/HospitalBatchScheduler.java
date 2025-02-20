@@ -41,7 +41,7 @@ public class HospitalBatchScheduler {
         }
     }
 
-    @PostConstruct
+//    @PostConstruct
     public void initHospitalBatchJob() {
         if (hospitalRepository.count() == 0) {
             log.info("#####병원 테이블 비어 있음. 배치 작업 실행 시작");
