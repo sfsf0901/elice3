@@ -3,7 +3,11 @@ package com.example.elice_3rd.counsel.controller;
 import com.example.elice_3rd.comment.service.CommentService;
 import com.example.elice_3rd.counsel.service.CounselService;
 import com.example.elice_3rd.member.service.MemberService;
+import com.example.elice_3rd.security.CustomUserDetails;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,9 +30,12 @@ public class CounselViewController {
     }
 
     @GetMapping("/{counselId}")
-    public String detail(Model model, @PathVariable Long counselId) {
+    public String detail(Authentication authentication, Model model, @PathVariable Long counselId) throws JsonProcessingException {
         model.addAttribute("counsel", counselService.retrieveDetail(counselId));
         model.addAttribute("isCommentExist", commentService.isExist(counselId));
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        ObjectMapper objectMapper = new ObjectMapper();
+        System.out.println(objectMapper.writeValueAsString(userDetails.getAuthorities()));
         return "counsel/detail";
     }
 
