@@ -1,4 +1,4 @@
-package com.example.elice_3rd.hospital.dto;
+package com.example.elice_3rd.hospital.batch.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

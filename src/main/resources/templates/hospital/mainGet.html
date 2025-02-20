@@ -1,47 +1,74 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{common/layout/layout}">
 <head>
     <meta charset="UTF-8">
     <title>카테고리 선택</title>
+    <style>
+        .category-container {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 16px;
+        }
+
+        .category-item {
+            text-align: center;
+        }
+
+        .category-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+
+        /* 링크 밑줄 제거 & 글씨색 검정 */
+        .category-item a {
+            text-decoration: none;
+            color: black;
+        }
+    </style>
+
 </head>
 <body>
-    <div layout:fragment="content">
-        <h3>어떤 병원을 찾으세요?</h3>
-        <div th:each="category : ${categories}">
-            <a th:text="${category.name}"
-               th:data-category-id="${category.id}"
-               th:data-category-name="${category.name}"
-               href="#"
-               onclick="goToSearch(event, this)"></a>
+<div layout:fragment="content">
+    <h3>어떤 병원을 찾으세요?</h3>
+    <div class="category-container mt-5 px-3">
+        <div class="category-item" th:each="category : ${categories}"
+             th:if="${category.name != '마취통증의학과' and category.name != '영상의학과'}">
+            <a href="#" onclick="goToSearch(event, this)" th:data-category-id="${category.id}" th:data-category-name="${category.name}">
+                <img th:src="@{/images/{imageName}(imageName=${category.name + '.png'})}" alt="카테고리 이미지">
+                <div th:text="${category.name}"></div>
+            </a>
         </div>
-
-
-        <script>
-            function goToSearch(event, element) {
-                event.preventDefault();
-
-                let categoryId = element.getAttribute("data-category-id");
-                let categoryName = element.getAttribute("data-category-name");
-
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(function (position) {
-                        let latitude = position.coords.latitude;
-                        let longitude = position.coords.longitude;
-
-                        let url = `/search/${encodeURIComponent(categoryName)}?categoryId=${categoryId}&latitude=${latitude}&longitude=${longitude}`;
-                        window.location.href = url;
-                    }, function () {
-                        let url = `/search/${encodeURIComponent(categoryName)}?categoryId=${categoryId}&latitude=37.5665&longitude=126.9780`;
-                        window.location.href = url;
-                    });
-                } else {
-                    alert("이 브라우저에서는 위치 정보를 지원하지 않습니다.");
-                }
-            }
-        </script>
     </div>
+
+    <script>
+        function goToSearch(event, element) {
+            event.preventDefault();
+
+            let categoryId = element.getAttribute("data-category-id");
+            let categoryName = element.getAttribute("data-category-name");
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+
+                    // URL에 조건 파라미터 붙이기
+                    const url = `/hospitals/${encodeURIComponent(categoryName)}?categoryId=${categoryId}&latitude=${latitude}&longitude=${longitude}`;
+                    window.location.href = url;
+                }, function () {
+                    // 위치 권한 거부 시 서울시청 좌표로 설정
+                    const url = `/hospitals/${encodeURIComponent(categoryName)}?categoryId=${categoryId}&latitude=37.5665&longitude=126.9780`;
+                    window.location.href = url;
+                });
+            } else {
+                alert("이 브라우저에서는 위치 정보를 지원하지 않습니다.");
+            }
+        }
+    </script>
+
+</div>
 </body>
 </html>
