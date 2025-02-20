@@ -8,6 +8,7 @@ import com.example.elice_3rd.counsel.entity.Counsel;
 import com.example.elice_3rd.counsel.repository.CounselRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +28,6 @@ public class CommentRetrieveService {
     public Boolean isExist(Long counselId){
         Counsel counsel = counselRepository.findById(counselId).orElseThrow(() ->
                 new NoSuchDataException("답변 조회 실패: 상담 아이디와 일치하는 상담 게시글이 존재하지 않습니다."));
-        return commentRepository.findByCounsel(counsel).isPresent();
+        return !commentRepository.findAllByCounsel(counsel, PageRequest.of(0, 1)).isEmpty();
     }
 }

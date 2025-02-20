@@ -25,4 +25,8 @@ public class CommentService {
     public Page<CommentResponseDto> retrieveAll(Long counselId, Pageable pageable){
         return retrieveService.retrieveAll(counselId, pageable);
     }
+
+    public Boolean isExist(Long counselId){
+        return retrieveService.isExist(counselId);
+    }
 }
