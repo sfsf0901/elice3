@@ -5,77 +5,94 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>마이페이지</title>
   <link rel="stylesheet" href="/member/css/my-page.css">
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <link rel="stylesheet" href="/common/css/bootstrap.min.css">
 </head>
 <body>
-<div class="mypage-container">
-  <h1 class="user-info">
-    <span id="name">사용자 이름</span> <span id="email" class="user-email">(user@example.com)</span>
-  </h1>
-
-  <ul class="menu-list">
-    <li onclick="location.href=">의사 등록</li>
-    <li onclick="showSection('consult-history')">상담 내역</li>
-    <li onclick="showSection('live-consult')">실시간 상담 내역</li>
-    <li onclick="showSection('favorites')">찜한 병원</li>
-    <li onclick="showSection('edit-profile')">회원 정보 수정</li>
-    <li onclick="showSection('change-password')">비밀번호 수정</li>
-    <li onclick="confirmWithdrawal()">회원 탈퇴</li>
-  </ul>
-
-  <div class="content-section" id="consult-history">
-    <h2>상담 내역</h2>
-    <p>등록된 상담 내역이 없습니다.</p>
+<div class="wrap container w-25">
+  <div class="orangeContainer">
+    <div>
+      image 고려중
+    </div>
+    <div align="end">이름<br>
+    <small>(role or email)</small>
+    </div>
   </div>
-
-  <div class="content-section" id="live-consult">
-    <h2>실시간 상담 내역</h2>
-    <p>현재 진행 중인 상담이 없습니다.</p>
+  <svg viewBox="0 0 1440 200" style="background: white">
+    <path fill="#FF8D00"
+          d="M0,160L48,154.7C96,149,192,139,288,133.3C384,128,480,128,576,144C672,160,768,192,864,197.3C960,203,1056,181,1152,170.7C1248,160,1344,160,1392,160L1440,160L1440,320L0,320Z"
+      transform="scale(1, -1) translate(0, -200)">
+    </path>
+  </svg>
+<!--  <div class="summaryContainer">-->
+<!--    <div class="item">-->
+<!--      <div>상담 내역</div>-->
+<!--    </div>-->
+<!--    <div class="item">-->
+<!--      <div>실시간 상담 내역 <span class="circle"></span></div>-->
+<!--    </div>-->
+<!--  </div>-->
+  <div class="listContainer">
+    <a href="#" class="item">
+      <div class="icon">❓</div>
+      <div class="text">상담 내역</div>
+      <div class="right"> > </div>
+    </a>
+    <a href="#" class="item">
+      <div class="icon">💬</div>
+      <div class="text">실시간 상담 내역</div>
+      <div class="right"> > </div>
+    </a>
+    <a href="#" class="item">
+      <div class="icon">🏥</div>
+      <div class="text">찜한 병원</div>
+      <div class="right"> > </div>
+    <a>
+    <div onclick="popup()" class="item">
+      <div class="icon">🩺</div>
+      <div class="text">의사 인증하기</div>
+      <div class="right"> > </div>
+    </div>
   </div>
-
-  <div class="content-section" id="favorites">
-    <h2>찜한 병원</h2>
-    <p>찜한 병원이 없습니다.</p>
+  <div class="listContainer">
+<!--    <a href="#" class="item">-->
+<!--      <div class="icon">ii</div>-->
+<!--      <div class="text">-->
+<!--        <span>내지갑</span>-->
+<!--        <span class="smallLight">-->
+<!--            <span>|</span>-->
+<!--            <span>보유 적립금</span>-->
+<!--          </span>-->
+<!--      </div>-->
+<!--      <div class="right">-->
+<!--        <span class="blct">175 BLCT</span>-->
+<!--        > </div>-->
+<!--    </a>-->
+    <a href="#" class="item">
+      <div class="icon">🪪</div>
+      <div class="text">회원 정보 수정</div>
+      <div class="right"> > </div>
+    </a>
+    <a href="#" class="item">
+      <div class="icon">🔒</div>
+      <div class="text">비밀번호 변경</div>
+      <div class="right"> > </div>
+    </a>
+    <a href="#" class="item">
+      <div class="icon">🚪</div>
+      <div class="text">회원 탈퇴</div>
+      <div class="right"> > </div>
+    </a>
   </div>
-
-  <div class="content-section" id="edit-profile">
-    <h2>회원 정보 수정</h2>
-    <form id="editProfileForm">
-      <label for="edit-name">이름</label>
-      <input type="text" id="edit-name" name="edit-name">
-
-      <label for="edit-contact">연락처</label>
-      <input type="text" id="edit-contact" name="edit-contact">
-
-      <button type="submit">수정하기</button>
-    </form>
-  </div>
-
-  <div class="content-section" id="change-password">
-    <h2>비밀번호 수정</h2>
-    <form id="changePasswordForm">
-      <label for="current-password">현재 비밀번호</label>
-      <input type="password" id="current-password" name="current-password">
-
-      <label for="new-password">새 비밀번호</label>
-      <input type="password" id="new-password" name="new-password">
-
-      <label for="confirm-new-password">새 비밀번호 확인</label>
-      <input type="password" id="confirm-new-password" name="confirm-new-password">
-
-      <button type="submit">변경하기</button>
-    </form>
-  </div>
+<!--  <div class="infoContainer">-->
+<!--  </div>-->
 </div>
-
-<button onclick="popup()">의사 인증</button>
 
 <script src="/member/js/my-page.js"></script>
 <script>
   function popup(){
     let url = "/license";
     let name = "면허 인증";
-    let option = "width = 700, height = 500, top = 100, left = 200, location = no, resizable = no"
+    let option = "width = 800, height = 500, top = 100, left = 200, location = no, resizable = no"
     window.open(url, name, option);
   }
 </script>

@@ -32,4 +32,8 @@ public class MemberService {
     public void quit(String email){
         managementService.quit(email);
     }
+
+    public void updateRole(String email){
+        managementService.updateRole(email);
+    }
 }

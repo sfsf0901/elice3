@@ -1,37 +1,101 @@
 body {
     font-family: Arial, sans-serif;
-    max-width: 400px;
-    margin: 50px auto;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f4f4;
 }
 
-form {
+.separate{
+    display: flex;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    gap: 30px;
+}
+.platformContainer {
+    display: flex;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.inputContainer {
+    display: flex;
+    background: #f0f0ff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.icon-section {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    width: 250px;
 }
-
-label {
-    margin-top: 10px;
+.icon-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    padding: 10px;
+    border-radius: 20%;
+}
+.icon-grid label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    border: 2px solid transparent;
+    padding: 5px;
+}
+.icon-grid input[type="radio"] {
+    display: none;
+}
+.icon-grid input[type="radio"]:checked + img {
+    border: 2px solid blue;
+    border-radius: 5px;
+}
+.form-section {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+}
+.form-section label {
     font-weight: bold;
+    margin-bottom: 5px;
 }
-
-input, select, button {
-    margin-top: 5px;
+.form-section input, .form-section select {
+    width: 100%;
     padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.button-container {
+    display: flex;
+    justify-content: end;
+    margin-top: 10px;
+}
+.btn {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
     font-size: 16px;
 }
-
-button {
-    margin-top: 15px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
+.btn.cancel {
+    background-color: #ccc;
 }
-
-button:hover {
+.btn.submit {
     background-color: #0056b3;
+    color: white;
+}
+.rounded-border{
+    border-radius: 20%;
 }
