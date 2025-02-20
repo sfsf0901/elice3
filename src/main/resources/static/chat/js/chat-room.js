@@ -1,11 +1,7 @@
 // 채팅방 ID와 사용자 ID 설정.
-//const chatRoomId = this.getAttribute("data-chat-room-id");
-//const memberId = this.getAttribute("data-member-id");
+const chatRoomId = document.getElementById("messages").getAttribute("data-chat-room-id");
+const memberId = document.getElementById("messages").getAttribute("data-member-id");
 
-// 테스트용
-const chatRoomId = 3;
-const memberId = 1;
-//
 window.onload = function() {
     // 초기 메시지 로드를 위해 SSE(EventSource) 연결 설정
     const eventSource = new EventSource(`/api/chat/${chatRoomId}/${memberId}`);

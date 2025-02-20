@@ -1,7 +1,7 @@
 package com.example.elice_3rd.chat.service;
 
 import com.example.elice_3rd.chat.dto.ChatMessageDto;
-import com.example.elice_3rd.chat.dto.ChatRoomDto;
+import com.example.elice_3rd.chat.dto.ChatRoomListDto;
 import com.example.elice_3rd.chat.dto.ChatRoomResponseDto;
 import com.example.elice_3rd.chat.dto.ChatRoomRequestDto;
 import com.example.elice_3rd.chat.entity.ChatMessage;
@@ -26,10 +26,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -138,14 +135,56 @@ public class ChatService {
         return ChatRoomResponseDto.toDto(chatRoom, loggedInUserId);
     }
 
-    public List<ChatRoomDto> getMemberChatRooms(Long memberId) {
+    public List<ChatRoomListDto> getMemberChatRooms(Long memberId) {
         // 특정 멤버가 속한 모든 채팅방 목록 조회
-        // MemberStatus를 조회하여 유저가 속한 채팅방들을 가져옴
-        List<MemberStatus> memberStatuses = memberStatusRepository.findByMemberMemberId(memberId);
+        // MemberStatus를 조회하여 유저가 나가지 않은 채팅방들을 조회
+        List<MemberStatus> memberStatuses = memberStatusRepository.findByMemberMemberIdAndStatusNot(memberId, MemberStatusType.LEFT);
 
         // 각 MemberStatus에서 ChatRoom만 추출하여 반환
         return memberStatuses.stream()
-                .map(memberStatus -> ChatRoomDto.toDto(memberStatus.getChatRoom(), memberId))
+                .map(memberStatus -> {
+                    ChatRoom chatRoom = memberStatus.getChatRoom();
+
+                    // 가장 최근 메시지 조회
+                    Mono<ChatMessage> lastMessageMono = chatMessageRepository.findByChatRoomId(chatRoom.getChatRoomId())
+                    .sort(Comparator.comparing(ChatMessage::getCreatedDate).reversed())
+                    .take(1)
+                    .next();
+
+                    // 안 읽은 메시지 수 계산
+                    Mono<Long> unreadMessagesCountMono = chatMessageRepository.findByChatRoomId(chatRoom.getChatRoomId())
+                            .filter(msg -> msg != null && msg.getSenderId() != null && !msg.getSenderId().equals(memberId))
+                            .filter(msg -> {
+                                Optional<ChatReadStatus> statusOpt = chatReadStatusRepository.findByChatMessageIdAndReceiver_memberId(msg.getChatMessageId(), memberId);
+                                return statusOpt.map(status -> !status.isReadStatus()).orElse(true);
+                            })
+                            .switchIfEmpty(Flux.empty())
+                            .count();
+
+                    // 비동기 처리된 Mono를 block()으로 동기식으로 처리
+                    ChatMessage lastMessage = lastMessageMono.block();
+                    Long unreadMessagesCount = unreadMessagesCountMono.block();
+
+                    unreadMessagesCount = (unreadMessagesCount != null) ? unreadMessagesCount : 0L;
+
+                    String message = lastMessage != null ? lastMessage.getMessage() : null;
+
+                    LocalDateTime lastModifiedDate = null;
+                    if (lastMessage != null) {
+                        if (lastMessage.getLastModifiedDate() != null) {
+                            lastModifiedDate = lastMessage.getLastModifiedDate();
+                        } else {
+                            lastModifiedDate = lastMessage.getCreatedDate();
+                        }
+                    }
+
+                    log.debug("채팅방 ID: " + chatRoom.getChatRoomId());
+                    log.debug("가져온 메시지 : " + message);
+                    log.debug("가져온 날짜: " + lastModifiedDate);
+                    log.debug("가져온 안읽은 메세지 수: " + unreadMessagesCount);
+
+                    return ChatRoomListDto.toDto(chatRoom, memberId, message, lastModifiedDate, unreadMessagesCount);
+                })
                 .collect(Collectors.toList());
     }
 
@@ -178,7 +217,7 @@ public class ChatService {
         }
 
         // 채팅방 메시지 조회와 동시에 읽음 상태를 업데이트
-        return chatMessageRepository.findByChatRoomIdAndCreatedDateAfter(chatRoomId, messageFetchStartTime)
+        Flux<ChatMessageDto> chatMessages = chatMessageRepository.findByChatRoomIdAndCreatedDateAfter(chatRoomId, messageFetchStartTime)
                 .doOnNext(chatMessage -> {
                     // 상태가 ONLINE으로 변경된 시점 이전의 메시지들에 대해 읽음 상태 처리
                     if (memberStatus.getStatus() == MemberStatusType.ONLINE &&
@@ -194,7 +233,11 @@ public class ChatService {
                 })
                 .map(ChatMessageDto::toDto)
                 .subscribeOn(Schedulers.boundedElastic());
+
+        return chatMessages.hasElements()
+                .flatMapMany(exists -> exists ? chatMessages : Flux.empty());
     }
+
     // 채팅방 메시지 Kafka로 전송
     @Transactional
     public void sendMessageToKafka(ChatMessageDto chatMessageDto) {

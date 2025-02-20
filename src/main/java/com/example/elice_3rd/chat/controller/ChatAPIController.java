@@ -59,11 +59,11 @@ public class ChatAPIController {
 
     // 특정 멤버가 속한 모든 채팅방 목록 조회
     @GetMapping("/chat-rooms/{memberId}")
-    public ResponseEntity<List<ChatRoomDto>> getMemberChatRooms(@PathVariable Long memberId) {
+    public ResponseEntity<List<ChatRoomListDto>> getMemberChatRooms(@PathVariable Long memberId) {
         if (memberId == null || memberId <= 0) {
             return ResponseEntity.badRequest().build();
         }
-        List<ChatRoomDto> chatRooms = chatService.getMemberChatRooms(memberId);
+        List<ChatRoomListDto> chatRooms = chatService.getMemberChatRooms(memberId);
         return ResponseEntity.ok(chatRooms);
     }
 

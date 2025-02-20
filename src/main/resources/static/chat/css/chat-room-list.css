@@ -1,0 +1,15 @@
+div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+a {
+    display: inline-block;
+    text-decoration: none;
+}
+
+button {
+    display: inline-block;
+    cursor: pointer;
+}
