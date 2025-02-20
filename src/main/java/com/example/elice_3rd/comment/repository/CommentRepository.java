@@ -12,4 +12,5 @@ import java.util.Optional;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     Optional<Comment> findByCounsel(Counsel counsel);
+    Page<Comment> findAllByCounsel(Counsel counsel, Pageable pageable);
 }
