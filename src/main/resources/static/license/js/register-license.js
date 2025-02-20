@@ -1,4 +1,6 @@
-import axios from "/common/axios";
+import api from "/common/js/API.js";
+
+api.headers
 
 document.getElementById("licenseForm").addEventListener("submit", async function (event) {
   event.preventDefault(); // 기본 제출 방지
@@ -20,8 +22,9 @@ document.getElementById("licenseForm").addEventListener("submit", async function
 
   console.log("폼 데이터:", formData);
 
-  const res = axios.post("https://datahub-dev.scraping.co.kr/scrap/common/mohw/MedicalLicenseInquirySimple")
-    .then(response => console.log(response));
+  // const data = (await axios.post("https://datahub-dev.scraping.co.kr/scrap/common/mohw/MedicalLicenseInquirySimple", {
+  //   headers: { "Authorization": "74d7823acb384f5db0b54ab9e40839aec2a13b46" }
+  // })).data;
 
   const response = await (await fetch('https://datahub-dev.scraping.co.kr/scrap/common/mohw/MedicalLicenseInquirySimple', {
     method: 'POST',
