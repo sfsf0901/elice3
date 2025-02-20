@@ -56,3 +56,14 @@ document.getElementById("confirm-btn").addEventListener("click", () => {
       location.href = location.pathname;
     })
 });
+
+document.getElementById("delete").addEventListener("click", () => {
+  api.delete("counsels", {
+    params: {
+      id: location.pathname.split("/").pop()
+    }
+  })
+    .then(response => {
+      location.href = response.headers.location;
+    })
+})

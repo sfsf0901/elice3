@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Counsel 작성</title>
+  <link rel="stylesheet" href="/counsel/css/write.css">
+</head>
+<body>
+<div class="container">
+  <h1>질문 작성</h1>
+
+  <form id="counselForm" action="/api/v1/counsels" method="post">
+    <!-- 제목 입력 -->
+    <label for="title">제목</label>
+    <input type="text" id="title" name="title" required placeholder="제목을 입력하세요">
+
+    <!-- 내용 입력 -->
+    <label for="content">내용</label>
+    <textarea id="content" name="content" required placeholder="내용을 입력하세요"></textarea>
+
+    <!-- 카테고리 선택 -->
+    <label for="category">카테고리</label>
+    <select id="category" name="category" required>
+
+    </select>
+
+    <!-- 질문하기 버튼 -->
+    <button id="submit-button" type="button">수정 완료</button>
+  </form>
+</div>
+<div>
+
+</div>
+<script type="module" src="/counsel/js/write.js"></script>
+</body>
+</html>
