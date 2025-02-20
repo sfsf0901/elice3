@@ -20,7 +20,6 @@ import java.util.List;
 public class CounselRetrieveService {
     private final CounselRepository counselRepository;
     private final MemberRepository memberRepository;
-    private final DiagnosisSubjectRepository diagnosisSubjectRepository;
 
     public Page<CounselResponseDto> retrieveAll(Pageable pageable){
         Page<Counsel> counselPage = counselRepository.findAll(pageable);

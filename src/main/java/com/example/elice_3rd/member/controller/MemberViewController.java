@@ -26,4 +26,9 @@ public class MemberViewController {
     public String test(){
         return "/member/temp-page";
     }
+
+    @GetMapping("/my-page/counsels")
+    public String myCounsels() {
+        return "/member/my-counsels";
+    }
 }

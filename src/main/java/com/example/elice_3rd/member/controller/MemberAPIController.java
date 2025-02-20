@@ -1,5 +1,8 @@
 package com.example.elice_3rd.member.controller;
 
+import com.example.elice_3rd.counsel.dto.CounselResponseDto;
+import com.example.elice_3rd.counsel.entity.Counsel;
+import com.example.elice_3rd.counsel.service.CounselService;
 import com.example.elice_3rd.member.dto.MemberRequestDto;
 import com.example.elice_3rd.member.dto.MemberResponseDto;
 import com.example.elice_3rd.member.dto.MemberUpdateDto;
@@ -8,6 +11,10 @@ import com.example.elice_3rd.security.jwt.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -15,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.security.Principal;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -24,6 +32,7 @@ public class MemberAPIController {
     private final MemberService memberService;
     // component를 주입 시키는 것에는 정답은 없음
     private final JwtUtil jwtUtil;
+    private final CounselService counselService;
 
     @PostMapping
     public ResponseEntity<Void> register(@RequestBody @Validated MemberRequestDto requestDto) throws JsonProcessingException {
@@ -64,8 +73,10 @@ public class MemberAPIController {
         return ResponseEntity.ok().header("Location", "/my-page").build();
     }
 
-    @GetMapping("401")
-    public ResponseEntity<?> test401(){
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("1234");
+    @GetMapping("counsels")
+    public ResponseEntity<Page<CounselResponseDto>> retrieveMyCounsels(Principal principal,
+                                                                       @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable){
+        log.error(principal.getName());
+        return ResponseEntity.ok(counselService.retrieveMyCounsels(principal.getName(), pageable));
     }
 }
