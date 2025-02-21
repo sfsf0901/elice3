@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,21 +29,26 @@
       <div class="text">상담 내역</div>
       <div class="right"> ></div>
     </a>
-    <a href="#" class="item">
+    <div href="#" class="item">
       <div class="icon">💬</div>
       <div class="text">실시간 상담 내역</div>
       <div class="right"> ></div>
-    </a>
-    <a href="#" class="item">
+    </div>
+    <div href="#" class="item">
       <div class="icon">🏥</div>
       <div class="text">찜한 병원</div>
       <div class="right"> ></div>
-    </a>
-    <div onclick="popup()" class="item">
+    </div>
+    <div onclick="popup()" class="item" sec:authorize="hasRole('USER')">
       <div class="icon">🩺</div>
       <div class="text">의사 인증하기</div>
       <div class="right"> ></div>
     </div>
+    <a href="/members/comments" class="item" sec:authorize="hasRole('DOCTOR')">
+      <div class="icon">✅</div>
+      <div class="text">내 답변 내역</div>
+      <div class="right"> ></div>
+    </a>
   </div>
   <div class="listContainer">
     <!--    <a href="#" class="item">-->
@@ -59,21 +64,21 @@
     <!--        <span class="blct">175 BLCT</span>-->
     <!--        > </div>-->
     <!--    </a>-->
-    <a href="#" class="item">
+    <div href="#" class="item">
       <div class="icon">🪪</div>
       <div class="text">회원 정보 수정</div>
       <div class="right"> ></div>
-    </a>
-    <a href="#" class="item">
+    </div>
+    <div href="#" class="item">
       <div class="icon">🔒</div>
       <div class="text">비밀번호 변경</div>
       <div class="right"> ></div>
-    </a>
-    <a href="#" class="item">
+    </div>
+    <div id="quit" class="item">
       <div class="icon">🚪</div>
       <div class="text">회원 탈퇴</div>
       <div class="right"> ></div>
-    </a>
+    </div>
   </div>
   <!--  <div class="infoContainer">-->
   <!--  </div>-->

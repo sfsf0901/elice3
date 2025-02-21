@@ -12,6 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
+
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -28,5 +30,9 @@ public class CommentService {
 
     public Boolean isExist(Long counselId){
         return retrieveService.isExist(counselId);
+    }
+
+    public Page<CommentResponseDto> retrieveMyComments(String email, Pageable pageable){
+        return retrieveService.retrieveMyComments(email, pageable);
     }
 }

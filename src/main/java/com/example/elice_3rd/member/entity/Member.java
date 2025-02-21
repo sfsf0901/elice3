@@ -44,6 +44,7 @@ public class Member extends BaseEntity {
     @Column
     @ColumnDefault("'none'")
     private String providerId;
+    private Boolean verification;
 
     public MemberResponseDto toResponseDto(){
         return MemberResponseDto.builder()
@@ -79,5 +80,9 @@ public class Member extends BaseEntity {
 
     public void updateRoleDoctor(){
         role = Role.DOCTOR;
+    }
+
+    public void verify(){
+        verification = true;
     }
 }
