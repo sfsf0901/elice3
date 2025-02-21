@@ -107,7 +107,7 @@ public class Hospital {
     }
 
     private static Boolean setHasNightEmergency(String hasNightEmergency) {
-        return  "Y".equals(hasNightEmergency);
+        return "Y".equals(hasNightEmergency);
     }
 
     private static Boolean setHasNightClinic(HospitalTemp hospitalTemp) {

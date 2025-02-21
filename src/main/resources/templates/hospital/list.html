@@ -59,7 +59,7 @@
             </div>
 
             <!-- 더보기 버튼을 감싸는 래퍼에 ID 추가 -->
-            <div th:if="${hospitals != null and not hospitals.empty}"
+            <div th:if="${hospitals != null and not hospitals.empty and not hospitals.last}"
                  class="d-flex justify-content-center mt-3"
                  th:style="${hospitals.last} ? 'display:none;' : ''"
                  id="loadMoreWrapper">

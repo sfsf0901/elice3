@@ -11,35 +11,78 @@
             grid-template-columns: repeat(6, 1fr);
             gap: 16px;
         }
-
         .category-item {
             text-align: center;
         }
-
         .category-item img {
             width: 60px;
             height: 60px;
             object-fit: contain;
         }
-
         /* 링크 밑줄 제거 & 글씨색 검정 */
         .category-item a {
             text-decoration: none;
             color: black;
+        }
+        /* 검색창 스타일 */
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            width: 100%;
+        }
+        .search-box {
+            position: relative;
+            width: 100%;
+        }
+        .search-input {
+            width: 100%;
+            padding: 14px 20px;
+            padding-right: 50px; /* 아이콘 공간 확보 */
+            border: none;
+            border-radius: 10px;
+            background-color: #F6F6F6;
+            font-size: 16px;
+            color: #666;
+            outline: none;
+        }
+        .search-input::placeholder {
+            color: #BDBDBD;
+        }
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-size: 18px;
+            cursor: pointer;
         }
     </style>
 
 </head>
 <body>
 <div layout:fragment="content">
-    <h3>어떤 병원을 찾으세요?</h3>
-    <div class="category-container mt-5 px-3">
-        <div class="category-item" th:each="category : ${categories}"
-             th:if="${category.name != '마취통증의학과' and category.name != '영상의학과'}">
-            <a href="#" onclick="goToSearch(event, this)" th:data-category-id="${category.id}" th:data-category-name="${category.name}">
-                <img th:src="@{/images/{imageName}(imageName=${category.name + '.png'})}" alt="카테고리 이미지">
-                <div th:text="${category.name}"></div>
-            </a>
+    <h4>병원 찾기</h4>
+    <div class="search-container">
+        <div class="search-box">
+            <input type="search" id="searchInput" class="search-input" placeholder="병원, 진료과목, 증상" required onkeydown="handleEnter(event)">
+            <i class="fa-solid fa-magnifying-glass search-icon" onclick="updateActionAndSubmit(event)"></i>
+        </div>
+    </div>
+
+
+
+    <div class="mt-5">
+        <h5>어떤 병원을 찾으세요?</h5>
+        <div class="category-container mt-5 px-3">
+            <div class="category-item" th:each="category : ${categories}"
+                 th:if="${category.name != '마취통증의학과' and category.name != '영상의학과'}">
+                <a href="#" onclick="goToSearch(event, this)" th:data-category-id="${category.id}" th:data-category-name="${category.name}">
+                    <img th:src="@{/images/{imageName}(imageName=${category.name + '.png'})}" alt="카테고리 이미지">
+                    <div th:text="${category.name}"></div>
+                </a>
+            </div>
         </div>
     </div>
 
@@ -68,7 +111,40 @@
             }
         }
     </script>
+    <script>
+        function handleEnter(event) {
+            if (event.key === "Enter") {
+                event.preventDefault(); // 기본 form 제출 방지
+                updateActionAndSubmit(event);
+            }
+        }
 
+        function updateActionAndSubmit(event) {
+            event.preventDefault(); // 기본 동작 방지
+
+            let keyword = document.getElementById("searchInput").value.trim();
+            if (keyword === "") {
+                alert("검색어를 입력해주세요.");
+                return;
+            }
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    redirectToSearch(keyword, latitude, longitude);
+                }, function () {
+                    redirectToSearch(keyword, 37.5665, 126.9780); // 위치 권한 거부 시 기본값(서울)
+                });
+            } else {
+                redirectToSearch(keyword, 37.5665, 126.9780); // 브라우저 위치 정보 미지원 시 기본값
+            }
+        }
+
+        function redirectToSearch(keyword, latitude, longitude) {
+            window.location.href = `/hospitals/search?keyword=${encodeURIComponent(keyword)}&latitude=${latitude}&longitude=${longitude}`;
+        }
+    </script>
 </div>
 </body>
 </html>
