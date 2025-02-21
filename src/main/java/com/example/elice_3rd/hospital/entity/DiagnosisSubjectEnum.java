@@ -3,7 +3,7 @@ package com.example.elice_3rd.hospital.entity;
 import lombok.Getter;
 
 @Getter
-public enum DiagnosisSubject {
+public enum DiagnosisSubjectEnum {
     INTERNAL("01", "내과"),
     NEUROLOGY("02", "신경과"),
     PSYCHIATRY("03", "정신건강의학과"),
@@ -49,7 +49,7 @@ public enum DiagnosisSubject {
     private final String code;
     private final String name;
 
-    DiagnosisSubject(String code, String name) {
+    DiagnosisSubjectEnum(String code, String name) {
         this.code = code;
         this.name = name;
     }

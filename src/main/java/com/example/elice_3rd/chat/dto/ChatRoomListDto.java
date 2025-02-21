@@ -8,11 +8,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatRoomDto {
+public class ChatRoomListDto {
 
     private Long chatRoomId;
 
@@ -20,16 +22,25 @@ public class ChatRoomDto {
 
     private String opponentName;
 
-    public static ChatRoomDto toDto(ChatRoom chatRoom, Long memberId) {
+    private String message;
+
+    private LocalDateTime lastModifiedDate;
+
+    private Long unreadMessagesCount;
+
+    public static ChatRoomListDto toDto(ChatRoom chatRoom, Long memberId, String message, LocalDateTime lastModifiedDate, Long unreadMessagesCount) {
         Member opponent = chatRoom.getMembers().stream()
                 .filter(member -> !member.getMemberId().equals(memberId)) // 해당 유저와 다른 멤버 찾기
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("No opponent found in the chat room"));
 
-        return ChatRoomDto.builder()
+        return ChatRoomListDto.builder()
                 .chatRoomId(chatRoom.getChatRoomId())
                 .roomStatus(chatRoom.getRoomStatus())
                 .opponentName(opponent.getName())
+                .message(message)
+                .lastModifiedDate(lastModifiedDate)
+                .unreadMessagesCount(unreadMessagesCount)
                 .build();
     }
 }

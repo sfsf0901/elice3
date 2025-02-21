@@ -1,0 +1,9 @@
+a {
+    display: inline-block;
+    text-decoration: none;
+}
+
+button {
+    display: inline-block;
+    cursor: pointer;
+}

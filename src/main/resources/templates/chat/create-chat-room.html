@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>채팅방 생성 버튼 페이지(임시)</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script th:src="@{/chat/js/create-chat-room.js}" type="text/javascript"></script>
+</head>
+<body>
+
+<button id="checkChatRoomBtn"
+        th:data-doctor-user-id="${doctorUserId}"
+>
+    채팅방 확인/생성
+</button>
+
+</body>
+</html>

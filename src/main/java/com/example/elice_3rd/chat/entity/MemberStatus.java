@@ -5,6 +5,7 @@ import com.example.elice_3rd.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class MemberStatus {
 
     @Id
@@ -33,17 +35,25 @@ public class MemberStatus {
     private MemberStatusType status = MemberStatusType.ONLINE;
 
     @CreatedDate
+    @Column(updatable = false)
     private LocalDateTime joinedDate; // 채팅방 최초 입장 시간
 
-    private LocalDateTime statusChangedDate; // 채팅방 상태(ONLINE) 변경 시간
+    private LocalDateTime statusOnlineChangedDate; // 멤버 상태(ONLINE) 변경 시간
+
+    private LocalDateTime statusLeftChangedDate; // 멤버 상태(LEFT) 변경 시간
 
     public void setStatus(MemberStatusType status) {
-        // 상태 ONLINE일 때만 statusChangedDate를 업데이트
         if (this.status != status) {
             this.status = status;
 
+            // 상태 ONLINE일 때만 statusOnlineChangedDate 업데이트
             if (status == MemberStatusType.ONLINE) {
-                this.statusChangedDate = LocalDateTime.now();
+                this.statusOnlineChangedDate = LocalDateTime.now();
+            }
+
+            // 상태 LEFT 때만 statusLeftChangedDate 업데이트
+            if (status == MemberStatusType.LEFT) {
+                this.statusLeftChangedDate = LocalDateTime.now();
             }
         }
     }

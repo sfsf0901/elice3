@@ -2,11 +2,13 @@ package com.example.elice_3rd.chat.config;
 
 import com.example.elice_3rd.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class WebSocketEventListener {
@@ -25,5 +27,6 @@ public class WebSocketEventListener {
 
         // WebSocket 연결이 종료되었을 때 상태를 OFFLINE으로 변경
         chatService.updateMemberStatusToOffline(memberId);
+        log.info("User with ID {} has disconnected, status updated to OFFLINE.", memberId);
     }
 }
