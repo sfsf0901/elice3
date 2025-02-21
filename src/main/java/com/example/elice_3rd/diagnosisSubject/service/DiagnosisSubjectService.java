@@ -55,7 +55,7 @@ public class DiagnosisSubjectService {
     public Long create(CreateDiagnosisSubjectRequest request) {
         //TODO 권한 확인 추가
 
-        Category category = categoryService.findCategory(request.getCategoryId());
+        Category category = categoryService.findByCategoryId(request.getCategoryId());
 
         DiagnosisSubject diagnosisSubject = diagnosisSubjectRepository.save(DiagnosisSubject.create(request.getCode(), request.getName(), request.getCategoryName(), category));
         return diagnosisSubject.getId();

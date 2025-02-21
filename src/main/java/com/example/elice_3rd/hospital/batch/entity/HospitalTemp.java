@@ -81,7 +81,9 @@ public class HospitalTemp {
     }
 
     public void updateDetails(HospitalDetails details) {
+        this.hasNightEmergency = details.getHasNightEmergency();
         this.emergencyContact = details.getEmergencyContact();
+
         this.mondayOpenTime = details.getMondayOpenTime();
         this.mondayCloseTime = details.getMondayCloseTime();
         this.tuesdayOpenTime = details.getTuesdayOpenTime();

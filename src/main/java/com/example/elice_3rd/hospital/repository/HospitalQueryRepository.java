@@ -1,25 +1,20 @@
 package com.example.elice_3rd.hospital.repository;
 
-import com.example.elice_3rd.category.entity.QCategory;
 import com.example.elice_3rd.hospital.dto.request.HospitalSearchByCategoryCondition;
-import com.example.elice_3rd.hospital.dto.request.HospitalSearchCondition;
-import com.example.elice_3rd.hospital.entity.Hospital;
-import com.example.elice_3rd.hospital.entity.QHospitalCategory;
+import com.example.elice_3rd.hospital.dto.request.HospitalSearchByKeywordCondition;
+import com.example.elice_3rd.hospital.dto.request.HospitalSearchWithEmergencyCondition;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
 
 import static com.example.elice_3rd.category.entity.QCategory.*;
-import static com.example.elice_3rd.diagnosisSubject.entity.QDiagnosisSubject.*;
 import static com.example.elice_3rd.hospital.entity.QHospital.*;
 import static com.example.elice_3rd.hospital.entity.QHospitalCategory.*;
 import static com.querydsl.core.types.dsl.Expressions.numberTemplate;
@@ -36,21 +31,20 @@ public class HospitalQueryRepository {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
-    public List<Tuple> findAllByCategoryIdV3(HospitalSearchCondition condition, Pageable pageable) {
-        double latitude = condition.getLatitude();
-        double longitude = condition.getLongitude();
-
+    public List<Tuple> findAllByCategoryId(Long categoryId, Boolean hasNightClinic, Boolean hasSundayAndHolidayClinic, Double latitude, Double longitude, Pageable pageable) {
         NumberTemplate<Double> distanceExpression = numberTemplate(Double.class,
                 "ST_Distance_Sphere(point({0}, {1}), point({2}, {3}))",
                 longitude, latitude, hospital.longitude, hospital.latitude);
 
         return queryFactory
                 .select(hospital, distanceExpression)
-                .from(hospital)
-//                .join(hospital.diagnosisSubject, diagnosisSubject).fetchJoin()
+                .from(hospitalCategory)
+                .join(hospitalCategory.category, category)
+                .join(hospitalCategory.hospital, hospital)
                 .where(
-                        categoryIdEq(condition.getCategoryId()),
-                        hospitalNameContains(condition.getKeyword()),
+                        categoryIdEq(categoryId),
+                        hasNightClinicEq(hasNightClinic),
+                        hasSundayAndHolidayClinicEq(hasSundayAndHolidayClinic),
                         hospital.latitude.between(latitude - LATITUDE_DELTA, latitude + LATITUDE_DELTA),
                         hospital.longitude.between(longitude - LONGITUDE_DELTA, longitude + LONGITUDE_DELTA)
                 )
@@ -60,20 +54,35 @@ public class HospitalQueryRepository {
                 .fetch();
     }
 
-    public List<Tuple> findAllByCategoryIdV2(HospitalSearchByCategoryCondition condition, Pageable pageable) {
+    public List<Tuple> findAllByHospitalName(String hospitalName, double latitude, double longitude, Pageable pageable) {
+        NumberTemplate<Double> distanceExpression = numberTemplate(Double.class,
+                "ST_Distance_Sphere(point({0}, {1}), point({2}, {3}))",
+                longitude, latitude, hospital.longitude, hospital.latitude);
+
+        return queryFactory
+                .select(hospital, distanceExpression)
+                .from(hospital)
+                .where(
+                        hospitalNameContains(hospitalName),
+                        hospital.latitude.between(latitude - LATITUDE_DELTA, latitude + LATITUDE_DELTA),
+                        hospital.longitude.between(longitude - LONGITUDE_DELTA, longitude + LONGITUDE_DELTA)
+                )
+                .orderBy(distanceExpression.asc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize() + 1)
+                .fetch();
+    }
+
+    public List<Tuple> findAllWithEmergency(HospitalSearchWithEmergencyCondition condition, Pageable pageable) {
         NumberTemplate<Double> distanceExpression = numberTemplate(Double.class,
                 "ST_Distance_Sphere(point({0}, {1}), point({2}, {3}))",
                 condition.getLongitude(), condition.getLatitude(), hospital.longitude, hospital.latitude);
 
         return queryFactory
                 .select(hospital, distanceExpression)
-                .from(hospitalCategory)
-                .join(hospitalCategory.category, category)
-                .join(hospitalCategory.hospital, hospital)
+                .from(hospital)
                 .where(
-                        categoryIdEq(condition.getCategoryId()),
-                        hasNightClinicEq(condition.getHasNightClinic()),
-                        hasSundayAndHolidayClinicEq(condition.getHasSundayAndHolidayClinic()),
+                        hasNightEmergencyEq(condition.getHasNightEmergency()),
                         hospital.latitude.between(condition.getLatitude() - LATITUDE_DELTA, condition.getLatitude() + LATITUDE_DELTA),
                         hospital.longitude.between(condition.getLongitude() - LONGITUDE_DELTA, condition.getLongitude() + LONGITUDE_DELTA)
                 )
@@ -112,50 +121,4 @@ public class HospitalQueryRepository {
         }
         return hasSundayAndHolidayClinic ? hospitalCategory.hospital.hasSundayAndHolidayClinic.eq(true) : null;
     }
-
-
-    public Slice<Hospital> findAllByCategoryIdV1(Long categoryId, Pageable pageable) {
-        List<Hospital> content = queryFactory
-                .selectFrom(hospital)
-//                .join(hospital.diagnosisSubject, diagnosisSubject).fetchJoin()
-//                .where(hospital.category.id.eq(categoryId))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize() + 1) // 페이지 사이즈보다 1개 더 가져와서, 다음 페이지 여부 확인
-                .fetch();
-
-        boolean hasNext = content.size() > pageable.getPageSize();
-
-        if (hasNext) {
-            content.remove(content.size() - 1); // 다음 페이지 여부 확인용 데이터 삭제
-        }
-
-        return new SliceImpl<>(content, pageable, hasNext);
-    }
-
-    public Slice<Hospital> findAllByCategoryId(Long categoryId, Pageable pageable) {
-        List<Hospital> content = queryFactory
-                .selectFrom(hospital)
-//                .where(hospital.category.id.eq(categoryId))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize() + 1)
-                .fetch();
-
-        boolean hasNext = content.size() > pageable.getPageSize();
-
-        if (hasNext) {
-            content.remove(content.size() - 1);
-        }
-
-        return new SliceImpl<>(content, pageable, hasNext);
-    }
-
-    public List<Hospital> findByYkiho(String ykiho) {
-        return queryFactory
-                .selectFrom(hospital)
-//                .join(hospital.diagnosisSubject, diagnosisSubject).fetchJoin()
-                .where(hospital.ykiho.eq(ykiho))
-                .fetch();
-    }
-
-
 }

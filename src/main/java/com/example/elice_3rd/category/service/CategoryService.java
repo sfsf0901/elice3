@@ -15,7 +15,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.List;
 
 @Service
@@ -51,25 +50,29 @@ public class CategoryService {
     }
 
     public Long updateName(Long categoryId, CreateCategoryRequest request) {
-        Category category = findCategory(categoryId);
+        Category category = findByCategoryId(categoryId);
         category.updateName(request.getName());
         return category.getId();
     }
 
     public Long updateDescription(Long categoryId, CreateCategoryRequest request) {
-        Category category = findCategory(categoryId);
+        Category category = findByCategoryId(categoryId);
         category.updateName(request.getDescription());
         return category.getId();
     }
 
     public Long delete(Long categoryId) {
-        Category category = findCategory(categoryId);
+        Category category = findByCategoryId(categoryId);
         category.delete();
         return category.getId();
     }
 
-    public Category findCategory(Long categoryId) {
+    public Category findByCategoryId(Long categoryId) {
         return categoryRepository.findById(categoryId).orElseThrow(() -> new IllegalArgumentException("해당 카테고리는 존재하지 않습니다. categoryId: " + categoryId));
+    }
+
+    public Category findByName(String name) {
+        return categoryRepository.findByName(name).orElse(null);
     }
 
     public List<Category> findAll() {
