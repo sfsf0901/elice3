@@ -11,11 +11,14 @@ public class ChatRoomResponseDto {
 
     private Long chatRoomId;
 
+    private Long memberId;
+
     private RoomStatus roomStatus;
 
-    public static ChatRoomResponseDto toDto(ChatRoom chatRoom) {
+    public static ChatRoomResponseDto toDto(ChatRoom chatRoom, Long memberId) {
         return ChatRoomResponseDto.builder()
                 .chatRoomId(chatRoom.getChatRoomId())
+                .memberId(memberId)
                 .roomStatus(chatRoom.getRoomStatus())
                 .build();
     }
