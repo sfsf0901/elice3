@@ -31,21 +31,21 @@ public class ChatAPIController {
     @PostMapping("/check-chat-room")
     public ResponseEntity<ChatRoomResponseDto> checkChatRoom(@RequestBody ChatRoomRequestDto request, Principal principal) {
         try {
-//            Long loggedInUserId = Long.parseLong(principal.getName());
-//            log.debug("Logged In User ID: {}", loggedInUserId);
-//
-//            Long doctorUserId  = request.getMemberIds().stream()
-//                    .filter(id -> !id.equals(loggedInUserId))
-//                    .findFirst()
-//                    .orElseThrow(() -> new IllegalArgumentException("Invalid Doctor User ID"));
-//            log.debug("Doctor User ID: {}", doctorUserId );
-
-            // 테스트용
-            Long loggedInUserId = 1L;
+            Long loggedInUserId = Long.parseLong(principal.getName());
             log.debug("Logged In User ID: {}", loggedInUserId);
 
-            Long doctorUserId = 2L;
-            log.debug("Doctor User ID: {}", doctorUserId);
+            Long doctorUserId  = request.getMemberIds().stream()
+                    .filter(id -> !id.equals(loggedInUserId))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid Doctor User ID"));
+            log.debug("Doctor User ID: {}", doctorUserId );
+
+            // 테스트용
+//            Long loggedInUserId = 1L;
+//            log.debug("Logged In User ID: {}", loggedInUserId);
+//
+//            Long doctorUserId = 2L;
+//            log.debug("Doctor User ID: {}", doctorUserId);
             //
 
             request.setMemberIds(new HashSet<>(Arrays.asList(loggedInUserId, doctorUserId )));
