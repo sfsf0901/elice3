@@ -1,5 +1,7 @@
 package com.example.elice_3rd.hospital.service;
 
+import com.example.elice_3rd.hospital.dto.request.HospitalSearchByCategoryCondition;
+import com.example.elice_3rd.hospital.dto.request.HospitalSearchCondition;
 import com.example.elice_3rd.hospital.dto.response.HospitalResponse;
 import com.example.elice_3rd.hospital.entity.Hospital;
 import com.example.elice_3rd.hospital.repository.HospitalQueryRepository;
@@ -21,8 +23,34 @@ public class HospitalSearchService {
 
     private final HospitalQueryRepository hospitalQueryRepository;
 
-    public Slice<HospitalResponse> findAllByCategoryIdV2(Long categoryId, Double latitude, Double longitude, Pageable pageable) {
-        List<Tuple> results = hospitalQueryRepository.findAllByCategoryIdWithDiagnosisSubjectV2(categoryId, latitude, longitude, pageable);
+    public Slice<HospitalResponse> findAllByCategoryIdV3(HospitalSearchCondition condition, Pageable pageable) {
+        long startTime = System.currentTimeMillis();
+        List<Tuple> results = hospitalQueryRepository.findAllByCategoryIdV3(condition, pageable);
+        long endTime = System.currentTimeMillis();
+        System.out.println("쿼리 실행 시간(ms): " + (endTime - startTime));
+
+        List<HospitalResponse> hospitalResponses = results.stream()
+                .map(tuple -> {
+                    Hospital hospital = tuple.get(0, Hospital.class);
+                    Double distance = tuple.get(1, Double.class);
+                    return new HospitalResponse(hospital, distance);
+                })
+                .toList();
+
+        boolean hasNext = hospitalResponses.size() > pageable.getPageSize();
+
+        List<HospitalResponse> finalContent = hasNext
+                ? hospitalResponses.subList(0, pageable.getPageSize())
+                : hospitalResponses;
+
+        return new SliceImpl<>(finalContent, pageable, hasNext);
+    }
+
+    public Slice<HospitalResponse> findAllByCategoryIdV2(HospitalSearchByCategoryCondition condition, Pageable pageable) {
+        long startTime = System.currentTimeMillis();
+        List<Tuple> results = hospitalQueryRepository.findAllByCategoryIdV2(condition, pageable);
+        long endTime = System.currentTimeMillis();
+        System.out.println("쿼리 실행 시간(ms): " + (endTime - startTime));
 
         List<HospitalResponse> hospitalResponses = results.stream()
                 .map(tuple -> {
@@ -43,7 +71,7 @@ public class HospitalSearchService {
 
 
         public Slice<HospitalResponse> findAllByCategoryIdV1(Long categoryId, Double latitude, Double longitude, Pageable pageable) {
-        Slice<Hospital> hospitals = hospitalQueryRepository.findAllByCategoryIdWithDiagnosisSubjectV1(categoryId, pageable);
+        Slice<Hospital> hospitals = hospitalQueryRepository.findAllByCategoryIdV1(categoryId, pageable);
 
         List<HospitalResponse> hospitalResponses = hospitals.getContent().stream()
                 .map(hospital -> {
@@ -70,4 +98,12 @@ public class HospitalSearchService {
     }
 
 
+    public List<Hospital> findByYkiho(String ykiho) {
+        List<Hospital> hospitalList = hospitalQueryRepository.findByYkiho(ykiho);
+        if (hospitalList.isEmpty()) {
+            throw new IllegalStateException("존재하지 않는 병원입니다. ykiho: " + ykiho);
+        }
+        return hospitalList;
+
+    }
 }

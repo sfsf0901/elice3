@@ -1,4 +1,4 @@
-package com.example.elice_3rd.hospital.dto;
+package com.example.elice_3rd.hospital.batch.dto;
 
 import com.example.elice_3rd.category.entity.Category;
 import com.example.elice_3rd.diagnosisSubject.entity.DiagnosisSubject;

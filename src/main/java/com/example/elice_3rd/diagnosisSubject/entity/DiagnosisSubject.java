@@ -14,7 +14,7 @@ public class DiagnosisSubject extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "medical_department_id")
+    @Column(name = "diagnosis_subject_id")
     private Long id;
 
     private String diagnosisSubjectCode;

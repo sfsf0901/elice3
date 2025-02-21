@@ -68,6 +68,8 @@ public class DiagnosisSubjectService {
     @Transactional(readOnly = true)
     public List<DiagnosisSubject> findAll() {
         return diagnosisSubjectRepository.findAll();
+//        List<DiagnosisSubject> list = diagnosisSubjectRepository.findAll();
+//        return list.size() > 2 ? list.subList(0, 2) : list;
     }
 
 }

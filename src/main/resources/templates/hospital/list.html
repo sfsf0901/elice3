@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{common/layout/layout}">
 <head>
@@ -20,7 +21,10 @@
         <!-- 병원 리스트 & 더보기 버튼 -->
         <div id="hospitalList" class="mt-4">
             <div th:each="hospital : ${hospitals}">
-                <h5 th:text="${hospital.placeName}" class="pt-2"></h5>
+                <h5 class="pt-2">
+                    <a th:href="@{/hospital/{hospitalName}(hospitalName=${hospital.hospitalName}, ykiho=${hospital.ykiho})}" class="text-dark text-decoration-none" th:text="${hospital.hospitalName}"></a>
+                </h5>
+
                 <div>
                     <small class="text-muted" th:text="${hospital.hospitalType}"></small>
                 </div>
@@ -61,10 +65,10 @@
                  id="loadMoreWrapper">
                 <button id="loadMoreBtn" class="btn btn-outline-secondary"
                         th:data-next-page="${hospitals.number + 1}"
-                        th:data-category-id="${categoryId}"
+                        th:data-category-id="${condition.categoryId}"
                         th:data-category-name="${categoryName}"
-                        th:data-lat="${latitude}"
-                        th:data-lng="${longitude}">
+                        th:data-lat="${condition.latitude}"
+                        th:data-lng="${condition.longitude}">
                     더보기
                 </button>
             </div>
@@ -87,14 +91,24 @@
                 const lng = $(this).data('lng');
 
                 $.ajax({
-                    url: `/api/search/${categoryName}`,
+                    url: `/api/hospitals/${categoryName}`,
                     type: 'GET',
-                    data: {categoryId, lat, lng, page: nextPage},
+                    data: {
+                        categoryId: categoryId,
+                        latitude: lat,
+                        longitude: lng,
+                        page: nextPage
+                    },
+                    beforeSend: function(jqXHR, settings) {
+                        console.log("요청 URL:", settings.url + '?' + settings.data);
+                    },
                     success: function (response) {
                         response.hospitals.forEach(hospital => {
                             const hospitalHtml = `
                     <div>
-                        <h5 class="pt-2">${hospital.placeName}</h5>
+                        <h5 class="pt-2">
+                            <a href="/hospital/${hospital.hospitalName}?ykiho=${hospital.ykiho}" class="text-dark text-decoration-none">${hospital.hospitalName}</a>
+                        </h5>
                         <div>
                             <small class="text-muted">${hospital.hospitalType}</small>
                         </div>
