@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title th:text="${subject}"></title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div style="display: flex;">
+  <p th:text="${userType}"/>
+  <p>님, 안녕하세요!</p>
+</div>
+<div>
+  아래 버튼을 눌러 가입을 완료하세요.
+</div>
+<br>
+<p th:text="${content}"></p>
+<img img th:src="'data:image/png;base64,' + ${logoImage}" alt="로고 이미지"/>
+<a id="verify" th:href="|http://localhost:8080/verify?code=${code}|">인증하기</a>
+<script>
+  document.getElementById("verify").addEventListener("click", () => {
+    alert("인증하기 버튼 누름!");
+  })
+</script>
+</body>
+</html>

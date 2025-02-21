@@ -26,7 +26,6 @@ api.interceptors.response.use(
 
 const memberAPI = {
   REGISTER: "api/v1/members",
-
 }
 
 export default api

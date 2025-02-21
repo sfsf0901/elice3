@@ -29,6 +29,7 @@ public class Comment extends BaseEntity {
         return CommentResponseDto.builder()
                 .content(content)
                 .email(member.getEmail())
+                .createdDate(getCreatedDate())
                 .build();
     }
 }

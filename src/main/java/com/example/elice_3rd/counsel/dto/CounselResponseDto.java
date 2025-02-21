@@ -20,6 +20,8 @@ public class CounselResponseDto {
     private String content;
     @NotBlank
     private String email;
+    @NotBlank
+    private String category;
     @NotNull
     private LocalDateTime createdDate;
 }

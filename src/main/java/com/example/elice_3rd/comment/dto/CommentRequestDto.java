@@ -6,5 +6,6 @@ import lombok.Getter;
 @Builder
 @Getter
 public class CommentRequestDto {
+    private Long counselId;
     private String content;
 }

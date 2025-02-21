@@ -14,9 +14,7 @@ public class MemberRequestDto {
     @NotBlank
     private String name;
     @NotBlank
-    private String contact;
-    @NotBlank
     private String password;
-    @NotNull
-    private Role role;
+    @NotBlank
+    private String contact;
 }

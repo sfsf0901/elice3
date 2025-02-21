@@ -1,19 +1,34 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>상담 상세 페이지</title>
   <link rel="stylesheet" href="/counsel/css/detail.css">
+  <link rel="stylesheet" href="/common/css/bootstrap.min.css">
 </head>
 <body>
-
 <div class="counsel-detail-container">
-  <div id="title" class="counsel-title">제목</div>
+  <div class="d-flex justify-content-between">
+    <div id="title" class="counsel-title">제목</div>
+    <div sec:authorize="isAuthenticated()" th:if="${#authentication.principal.username == counsel.email && !isCommentExist}">
+      <button id="update">수정</button><button id="delete">삭제</button>
+    </div>
+  </div>
+  <h6><span id="category" class="badge text-bg-secondary"></span></h6>
   <div class="counsel-meta"><span id="name">홍길동</span> | <span id="time">n초 전</span></div>
   <div id="content" class="counsel-content">
     내용
   </div>
+  <br>
+  <br>
+  <hr>
+  <div class="comment-title">답변</div>
+  <textarea id="comment-content" class="comment-box" placeholder="답변을 작성해주세요" style="display: none;"></textarea>
+  <button sec:authorize="hasRole('DOCTOR')" id="comment-btn" class="comment-btn" style="display: block;">답변 작성하기</button>
+  <button id="confirm-btn" class="comment-btn" style="display: none">등록</button>
+
+  <div id="comment-list" class="comment-list"></div>
 </div>
 <script type="module" src="/counsel/js/detail.js"></script>
 </body>

@@ -38,8 +38,6 @@ function renderPagination(data) {
       }
       pageItem.classList.add("active");
 
-      renderList()
-
       api.get("counsels", {
         params: {page: i}
       })
