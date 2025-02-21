@@ -32,7 +32,7 @@ public class ChatRoomCleanupScheduler {
     private final ChatReadStatusRepository chatReadStatusRepository;
     private final ApplicationEventPublisher eventPublisher;
 
-    @Scheduled(cron = "${scheduler.cleanup.cron}") // 매주 화요일 새벽 4시에 실행
+    @Scheduled(cron = "0 0 4 ? * TUE") // 매주 화요일 새벽 4시에 실행
     public void cleanupInactiveChatRooms() {
         // INACTIVE 상태인 채팅방들을 조회
         List<ChatRoom> inactiveChatRooms = chatRoomRepository.findByRoomStatus(RoomStatus.INACTIVE);
