@@ -1,9 +1,6 @@
 package com.example.elice_3rd.chat.service;
 
-import com.example.elice_3rd.chat.dto.ChatMessageDto;
-import com.example.elice_3rd.chat.dto.ChatRoomListDto;
-import com.example.elice_3rd.chat.dto.ChatRoomResponseDto;
-import com.example.elice_3rd.chat.dto.ChatRoomRequestDto;
+import com.example.elice_3rd.chat.dto.*;
 import com.example.elice_3rd.chat.entity.ChatMessage;
 import com.example.elice_3rd.chat.entity.ChatReadStatus;
 import com.example.elice_3rd.chat.entity.ChatRoom;
@@ -33,18 +30,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ChatService {
-
-    /*구현할 기능
-    1. 채팅방 이용자 상태 관리 입장 / 퇴장 / 오프라인 O
-    2. 채팅방 이용자가 모두 퇴장시 채팅 방 상태 활성 / 비활성 O
-    3. 채팅방 상태 비활성시에 메세지 전체 삭제 및 채팅방 삭제 처리 (스케쥴러로 관리) O
-    4. 채팅방 메세지 작성 O
-    5. 채팅방 메세지 수정
-    6. 채팅방 메세지 삭제 (상태 변경X -> 삭제 처리)
-    7. 채팅방 메세지 읽음 상태 변경 O
-    8. 채팅방 목록 O
-    9. 채팅방 내 메세지 리스트 O
-    */
 
     private final KafkaProducer kafkaProducer;
     private final MemberRepository memberRepository;
@@ -135,8 +120,8 @@ public class ChatService {
         return ChatRoomResponseDto.toDto(chatRoom, loggedInUserId);
     }
 
+    // 특정 멤버가 속한 모든 채팅방 목록 조회
     public List<ChatRoomListDto> getMemberChatRooms(Long memberId) {
-        // 특정 멤버가 속한 모든 채팅방 목록 조회
         // MemberStatus를 조회하여 유저가 나가지 않은 채팅방들을 조회
         List<MemberStatus> memberStatuses = memberStatusRepository.findByMemberMemberIdAndStatusNot(memberId, MemberStatusType.LEFT);
 
@@ -238,34 +223,34 @@ public class ChatService {
                 .flatMapMany(exists -> exists ? chatMessages : Flux.empty());
     }
 
+    public ChatRoomMemberDto findOtherMemberInChatRoom(Long chatRoomId, Long loggedInUserId) {
+        // 채팅방 조회
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new EntityNotFoundException("ChatRoom not found"));
+
+        // 채팅방에 속한 회원들 중 본인 제외 첫 번째 회원 찾기
+        for (Member member : chatRoom.getMembers()) {
+            if (!member.getMemberId().equals(loggedInUserId)) {
+                return ChatRoomMemberDto.toDto(member);
+            }
+        }
+
+        // 만약 본인이 유일한 멤버라면 예외 처리
+        throw new IllegalStateException("No other members found in this chat room.");
+    }
+
     // 채팅방 메시지 Kafka로 전송
     @Transactional
     public void sendMessageToKafka(ChatMessageDto chatMessageDto) {
         try {
             // mongoDB에 저장
             ChatMessage chatMessage = chatMessageDto.toEntity();
-            chatMessageRepository.save(chatMessage);
+            ChatMessage savedMessage = chatMessageRepository.save(chatMessage).block();
             log.info("Saved chat message: {}", chatMessage);
+            log.info("Saved chat message Id: {}", chatMessage.getChatMessageId());
 
-            // ChatRoom의 멤버들 조회
-            ChatRoom chatRoom = chatRoomRepository.findById(chatMessage.getChatRoomId())
-                    .orElseThrow(() -> new EntityNotFoundException("ChatRoom not found"));
-
-            // 각 멤버에 대해 ChatReadStatus 초기화
-            for (Member receiver : chatRoom.getMembers()) {
-                ChatReadStatus readStatus = new ChatReadStatus();
-                readStatus.setChatMessageId(chatMessage.getChatMessageId());
-                readStatus.setReceiver(receiver);
-                chatReadStatusRepository.save(readStatus);
-
-                // 수신자가 온라인 상태일 경우 즉시 읽음 처리
-                MemberStatus memberStatus = memberStatusRepository.findByChatRoomChatRoomIdAndMemberMemberId(chatMessage.getChatRoomId(), receiver.getMemberId())
-                        .orElseThrow(() -> new EntityNotFoundException("MemberStatus not found"));
-
-                if (memberStatus.getStatus() == MemberStatusType.ONLINE) {
-                    readStatus.setReadStatus(true); // 온라인이면 읽음 상태로 처리
-                    chatReadStatusRepository.save(readStatus);
-                }
+            if (savedMessage != null){
+                processChatRoomAndStatus(savedMessage);
             }
 
             // Kafka 메시지 전송, 실패 시 롤백
@@ -282,19 +267,42 @@ public class ChatService {
         }
     }
 
-    // 채팅방 메시지 수정
-    public Mono<ChatMessageDto> updateChatMessage(String chatMessageId, String newMessage) {
-        return chatMessageRepository.findById(chatMessageId)
-                .switchIfEmpty(Mono.error(new EntityNotFoundException("ChatMessage not found")))
-                .flatMap(chatMessage -> {
-                    chatMessage.setMessage(newMessage);
-                    return chatMessageRepository.save(chatMessage)
-                            .doOnSuccess(updatedMessage ->
-                                    log.info("Chat message with ID {} updated successfully.", chatMessageId)
-                            );
-                })
-                .map(ChatMessageDto::toDto);
+    private void processChatRoomAndStatus(ChatMessage chatMessage) {
+        // ChatRoom의 멤버들 조회 및 처리
+        ChatRoom chatRoom = chatRoomRepository.findById(chatMessage.getChatRoomId())
+                .orElseThrow(() -> new EntityNotFoundException("ChatRoom not found"));
+
+        // 각 멤버에 대해 ChatReadStatus 초기화
+        for (Member receiver : chatRoom.getMembers()) {
+            ChatReadStatus readStatus = new ChatReadStatus();
+            readStatus.setChatMessageId(chatMessage.getChatMessageId());
+            readStatus.setReceiver(receiver);
+            chatReadStatusRepository.save(readStatus);
+
+            // 수신자가 온라인 상태일 경우 즉시 읽음 처리
+            MemberStatus memberStatus = memberStatusRepository.findByChatRoomChatRoomIdAndMemberMemberId(chatMessage.getChatRoomId(), receiver.getMemberId())
+                    .orElseThrow(() -> new EntityNotFoundException("MemberStatus not found"));
+
+            if (memberStatus.getStatus() == MemberStatusType.ONLINE) {
+                readStatus.setReadStatus(true); // 온라인이면 읽음 상태로 처리
+                chatReadStatusRepository.save(readStatus);
+            }
+        }
     }
+
+    // 채팅방 메시지 수정
+//    public Mono<ChatMessageDto> updateChatMessage(String chatMessageId, String newMessage) {
+//        return chatMessageRepository.findById(chatMessageId)
+//                .switchIfEmpty(Mono.error(new EntityNotFoundException("ChatMessage not found")))
+//                .flatMap(chatMessage -> {
+//                    chatMessage.setMessage(newMessage);
+//                    return chatMessageRepository.save(chatMessage)
+//                            .doOnSuccess(updatedMessage ->
+//                                    log.info("Chat message with ID {} updated successfully.", chatMessageId)
+//                            );
+//                })
+//                .map(ChatMessageDto::toDto);
+//    }
 
     // 채팅방 메시지 삭제
     public Mono<Void> deleteChatMessage(String chatMessageId) {

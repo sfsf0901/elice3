@@ -1,27 +1,118 @@
-.message-box {
-    max-height: 400px;
-    overflow-y: auto;
-    padding: 10px;
+.chat-container {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    height: 100vh;
 }
 
-.message {
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f0f0f0;
     padding: 10px;
-    border-radius: 5px;
-    max-width: 70%;
-    word-wrap: break-word;
+    height: 60px;
+}
+
+.chat-header button {
+    background-color: #007bff;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.chat-header button:hover {
+    background-color: #0056b3;
+}
+
+.chat-header h2 {
+    flex-grow: 1;
+    text-align: center;
+    margin: 0;
+}
+
+.message-box {
+    flex-grow: 1;
+    margin-top: 10px;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+
+.message {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+
+.other-message {
+    align-items: flex-start;
+    max-width: 100%;
 }
 
 .my-message {
-    background-color: #d1f7c4;
-    align-self: flex-end;
-    text-align: right;
+    align-items: flex-end;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
-.other-message {
-    background-color: #f1f1f1;
-    align-self: flex-start;
-    text-align: left;
+.sender-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.message-text {
+    background-color: #FD7E14;
+    border-radius: 10px;
+    padding: 10px;
+    max-width: 100%;
+    word-wrap: break-word;
+    display: inline-block;
+
+.messageInputSection {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 10px;
+}
+
+#messageInput {
+    min-width: 80%
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#sendButton {
+    min-width: 20%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#sendButton:hover {
+    background-color: #0056b3;
+}
+
+#messageInput {
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+#sendButton {
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#sendButton:hover {
+    background-color: #0056b3;
 }

@@ -1,5 +1,6 @@
 package com.example.elice_3rd.chat.controller;
 
+import com.example.elice_3rd.chat.dto.ChatRoomMemberDto;
 import com.example.elice_3rd.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,10 +27,13 @@ public class ChatController {
     }
 
     @GetMapping("/chat-room/{chatRoomId}/{memberId}")
-    public String getChatRoom(@PathVariable Long chatRoomId, @PathVariable Long memberId) {
+    public String getChatRoom(@PathVariable Long chatRoomId, @PathVariable Long memberId, Model model) {
         if (!chatService.isChatRoomExist(chatRoomId)) {
             return "redirect:/";
         }
+        ChatRoomMemberDto chatRoomMemberDto = chatService.findOtherMemberInChatRoom(chatRoomId, memberId);
+        model.addAttribute("chatRoomMemberDto", chatRoomMemberDto);
+
         return "chat/chat-room";
     }
 
@@ -43,7 +47,6 @@ public class ChatController {
         log.debug("Logged In User ID: {}", loggedInUserId);
         //
         if (loggedInUserId == null) {
-            // 로그인되지 않은 상태라면 로그인 페이지로 리다이렉트
             return "redirect:/member/another-login";
         }
         model.addAttribute("memberId", loggedInUserId);

@@ -1,5 +1,6 @@
 package com.example.elice_3rd.notification.service;
 
+import com.example.elice_3rd.chat.dto.ChatMessageDto;
 import com.example.elice_3rd.chat.entity.ChatRoom;
 import com.example.elice_3rd.chat.entity.MemberStatus;
 import com.example.elice_3rd.chat.entity.status.MemberStatusType;
@@ -23,16 +24,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class NotificationService {
 
-    /*구현할 기능
-    1. 채팅방 내에서 오프라인시에 새로운 메세지를 받으면 알림 발송 처리
-    2. 알림 확인시에 알림 상태 변화 처리
-    3. 확인 안한 알림 메세지 목록 조회
-    */
-
     private final ChatRoomRepository chatRoomRepository;
     private final MemberStatusRepository memberStatusRepository;
     private final NotificationRepository notificationRepository;
-
 
     // 알림 발송
     @Transactional
@@ -60,7 +54,6 @@ public class NotificationService {
         }
     }
 
-
     // 알림 읽음 상태 변화
     @Transactional
     public void notificationAsRead(Long notificationId) {
@@ -78,11 +71,7 @@ public class NotificationService {
                 memberId, false);
 
         return unreadNotifications.stream()
-                .map(notification -> new NotificationDto(
-                        notification.getNotificationId(),
-                        notification.getReceiver().getMemberId(),
-                        notification.getMessage(),
-                        notification.isReadStatus()))
+                .map(NotificationDto::toDto)
                 .collect(Collectors.toList());
     }
 }

@@ -4,7 +4,7 @@ import com.example.elice_3rd.chat.dto.*;
 import com.example.elice_3rd.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -12,6 +12,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.security.Principal;
 import java.util.Arrays;
@@ -67,8 +68,8 @@ public class ChatAPIController {
         return ResponseEntity.ok(chatRooms);
     }
 
-    // 채팅방에 있는 모든 메시지 가져오기 (오프라인 상태에서 재입장 시) - SSE (Server-Sent Events) 방식
-    @GetMapping(value = "/{chatRoomId}/{memberId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    // 채팅방에 있는 모든 메시지 가져오기 (오프라인 상태에서 재입장 시)
+    @GetMapping("/{chatRoomId}/{memberId}")
     public ResponseEntity<Flux<ChatMessageDto>> getChatRoomMessages(@PathVariable Long chatRoomId, @PathVariable Long memberId) {
         if (chatRoomId <= 0) {
             return ResponseEntity.badRequest().body(Flux.empty());
@@ -82,6 +83,7 @@ public class ChatAPIController {
             return ResponseEntity.notFound().build();
         }
         Flux<ChatMessageDto> messages = chatService.getChatRoomMessages(chatRoomId, memberId);
+
         return ResponseEntity.ok(messages);
     }
 
@@ -96,6 +98,21 @@ public class ChatAPIController {
         log.info("Sending message to chat room: " + chatRoomId);
         chatService.sendMessageToKafka(chatMessageDto);
         return chatMessageDto;
+    }
+
+//    @PutMapping("/{chatMessageId}")
+//    public Mono<ResponseEntity<ChatMessageDto>> updateChatMessage(
+//            @PathVariable String chatMessageId,
+//            @RequestBody String newMessage) {
+//        return chatService.updateChatMessage(chatMessageId, newMessage)
+//                .map(ResponseEntity::ok)
+//                .defaultIfEmpty(ResponseEntity.notFound().build());
+//    }
+
+    @DeleteMapping("/{chatMessageId}")
+    public Mono<ResponseEntity<Void>> deleteChatMessage(@PathVariable String chatMessageId) {
+        return chatService.deleteChatMessage(chatMessageId)
+                .then(Mono.just(ResponseEntity.noContent().build()));
     }
 
     // 채팅방 나가기 버튼을 눌렀을 때 유저 상태를 LEFT로 변경

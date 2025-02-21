@@ -4,12 +4,14 @@ import com.example.elice_3rd.notification.dto.NotificationDto;
 import com.example.elice_3rd.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -21,19 +23,19 @@ public class NotificationAPIController {
 
     private final NotificationService notificationService;
 
-    @MessageMapping("/send-notification/{chatRoomId}")
-    @SendTo("/topic/{chatRoomId}")
-    public NotificationDto sendNotificationToChatRoom(@Payload NotificationDto notificationDto, @DestinationVariable Long chatRoomId) {
-        // 알림을 채팅방에 전달
-        notificationService.sendNotification(chatRoomId, notificationDto.getSender(), notificationDto.getMessage());
-        return notificationDto;
-    }
-
     // 멤버별 확인되지 않은 알림 가져오기
     @GetMapping("/unread/{memberId}")
     public ResponseEntity<List<NotificationDto>> getUnreadNotificationsForUser(@PathVariable Long memberId) {
         List<NotificationDto> unreadNotifications = notificationService.getUnreadNotificationsForMember(memberId);
         return ResponseEntity.ok(unreadNotifications);
+    }
+
+    @MessageMapping("/send-notification/{chatRoomId}")
+    @SendTo("/topic/{chatRoomId}")
+    public NotificationDto sendNotificationToChatRoom(@Payload NotificationDto notificationDto, @DestinationVariable Long chatRoomId) {
+        // 알림을 채팅방에 전달
+        notificationService.sendNotification(chatRoomId, notificationDto.getReceiverId(), notificationDto.getMessage());
+        return notificationDto;
     }
 
     // 알림 확인 상태 변경

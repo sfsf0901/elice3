@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{common/layout/layout}">
 <head>
     <meta charset="UTF-8">
     <title>채팅방 목록</title>
@@ -8,14 +10,13 @@
     <script defer th:src="@{/chat/js/chat-room-list.js}" type="text/javascript"></script>
 </head>
 <body>
-
-    <div class="container">
-        <div id="chatRoomsContainer"
-            th:data-member-id="${memberId}"
-        >
-
+    <div layout:fragment="content">
+        <div class="container">
+            <div id="chatRoomsContainer"
+                th:data-member-id="${memberId}"
+            >
+            </div>
         </div>
     </div>
-
 </body>
 </html>

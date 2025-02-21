@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ChatMessageDto {
 
+    private String chatMessageId;
+
     private Long chatRoomId;
 
     private Long senderId;
@@ -24,6 +26,7 @@ public class ChatMessageDto {
 
     public static ChatMessageDto toDto(ChatMessage chatMessage) {
         return ChatMessageDto.builder()
+                .chatMessageId(chatMessage.getChatMessageId())
                 .chatRoomId(chatMessage.getChatRoomId())
                 .senderId(chatMessage.getSenderId())
                 .message(chatMessage.getMessage())
