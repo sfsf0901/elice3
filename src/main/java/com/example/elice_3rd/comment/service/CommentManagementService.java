@@ -18,9 +18,9 @@ public class CommentManagementService {
     private final CounselRepository counselRepository;
 
     //TODO 예외처리 GlobalExceptionHandler 이용할지 고려
-    public void create(String email, Long id, CommentRequestDto requestDto){
+    public void create(String email, CommentRequestDto requestDto){
         Member member = memberRepository.findByEmail(email).orElseThrow();
-        Counsel counsel = counselRepository.findById(id).orElseThrow();
+        Counsel counsel = counselRepository.findById(requestDto.getCounselId()).orElseThrow();
 
         Comment comment = Comment.builder()
                 .content(requestDto.getContent())

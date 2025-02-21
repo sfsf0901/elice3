@@ -4,12 +4,16 @@ import com.example.elice_3rd.common.exception.NoSuchDataException;
 import com.example.elice_3rd.counsel.dto.CounselResponseDto;
 import com.example.elice_3rd.counsel.entity.Counsel;
 import com.example.elice_3rd.counsel.repository.CounselRepository;
+import com.example.elice_3rd.diagnosisSubject.entity.DiagnosisSubject;
+import com.example.elice_3rd.diagnosisSubject.repository.DiagnosisSubjectRepository;
 import com.example.elice_3rd.member.entity.Member;
 import com.example.elice_3rd.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor

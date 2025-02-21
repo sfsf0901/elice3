@@ -2,6 +2,7 @@ package com.example.elice_3rd.comment.repository;
 
 import com.example.elice_3rd.comment.entity.Comment;
 import com.example.elice_3rd.counsel.entity.Counsel;
+import com.example.elice_3rd.member.entity.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,4 +13,6 @@ import java.util.Optional;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     Optional<Comment> findByCounsel(Counsel counsel);
+    Page<Comment> findAllByCounsel(Counsel counsel, Pageable pageable);
+    Page<Comment> findAllByMember(Member member, Pageable pageable);
 }

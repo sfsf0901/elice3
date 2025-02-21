@@ -1,5 +1,6 @@
 package com.example.elice_3rd.security.oauth2;
 
+import com.example.elice_3rd.member.repository.MemberRepository;
 import com.example.elice_3rd.security.CustomUserDetails;
 import com.example.elice_3rd.security.MemberDetail;
 import com.example.elice_3rd.security.jwt.JwtUtil;
@@ -27,6 +28,7 @@ import java.util.Map;
 @Component
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     private final JwtUtil jwtUtil;
+    private final MemberRepository memberRepository;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
@@ -40,7 +42,10 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         // TODO email null check 필요
         String email = userInfo.get("email").toString();
-        String role = "USER";
+        String role = memberRepository.findByEmail(email).orElseThrow().getRole().getKey();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        log.error(objectMapper.writeValueAsString(userInfo));
 
         String accessToken = jwtUtil.createAccessToken(email, role);
         String refreshToken = jwtUtil.createRefreshToken(email, role);
