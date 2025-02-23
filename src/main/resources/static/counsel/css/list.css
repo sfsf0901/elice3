@@ -5,14 +5,6 @@
   font-family: 'Arial', sans-serif;
 }
 
-body {
-  background-color: #f9f9f9;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-}
-
 .counsel-container {
   width: 100%;
   max-width: 600px;
@@ -60,4 +52,32 @@ h1 {
   color: #999;
   display: block;
   text-align: right;
+}
+
+.search-box {
+  position: relative;
+  width: 100%;
+}
+.search-input {
+  width: 100%;
+  padding: 14px 20px;
+  padding-right: 50px; /* 아이콘 공간 확보 */
+  border: none;
+  border-radius: 10px;
+  background-color: #F6F6F6;
+  font-size: 16px;
+  color: #666;
+  outline: none;
+}
+.search-input::placeholder {
+  color: #BDBDBD;
+}
+.search-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+  font-size: 18px;
+  cursor: pointer;
 }

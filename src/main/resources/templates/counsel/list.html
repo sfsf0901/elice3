@@ -1,32 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout/layout}">
 <head>
   <meta charset="UTF-8">
   <title>상담 리스트</title>
   <link rel="stylesheet" href="/counsel/css/list.css">
-  <link rel="stylesheet" href="/common/css/bootstrap.min.css">
 </head>
 <body>
-<div style="width: 600px" class="d-flex flex-column justify-content-center">
-  <div class="input-group rounded" style="width: 70%" align="center">
-    <input id="search-input" type="search" class="form-control rounded" placeholder="Search" aria-label="Search"
-           aria-describedby="search-addon"/>
-    <span class="input-group-text border-0" id="search" style="cursor: pointer">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search"
-         viewBox="0 0 16 16">
-  <path
-      d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-    </svg>
-  </span>
+<div layout:fragment="content">
+  <div class="search-container">
+    <div style="width: 50%" class="search-box">
+      <input type="search" id="search-input" class="search-input" placeholder="병원, 진료과목, 증상" required onkeydown="handleEnter(event)">
+      <i id="search" class="fa-solid fa-magnifying-glass search-icon" onclick="updateActionAndSubmit(event)"></i>
+    </div>
   </div>
-  <br>
-  <div id="list-container" class="counsel-container"></div>
-  <button onclick="location.href = 'counsels/write'">질문 하기</button>
-  <nav aria-label="..." class="d-flex justify-content-center">
-    <ul id="pagination" class="pagination">
-    </ul>
-  </nav>
-</div>
+  <div style="width: 600px" class="d-flex flex-column">
+    <div id="list-container" class="counsel-container"></div>
+    <button class="btn btn-primary" onclick="location.href = 'counsels/write'">질문 하기</button>
+    <br>
+    <nav aria-label="..." class="d-flex justify-content-center">
+      <ul id="pagination" class="pagination">
+      </ul>
+    </nav>
+  </div>
 <script type="module" src="/counsel/js/list.js"></script>
+</div>
 </body>
 </html>

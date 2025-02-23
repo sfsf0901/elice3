@@ -5,6 +5,17 @@ function renderList(data){
   const listContainer = document.getElementById("list-container");
   listContainer.innerHTML = "";
 
+  if(items.length === 0) {
+    listContainer.innerHTML = `
+    <div class="alert alert-light my-5" role="alert">
+      <div class="d-flex flex-column align-items-center justify-content-center text-center" style="height: 20vh;">
+        <i class="fa-solid fa-triangle-exclamation h2"></i>
+        <h5 class="mt-2">상담내역이 존재하지 않습니다.</h5>
+      </div>
+    </div>`;
+    return;
+  }
+
   items.forEach(item => {
     const itemDiv = document.createElement("div");
     console.log(item);

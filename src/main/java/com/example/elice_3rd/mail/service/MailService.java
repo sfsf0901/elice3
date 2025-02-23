@@ -43,7 +43,7 @@ public class MailService {
             context.setVariable("content", mailDto.getContent());
             context.setVariable("code", mailDto.getCode());
 
-            String base64Image = getBase64EncodedImage("static/member/image/hospital.png");
+            String base64Image = getBase64EncodedImage("/static/member/image/hospital.png");
             context.setVariable("image", base64Image);
 
             String htmlContent = templateEngine.process("email-template", context);

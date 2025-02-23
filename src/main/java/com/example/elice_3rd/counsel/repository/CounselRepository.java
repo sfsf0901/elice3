@@ -18,6 +18,5 @@ public interface CounselRepository extends JpaRepository<Counsel, Long> {
     Page<Counsel> findAll(Pageable pageable);
     @Query("SELECT c FROM Counsel c WHERE c.category.name LIKE %:keyword% OR c.title LIKE %:keyword% OR c.content LIKE %:keyword%")
     Page<Counsel> searchAllByKeyword(String keyword, Pageable pageable);
-//    Page<Counsel> findAllByCategoryNameContainingOrTitleContaining(String keyword, Pageable pageable);
     Page<Counsel> findAllByMember(Member member, Pageable pageable);
 }
