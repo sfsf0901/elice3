@@ -49,10 +49,15 @@ public class HospitalSearchController {
                                    @RequestParam(value = "page", defaultValue = "0") int page,
                                    @PageableDefault(size = 20) Pageable pageable,
                                    Model model) {
+        System.out.println("### isOpen: " + condition.isOpen());
+        System.out.println("### hasNightClinic: " + condition.isHasNightClinic());
+        System.out.println("### hasSundayAndHolidayClinic: " + condition.isHasSundayAndHolidayClinic());
         long startTime = System.currentTimeMillis();
 
-        if (condition.getLatitude() == null) condition.setLatitude(37.5665); // 서울 위도
-        if (condition.getLongitude() == null) condition.setLongitude(126.9780); // 서울 위도
+//        if (condition.getLatitude() == null) condition.setLatitude(37.5665); // 서울 위도
+//        if (condition.getLongitude() == null) condition.setLongitude(126.9780); // 서울 위도
+        condition.setLatitude(37.5665); // 서울 위도
+        condition.setLongitude(126.9780); // 서울 위도
 
         Pageable customPageable = Pageable.ofSize(pageable.getPageSize()).withPage(page);
 
@@ -206,5 +211,13 @@ public class HospitalSearchController {
         model.addAttribute("kakaoApiKey", kakaoApiKey);
 
         return "hospital/hospitalDetails";
+    }
+
+    @GetMapping("/hospitals/map")
+    public String getHospitalMap(Model model) {
+        System.out.println("카카오 API 키 확인: " + kakaoApiKey); // 로그 확인
+        model.addAttribute("kakaoApiKey", kakaoApiKey);
+
+        return "hospital/kakaoMap";
     }
 }

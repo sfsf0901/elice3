@@ -6,10 +6,11 @@ import lombok.Data;
 public class HospitalSearchByKeywordCondition {
 
     private String keyword;
-    private Boolean hasNightClinic;
-    private Boolean hasSundayAndHolidayClinic;
     private Double latitude;
     private Double longitude;
+
+    private Boolean hasNightClinic;
+    private Boolean hasSundayAndHolidayClinic;
 
     private String hospitalName;
 

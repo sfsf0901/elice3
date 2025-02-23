@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class HospitalSearchWithEmergencyCondition {
 
-    private Boolean hasNightEmergency;
+    private boolean hasNightEmergency;
     private Double latitude;
     private Double longitude;
 

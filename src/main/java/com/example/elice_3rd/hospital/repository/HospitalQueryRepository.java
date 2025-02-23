@@ -31,7 +31,7 @@ public class HospitalQueryRepository {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
-    public List<Tuple> findAllByCategoryId(Long categoryId, Boolean hasNightClinic, Boolean hasSundayAndHolidayClinic, Double latitude, Double longitude, Pageable pageable) {
+    public List<Tuple> findAllByCategoryId(Long categoryId, boolean hasNightClinic, boolean hasSundayAndHolidayClinic, Double latitude, Double longitude, Pageable pageable) {
         NumberTemplate<Double> distanceExpression = numberTemplate(Double.class,
                 "ST_Distance_Sphere(point({0}, {1}), point({2}, {3}))",
                 longitude, latitude, hospital.longitude, hospital.latitude);
@@ -54,7 +54,7 @@ public class HospitalQueryRepository {
                 .fetch();
     }
 
-    public List<Tuple> findAllByHospitalName(String hospitalName, double latitude, double longitude, Pageable pageable) {
+    public List<Tuple> findAllByHospitalName(String hospitalName, boolean hasNightClinic, boolean hasSundayAndHolidayClinic, double latitude, double longitude, Pageable pageable) {
         NumberTemplate<Double> distanceExpression = numberTemplate(Double.class,
                 "ST_Distance_Sphere(point({0}, {1}), point({2}, {3}))",
                 longitude, latitude, hospital.longitude, hospital.latitude);
@@ -64,6 +64,8 @@ public class HospitalQueryRepository {
                 .from(hospital)
                 .where(
                         hospitalNameContains(hospitalName),
+                        hasNightClinicEq(hasNightClinic),
+                        hasSundayAndHolidayClinicEq(hasSundayAndHolidayClinic),
                         hospital.latitude.between(latitude - LATITUDE_DELTA, latitude + LATITUDE_DELTA),
                         hospital.longitude.between(longitude - LONGITUDE_DELTA, longitude + LONGITUDE_DELTA)
                 )
@@ -82,7 +84,7 @@ public class HospitalQueryRepository {
                 .select(hospital, distanceExpression)
                 .from(hospital)
                 .where(
-                        hasNightEmergencyEq(condition.getHasNightEmergency()),
+                        hasNightEmergencyEq(condition.isHasNightEmergency()),
                         hospital.latitude.between(condition.getLatitude() - LATITUDE_DELTA, condition.getLatitude() + LATITUDE_DELTA),
                         hospital.longitude.between(condition.getLongitude() - LONGITUDE_DELTA, condition.getLongitude() + LONGITUDE_DELTA)
                 )
@@ -101,24 +103,15 @@ public class HospitalQueryRepository {
         return StringUtils.hasText(keyword) ? hospital.hospitalName.containsIgnoreCase(keyword) : null;
     }
 
-    private BooleanExpression hasNightEmergencyEq(Boolean hasNightEmergency) {
-        if (hasNightEmergency == null) {
-            return null;
-        }
+    private BooleanExpression hasNightEmergencyEq(boolean hasNightEmergency) {
         return hasNightEmergency ? hospital.hasNightEmergency.eq(true) : null;
     }
 
-    private BooleanExpression hasNightClinicEq(Boolean hasNightClinic) {
-        if (hasNightClinic == null) {
-            return null;
-        }
+    private BooleanExpression hasNightClinicEq(boolean hasNightClinic) {
         return hasNightClinic ? hospitalCategory.hospital.hasNightClinic.eq(true) : null;
     }
 
-    private BooleanExpression hasSundayAndHolidayClinicEq(Boolean hasSundayAndHolidayClinic) {
-        if (hasSundayAndHolidayClinic == null) {
-            return null;
-        }
+    private BooleanExpression hasSundayAndHolidayClinicEq(boolean hasSundayAndHolidayClinic) {
         return hasSundayAndHolidayClinic ? hospitalCategory.hospital.hasSundayAndHolidayClinic.eq(true) : null;
     }
 }
