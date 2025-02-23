@@ -1,7 +1,7 @@
 package com.example.elice_3rd.license.controller;
 
 import com.example.elice_3rd.license.service.LicenseService;
-import com.example.elice_3rd.license.utuil.AES256Util;
+import com.example.elice_3rd.license.util.AES256Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
