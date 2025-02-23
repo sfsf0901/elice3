@@ -21,8 +21,8 @@ public class CounselRetrieveService {
     private final CounselRepository counselRepository;
     private final MemberRepository memberRepository;
 
-    public Page<CounselResponseDto> retrieveAll(Pageable pageable){
-        Page<Counsel> counselPage = counselRepository.findAll(pageable);
+    public Page<CounselResponseDto> retrieveAll(String keyword, Pageable pageable){
+        Page<Counsel> counselPage = counselRepository.searchAllByKeyword(keyword, pageable);
         return counselPage.map(Counsel::toDto);
     }
 

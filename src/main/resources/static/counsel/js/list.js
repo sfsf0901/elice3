@@ -7,9 +7,13 @@ function renderList(data){
 
   items.forEach(item => {
     const itemDiv = document.createElement("div");
+    console.log(item);
     itemDiv.className = "counsel-item"
     itemDiv.innerHTML = `
-      <h3 class="counsel-title">${item.title}</h3>
+      <div class="d-flex">
+      <h3 class="counsel-title">${item.title}</h3>&nbsp
+      <h6><span class="badge text-bg-secondary">${item.category}</span></h6>
+      </div>
       <p class="counsel-summary">${item.content}</p>
       <span class="counsel-date">${item.createdDate.split("T")[0]}</span>
     `;
@@ -39,7 +43,10 @@ function renderPagination(data) {
       pageItem.classList.add("active");
 
       api.get("counsels", {
-        params: {page: i}
+        params: {
+          keyword: document.getElementById("search-input").value,
+          page: i
+        }
       })
         .then(response => {
           renderList(response.data);
@@ -49,6 +56,29 @@ function renderPagination(data) {
     pagination.appendChild(pageItem)
   }
 }
+
+function search(){
+  api.get("counsels", {
+    params: {
+      keyword: document.getElementById("search-input").value
+    }
+  })
+    .then(response => {
+      console.log(response);
+      renderList(response.data);
+      renderPagination(response.data);
+    });
+}
+
+document.getElementById("search").addEventListener("click", () => {
+  search();
+})
+
+document.getElementById("search-input").addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    search();
+  }
+});
 
 api.get("counsels")
   .then(response => {

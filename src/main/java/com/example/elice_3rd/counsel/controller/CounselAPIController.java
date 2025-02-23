@@ -11,6 +11,7 @@ import com.example.elice_3rd.diagnosisSubject.service.DiagnosisSubjectService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -22,6 +23,7 @@ import java.net.URI;
 import java.security.Principal;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/counsels")
@@ -56,8 +58,9 @@ public class CounselAPIController {
 
     @GetMapping
     public ResponseEntity<Page<CounselResponseDto>> retrieveAll(@PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable,
-                                                                String keyword){
-        return ResponseEntity.ok(counselService.retrieveAll(pageable));
+                                                                @RequestParam(defaultValue = "") String keyword){
+        log.warn("keyword : {}", keyword);
+        return ResponseEntity.ok(counselService.retrieveAll(keyword, pageable));
     }
 
     @GetMapping("/my-counsels")
