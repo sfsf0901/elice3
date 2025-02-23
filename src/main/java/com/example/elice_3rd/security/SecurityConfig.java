@@ -50,13 +50,13 @@ public class SecurityConfig {
                     .permitAll();
         });
 
-//        http.oauth2Login(oauth2 -> {
-//            oauth2.loginPage("/login");
-//            oauth2.successHandler(oAuth2LoginSuccessHandler);
-//            oauth2.userInfoEndpoint(userInfoEndpointConfig -> {
-//                userInfoEndpointConfig.userService(customOAuth2UserService);
-//            });
-//        });
+        http.oauth2Login(oauth2 -> {
+            oauth2.loginPage("/login");
+            oauth2.successHandler(oAuth2LoginSuccessHandler);
+            oauth2.userInfoEndpoint(userInfoEndpointConfig -> {
+                userInfoEndpointConfig.userService(customOAuth2UserService);
+            });
+        });
 
         http.exceptionHandling(e -> {
             e.authenticationEntryPoint(((request, response, authException) -> {
