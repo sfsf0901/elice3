@@ -13,8 +13,6 @@ public class MemberResponseDto {
     private String email;
     @NotBlank
     private String name;
-    @NotBlank
-    private String contact;
     @NotNull
     private Role role;
 }

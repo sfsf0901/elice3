@@ -15,6 +15,4 @@ public class MemberRequestDto {
     private String name;
     @NotBlank
     private String password;
-    @NotBlank
-    private String contact;
 }

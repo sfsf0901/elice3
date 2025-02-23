@@ -23,8 +23,6 @@ public class MemberManagementService {
                 .email(requestDto.getEmail())
                 .name(requestDto.getName())
                 .password(passwordEncoder.encode(requestDto.getPassword()))
-                .contact(requestDto.getContact())
-                .verification(false)
                 .build();
     }
 
@@ -64,19 +62,5 @@ public class MemberManagementService {
                 () -> new IllegalArgumentException("회원 권한 변경 실패: 이메일과 일치하는 회원이 없습니다.")
         );
         member.updateRoleDoctor();
-    }
-
-    @Transactional
-    void verify(String code){
-        String email = new String(Base64.getDecoder().decode(code));
-        Member member = memberRepository.findByEmail(email).orElseThrow(() ->
-            new NoSuchDataException("이메일 인증 실패: 이메일과 일치하는 회원이 존재하지 않습니다.")
-        );
-        member.verify();
-    }
-
-    @Transactional
-    void verificationTimeout(){
-
     }
 }

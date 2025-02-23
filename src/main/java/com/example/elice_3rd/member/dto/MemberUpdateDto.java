@@ -9,6 +9,4 @@ import lombok.Getter;
 public class MemberUpdateDto {
     @NotBlank
     private String name;
-    @NotBlank
-    private String contact;
 }

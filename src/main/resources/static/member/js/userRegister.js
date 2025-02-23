@@ -36,7 +36,6 @@ function verifySuccess(){
           email: document.getElementById('email').value,
           name: document.getElementById('name').value,
           password: document.getElementById('password').value,
-          contact: document.getElementById('contact').value
         })
           .then(res => {
             console.log(res);

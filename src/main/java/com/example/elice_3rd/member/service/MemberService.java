@@ -36,8 +36,4 @@ public class MemberService {
     public void updateRole(String email){
         managementService.updateRole(email);
     }
-
-    public void verify(String code){
-        managementService.verify(code);
-    }
 }

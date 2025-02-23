@@ -89,10 +89,4 @@ public class MemberAPIController {
                                                                        @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable){
         return ResponseEntity.ok(commentService.retrieveMyComments(principal.getName(), pageable));
     }
-
-    @PatchMapping("verify")
-    public ResponseEntity<Void> verify(String code){
-        memberService.verify(code);
-        return ResponseEntity.ok().build();
-    }
 }
