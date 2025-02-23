@@ -1,23 +1,27 @@
 import api from "/common/js/API.js"
 
-async function renderContent() {
-  const data = (await api.get(`counsels/detail`, {
-    params: {id: location.pathname.split("/").pop()}
-  })).data
+api.get("counsels/detail", {
+  params: {id: location.pathname.split("/").pop()}
+}).then(response => {
+  renderContent(response.data)
+});
+
+api.get("comments", {
+  params: {counselId: location.pathname.split("/").pop()}
+}).then(response => {
+  renderComment(response.data);
+  renderPagination(response.data);
+})
+
+async function renderContent(data) {
   document.getElementById("title").textContent = data.title;
   document.getElementById("content").textContent = data.content;
   document.getElementById("name").textContent = data.email;
   document.getElementById("time").textContent = data.createdDate;
   document.getElementById("category").textContent = data.category;
-
-  console.log(data);
 }
 
-async function renderComment() {
-  const data = (await api.get(`comments`, {
-    params: {counselId: location.pathname.split("/").pop()}
-  })).data
-  console.log(data);
+async function renderComment(data) {
   const commentList = document.getElementById("comment-list");
   commentList.innerHTML = "";
   const commentData = data.content;
@@ -37,8 +41,37 @@ async function renderComment() {
   })
 }
 
-renderContent();
-renderComment();
+function renderPagination(data) {
+  const pagination = document.getElementById("pagination");
+  pagination.innerHTML = "";
+  for(let i = 0; i < data.totalPages; i++) {
+    const pageItem = document.createElement("li");
+    pageItem.className = "page-item"
+    pageItem.innerHTML = `<span class="page-link">${i + 1}</span>`
+    if(i === 0)
+      pageItem.classList.add("active");
+
+    pageItem.addEventListener("click", () => {
+      const activePage = document.querySelector(".active");
+      if(activePage !== null){
+        activePage.classList.remove("active");
+      }
+      pageItem.classList.add("active");
+
+      api.get("comments", {
+        params: {
+          counselId: location.pathname.split("/").pop(),
+          page: i
+        }
+      })
+        .then(response => {
+          renderComment(response.data);
+        })
+    });
+
+    pagination.appendChild(pageItem)
+  }
+}
 
 const commentBtn = document.getElementById("comment-btn");
 const deleteBtn = document.getElementById("delete");

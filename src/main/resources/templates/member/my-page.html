@@ -39,12 +39,12 @@
       <div class="text">찜한 병원</div>
       <div class="right"> ></div>
     </div>
-    <div onclick="popup()" class="item" sec:authorize="hasRole('USER')">
+    <div id="doctor-verification" class="item" sec:authorize="hasRole('USER')">
       <div class="icon">🩺</div>
       <div class="text">의사 인증하기</div>
       <div class="right"> ></div>
     </div>
-    <a href="/members/comments" class="item" sec:authorize="hasRole('DOCTOR')">
+    <a href="/my-page/comments" class="item" sec:authorize="hasRole('DOCTOR')">
       <div class="icon">✅</div>
       <div class="text">내 답변 내역</div>
       <div class="right"> ></div>
@@ -83,6 +83,6 @@
   <!--  <div class="infoContainer">-->
   <!--  </div>-->
 </div>
-<script src="/member/js/my-page.js"></script>
+<script type="module" src="/member/js/my-page.js"></script>
 </body>
 </html>

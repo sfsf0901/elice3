@@ -32,6 +32,11 @@ public class MemberViewController {
         return "/member/my-counsels";
     }
 
+    @GetMapping("/my-page/comments")
+    public String myComments(){
+        return "/member/my-comments";
+    }
+
     @GetMapping("/verify")
     public String verify(){
         return "/member/verify";

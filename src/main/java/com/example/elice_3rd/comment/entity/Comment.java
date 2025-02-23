@@ -27,6 +27,9 @@ public class Comment extends BaseEntity {
 
     public CommentResponseDto toDto(){
         return CommentResponseDto.builder()
+                .counselId(counsel.toDto().getCounselId())
+                .title(counsel.toDto().getTitle())
+                .category(counsel.toDto().getCategory())
                 .content(content)
                 .email(member.getEmail())
                 .createdDate(getCreatedDate())

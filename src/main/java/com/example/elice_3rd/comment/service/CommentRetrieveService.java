@@ -36,11 +36,11 @@ public class CommentRetrieveService {
         return !commentRepository.findAllByCounsel(counsel, PageRequest.of(0, 1)).isEmpty();
     }
 
-    public Page<CommentResponseDto> retrieveMyComments(String email, Pageable pageable){
+    public Page<CommentResponseDto> retrieveMyComments(String email, String keyword, Pageable pageable){
         Member member = memberRepository.findByEmail(email).orElseThrow(() ->
                 new NoSuchDataException("내 답변 내역 조회 실패: 회원 이메일과 회원 정보가 일치하지 않습니다.")
         );
 
-        return commentRepository.findAllByMember(member, pageable).map(Comment::toDto);
+        return commentRepository.searchByKeyword(member, keyword, pageable).map(Comment::toDto);
     }
 }

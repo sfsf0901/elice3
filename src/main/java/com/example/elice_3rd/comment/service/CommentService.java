@@ -32,7 +32,7 @@ public class CommentService {
         return retrieveService.isExist(counselId);
     }
 
-    public Page<CommentResponseDto> retrieveMyComments(String email, Pageable pageable){
-        return retrieveService.retrieveMyComments(email, pageable);
+    public Page<CommentResponseDto> retrieveMyComments(String email, String keyword, Pageable pageable){
+        return retrieveService.retrieveMyComments(email, keyword, pageable);
     }
 }

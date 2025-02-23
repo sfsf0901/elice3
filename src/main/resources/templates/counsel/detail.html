@@ -11,8 +11,10 @@
 <div class="counsel-detail-container">
   <div class="d-flex justify-content-between">
     <div id="title" class="counsel-title">제목</div>
-    <div sec:authorize="isAuthenticated()" th:if="${#authentication.principal.username == counsel.email && !isCommentExist}">
-      <button id="update">수정</button><button id="delete">삭제</button>
+    <div sec:authorize="isAuthenticated()"
+         th:if="${#authentication.principal.username == counsel.email && !isCommentExist}">
+      <button id="update">수정</button>
+      <button id="delete">삭제</button>
     </div>
   </div>
   <h6><span id="category" class="badge text-bg-secondary"></span></h6>
@@ -25,10 +27,17 @@
   <hr>
   <div class="comment-title">답변</div>
   <textarea id="comment-content" class="comment-box" placeholder="답변을 작성해주세요" style="display: none;"></textarea>
-  <button sec:authorize="hasRole('DOCTOR')" id="comment-btn" class="comment-btn" style="display: block;">답변 작성하기</button>
+  <button sec:authorize="hasRole('DOCTOR')" id="comment-btn" class="comment-btn" style="display: block;">답변 작성하기
+  </button>
   <button id="confirm-btn" class="comment-btn" style="display: none">등록</button>
 
-  <div id="comment-list" class="comment-list"></div>
+  <div id="comment-list" class="comment-list">
+  </div>
+  <br>
+  <nav aria-label="..." class="d-flex justify-content-center">
+    <ul id="pagination" class="pagination">
+    </ul>
+  </nav>
 </div>
 <script type="module" src="/counsel/js/detail.js"></script>
 </body>

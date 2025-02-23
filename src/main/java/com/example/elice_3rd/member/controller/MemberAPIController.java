@@ -84,9 +84,9 @@ public class MemberAPIController {
         return ResponseEntity.ok(counselService.retrieveMyCounsels(principal.getName(), pageable));
     }
 
-    @GetMapping("comments")
-    public ResponseEntity<Page<CommentResponseDto>> retrieveMyComments(Principal principal,
-                                                                       @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable){
-        return ResponseEntity.ok(commentService.retrieveMyComments(principal.getName(), pageable));
-    }
+//    @GetMapping("comments")
+//    public ResponseEntity<Page<CommentResponseDto>> retrieveMyComments(Principal principal, @RequestParam(defaultValue = "") String keyword,
+//                                                                       @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable){
+//        return ResponseEntity.ok(commentService.retrieveMyComments(principal.getName(), keyword, pageable));
+//    }
 }
