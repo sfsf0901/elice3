@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     Optional<Comment> findByCounsel(Counsel counsel);
     Page<Comment> findAllByCounsel(Counsel counsel, Pageable pageable);
-    Page<Comment> findAllByMember(Member member, Pageable pageable);
     @Query("SELECT c FROM Comment c WHERE c.member = :member AND (c.content LIKE %:keyword% OR c.counsel.category.name LIKE %:keyword% OR c.counsel.title LIKE %:keyword%)")
     Page<Comment> searchByKeyword(Member member, String keyword, Pageable pageable);
+    Boolean existsByCounsel(Counsel counsel);
 }

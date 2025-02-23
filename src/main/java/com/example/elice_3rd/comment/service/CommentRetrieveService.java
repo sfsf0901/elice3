@@ -33,7 +33,7 @@ public class CommentRetrieveService {
     public Boolean isExist(Long counselId){
         Counsel counsel = counselRepository.findById(counselId).orElseThrow(() ->
                 new NoSuchDataException("답변 조회 실패: 상담 아이디와 일치하는 상담 게시글이 존재하지 않습니다."));
-        return !commentRepository.findAllByCounsel(counsel, PageRequest.of(0, 1)).isEmpty();
+        return commentRepository.existsByCounsel(counsel);
     }
 
     public Page<CommentResponseDto> retrieveMyComments(String email, String keyword, Pageable pageable){

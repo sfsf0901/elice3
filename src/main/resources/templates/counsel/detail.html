@@ -6,6 +6,13 @@
   <title>상담 상세 페이지</title>
   <link rel="stylesheet" href="/counsel/css/detail.css">
   <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+  <style>
+    textarea{
+      width: 100%;
+      height: 300px;
+      resize: none;
+    }
+  </style>
 </head>
 <body>
 <div class="counsel-detail-container">
@@ -25,17 +32,18 @@
   <br>
   <br>
   <hr>
-  <div class="comment-title">답변</div>
-  <textarea id="comment-content" class="comment-box" placeholder="답변을 작성해주세요" style="display: none;"></textarea>
-  <button sec:authorize="hasRole('DOCTOR')" id="comment-btn" class="comment-btn" style="display: block;">답변 작성하기
-  </button>
-  <button id="confirm-btn" class="comment-btn" style="display: none">등록</button>
+  <div class="comment-title d-flex justify-content-between py-2">답변
+    <button sec:authorize="hasRole('DOCTOR')" id="comment-btn" class="comment-btn" style="display: block;">답변 작성하기
+    </button>
+    <button id="confirm-btn" class="comment-btn" style="display: none">등록</button>
+  </div>
+  <textarea id="comment-content" class="form-control" placeholder="답변을 작성해주세요" style="display: none;"></textarea>
 
   <div id="comment-list" class="comment-list">
   </div>
   <br>
   <nav aria-label="..." class="d-flex justify-content-center">
-    <ul id="pagination" class="pagination">
+    <ul id="pagination" class="pagination" style="cursor: pointer">
     </ul>
   </nav>
 </div>
