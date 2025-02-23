@@ -24,7 +24,7 @@ import java.util.List;
 public class HospitalSearchService {
 
     private final HospitalQueryRepository hospitalQueryRepository;
-//    private final OllamaService ollamaService;
+    private final OllamaService ollamaService;
     private final CategoryService categoryService;
 
     public Slice<HospitalResponse> findAllByCategoryId(HospitalSearchByCategoryCondition condition, Pageable pageable) {
@@ -65,8 +65,9 @@ public class HospitalSearchService {
     }
 
     public Slice<HospitalResponse> findAllByKeyword(HospitalSearchByKeywordCondition condition, Pageable pageable) {
-//        String result = ollamaService.analyzeKeyword(condition.getKeyword());
-//        System.out.println("########result = " + result);
+        String result = ollamaService.analyzeKeyword(condition.getKeyword());
+        System.out.println("########result = " + result);
+        
         List<Tuple> results = null;
 
         Category category = categoryService.findByName(condition.getKeyword());
@@ -78,18 +79,24 @@ public class HospitalSearchService {
                     condition.getLatitude(),
                     condition.getLongitude(),
                     pageable);
-        }
-
-        /*if (result.startsWith("병원이름: ")) {
-            result = result.replace("병원이름: ", "").trim(); // 병원 이름만 남기기
-            condition.setHospitalName(result);
-
-            results = hospitalQueryRepository.findAllByHospitalName(
-                    condition.getHospitalName(),
+        } else if (result.startsWith("1")) {
+            result = result.replace("1:", "").trim(); // 병원 이름만 남기기
+            results = hospitalQueryRepository.findAllByCategoryId(
+                    categoryService.findByName(result).getId(),
+                    condition.getHasNightClinic(),
+                    condition.getHasSundayAndHolidayClinic(),
                     condition.getLatitude(),
                     condition.getLongitude(),
                     pageable);
-        }*/
+        } else if (result.startsWith("2")) {
+            hospitalQueryRepository.findAllByHospitalName(
+                    condition.getKeyword(),
+                    condition.getLatitude(),
+                    condition.getLongitude(),
+                    pageable);
+        } else {
+            // TODO 거리순으로 병원 검색하는 로직 추가
+        }
 
         return getHospitalResponses(pageable, results);
     }

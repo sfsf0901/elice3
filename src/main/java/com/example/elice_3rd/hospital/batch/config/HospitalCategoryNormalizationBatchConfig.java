@@ -1,26 +1,12 @@
 package com.example.elice_3rd.hospital.batch.config;
 
 
-import com.example.elice_3rd.category.entity.Category;
-import com.example.elice_3rd.hospital.batch.entity.HospitalTemp;
-import com.example.elice_3rd.hospital.batch.service.HospitalTempService;
-import com.example.elice_3rd.hospital.entity.Hospital;
-import com.example.elice_3rd.hospital.entity.HospitalCategory;
-import com.example.elice_3rd.hospital.repository.HospitalCategoryRepository;
-import com.example.elice_3rd.hospital.service.HospitalService;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.listener.StepExecutionListenerSupport;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.database.JpaPagingItemReader;
-import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;

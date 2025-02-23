@@ -1,7 +1,8 @@
-package com.example.elice_3rd.hospital.entity;
+package com.example.elice_3rd.symptom.entity;
 
 import com.example.elice_3rd.category.entity.Category;
-import com.example.elice_3rd.diagnosisSubject.entity.DiagnosisSubject;
+import com.example.elice_3rd.common.BaseEntity;
+import com.example.elice_3rd.hospital.entity.Hospital;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,25 +13,20 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class HospitalCategory {
+public class SymptomCategory extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "hospital_category_id")
+    @Column(name = "symptom_category_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hospital_id")
-    private Hospital hospital;
+    @JoinColumn(name = "symptom_id")
+    private Symptom symptom;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 
-    public static HospitalCategory create(Hospital hospital, Category category) {
-        HospitalCategory hospitalCategory = new HospitalCategory();
-        hospitalCategory.hospital = hospital;
-        hospitalCategory.category = category;
-        return hospitalCategory;
-    }
+    private Integer priority; // 우선순위 추가
 }
