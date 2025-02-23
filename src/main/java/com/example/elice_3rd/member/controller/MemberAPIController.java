@@ -11,6 +11,7 @@ import com.example.elice_3rd.member.dto.MemberUpdateDto;
 import com.example.elice_3rd.member.service.MemberService;
 import com.example.elice_3rd.security.jwt.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -38,6 +39,8 @@ public class MemberAPIController {
 
     @PostMapping
     public ResponseEntity<Void> register(@RequestBody @Validated MemberRequestDto requestDto) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        log.error(objectMapper.writeValueAsString(requestDto));
         try {
             memberService.register(requestDto);
             return ResponseEntity.created(URI.create("/login")).build();

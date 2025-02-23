@@ -55,7 +55,8 @@ public class CounselAPIController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<CounselResponseDto>> retrieveAll(@PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable){
+    public ResponseEntity<Page<CounselResponseDto>> retrieveAll(@PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable,
+                                                                String keyword){
         return ResponseEntity.ok(counselService.retrieveAll(pageable));
     }
 

@@ -35,7 +35,7 @@ public class CounselRetrieveService {
 
     public Page<CounselResponseDto> retrieveMyCounsels(String email, Pageable pageable) {
         Member member = memberRepository.findByEmail(email).orElseThrow(
-                () -> new NoSuchDataException("")
+                () -> new NoSuchDataException("상담 상세 조회 실패: 요청 파라미터와 일치하는 상담 게시글이 없습니다.")
         );
         Page<Counsel> counselPage = counselRepository.findAllByMember(member, pageable);
 

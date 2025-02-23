@@ -13,6 +13,10 @@ async function userRegister() {
   })
   alert("인증 메일이 발송되었습니다.")
 
+  document.querySelectorAll("input").forEach(item => {
+    item.disabled = true;
+  });
+
   document.getElementById("submit-button").style.display = "none";
   document.getElementById("verify-button").style.display = "block"
 }
@@ -28,18 +32,17 @@ function verifySuccess(){
     .then(response => {
       console.log(response);
       if(response.data) {
-        const memberDto = {
+        api.post("members", {
           email: document.getElementById('email').value,
           name: document.getElementById('name').value,
           password: document.getElementById('password').value,
-          contact: document.getElementById('contact').value,
-        }
-        console.log(memberDto);
-        api.post("/members", {
-          memberDto
+          contact: document.getElementById('contact').value
         })
-        alert("회원가입이 완료되었습니다.");
-        location.href = "/login";
+          .then(res => {
+            console.log(res);
+            alert("회원가입이 완료되었습니다.");
+            location.href = "/login";
+          })
       } else
         alert("이메일 인증을 완료해주세요.");
     })
