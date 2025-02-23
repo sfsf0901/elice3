@@ -4,6 +4,8 @@ api.headers
 
 document.getElementById("licenseForm").addEventListener("submit", async function (event) {
   event.preventDefault(); // 기본 제출 방지
+  document.getElementById("licenseForm").style.pointerEvents = "none";
+  document.getElementById("licenseForm").style.cursor = "wait";
 
   const JUMIN = document.getElementById("jumin1").value + document.getElementById("jumin2").value;
   const encryptedJumin = await (await fetch("/api/v1/licenses/encrypt", {
