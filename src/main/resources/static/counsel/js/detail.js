@@ -44,16 +44,16 @@ async function renderComment(data) {
 function renderPagination(data) {
   const pagination = document.getElementById("pagination");
   pagination.innerHTML = "";
-  for(let i = 0; i < data.totalPages; i++) {
+  for (let i = 0; i < data.totalPages; i++) {
     const pageItem = document.createElement("li");
     pageItem.className = "page-item"
     pageItem.innerHTML = `<span class="page-link">${i + 1}</span>`
-    if(i === 0)
+    if (i === 0)
       pageItem.classList.add("active");
 
     pageItem.addEventListener("click", () => {
       const activePage = document.querySelector(".active");
-      if(activePage !== null){
+      if (activePage !== null) {
         activePage.classList.remove("active");
       }
       pageItem.classList.add("active");
@@ -77,7 +77,7 @@ const commentBtn = document.getElementById("comment-btn");
 const deleteBtn = document.getElementById("delete");
 const updateBtn = document.getElementById("update");
 
-if(commentBtn !== null){
+if (commentBtn !== null) {
   commentBtn.addEventListener("click", () => {
     commentBtn.style.display = "none";
     document.getElementById("comment-content").style.display = "block";
@@ -85,27 +85,28 @@ if(commentBtn !== null){
   });
 }
 
-if(deleteBtn !== null){
+if (deleteBtn !== null) {
   deleteBtn.addEventListener("click", () => {
-    api.delete("counsels", {
-      params: {
-        id: location.pathname.split("/").pop()
-      }
-    })
-      .then(response => {
+    if (confirm("글을 삭제하시겠습니까?")) {
+      api.delete("counsels", {
+        params: {
+          id: location.pathname.split("/").pop()
+        }
+      }).then(response => {
         location.href = response.headers.location;
       })
+    }
   })
 }
 
-if(updateBtn !== null){
+if (updateBtn !== null) {
   updateBtn.addEventListener("click", () => {
     location.href = `/counsels/update/${location.pathname.split("/").pop()}`
   });
 }
 
 document.getElementById("confirm-btn").addEventListener("click", () => {
-  api.post("comments",{
+  api.post("comments", {
     counselId: location.pathname.split("/").pop(),
     content: document.getElementById("comment-content").value
   })

@@ -48,7 +48,7 @@ public class CounselAPIController {
     @DeleteMapping
     public ResponseEntity<Void> delete(Principal principal, Long id){
         counselService.delete(principal.getName(), id);
-        return ResponseEntity.noContent().location(URI.create("/my-page/counsels")).build();
+        return ResponseEntity.noContent().location(URI.create("/counsels")).build();
     }
 
     @GetMapping("detail")

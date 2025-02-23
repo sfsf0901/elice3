@@ -1,12 +1,13 @@
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 20px;
-  background-color: #f8f9fa;
-}
+/*body {*/
+/*  font-family: Arial, sans-serif;*/
+/*  margin: 0;*/
+/*  padding: 20px;*/
+/*  background-color: #f8f9fa;*/
+/*}*/
 
 .counsel-detail-container {
-  max-width: 600px;
+  /*max-width: 600px;*/
+  width: 700px;
   margin: 0 auto;
   padding: 20px;
   background: white;
