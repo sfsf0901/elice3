@@ -1,12 +1,10 @@
 package com.example.elice_3rd.hospital.batch.config;
 
 
-import com.example.elice_3rd.category.entity.Category;
 import com.example.elice_3rd.hospital.batch.entity.HospitalTemp;
 import com.example.elice_3rd.hospital.batch.service.HospitalTempService;
 import com.example.elice_3rd.hospital.entity.Hospital;
 import com.example.elice_3rd.hospital.entity.HospitalCategory;
-import com.example.elice_3rd.hospital.entity.HospitalDiagnosisSubject;
 import com.example.elice_3rd.hospital.repository.HospitalCategoryRepository;
 import com.example.elice_3rd.hospital.service.HospitalService;
 import jakarta.persistence.EntityManager;
@@ -19,19 +17,15 @@ import org.springframework.batch.core.listener.StepExecutionListenerSupport;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
-import org.springframework.batch.item.support.IteratorItemReader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
+    import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Configuration
@@ -40,9 +34,7 @@ import java.util.stream.Collectors;
 public class HospitalCategoryBatchConfig {
 
     private final EntityManager em;
-    private final HospitalTempService hospitalTempService;
     private final HospitalService hospitalService;
-    private final HospitalCategoryRepository hospitalCategoryRepository;
 
     @Bean
     public Step saveHospitalCategoryStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) {

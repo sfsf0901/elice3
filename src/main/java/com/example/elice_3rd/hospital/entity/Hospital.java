@@ -1,16 +1,19 @@
 package com.example.elice_3rd.hospital.entity;
 
+import com.example.elice_3rd.common.BaseEntity;
 import com.example.elice_3rd.hospital.batch.entity.HospitalTemp;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table
-public class Hospital {
+public class Hospital extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -18,7 +18,6 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
 import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
-import org.springframework.batch.item.support.IteratorItemReader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -30,7 +29,6 @@ import java.util.List;
 @Slf4j
 public class HospitalNormalizationBatchConfig {
 
-    private final HospitalTempService hospitalTempService;
     private final EntityManager em;
 
 

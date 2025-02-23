@@ -2,10 +2,8 @@ package com.example.elice_3rd.hospital.controller;
 
 import com.example.elice_3rd.category.entity.Category;
 import com.example.elice_3rd.category.service.CategoryService;
-import com.example.elice_3rd.diagnosisSubject.entity.DiagnosisSubject;
 import com.example.elice_3rd.hospital.dto.request.HospitalSearchByCategoryCondition;
 import com.example.elice_3rd.hospital.dto.request.HospitalSearchByKeywordCondition;
-import com.example.elice_3rd.hospital.dto.request.HospitalSearchCondition;
 import com.example.elice_3rd.hospital.dto.request.HospitalSearchWithEmergencyCondition;
 import com.example.elice_3rd.hospital.dto.response.HospitalResponse;
 import com.example.elice_3rd.hospital.entity.Hospital;
