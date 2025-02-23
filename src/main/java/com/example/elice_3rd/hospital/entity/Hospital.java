@@ -135,7 +135,7 @@ public class Hospital extends BaseEntity {
         }
         try {
             int time = Integer.parseInt(closeTime);
-            return time >= 1800;
+            return time > 1800;
         } catch (NumberFormatException e) {
             return false;
         }

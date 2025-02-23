@@ -31,8 +31,8 @@ public class HospitalSearchService {
         long startTime = System.currentTimeMillis();
         List<Tuple> results = hospitalQueryRepository.findAllByCategoryId(
                 condition.getCategoryId(),
-                condition.getHasNightClinic(),
-                condition.getHasSundayAndHolidayClinic(),
+                condition.isHasNightClinic(),
+                condition.isHasSundayAndHolidayClinic(),
                 condition.getLatitude(),
                 condition.getLongitude(),
                 pageable);
@@ -46,6 +46,8 @@ public class HospitalSearchService {
         long startTime = System.currentTimeMillis();
         List<Tuple> results = hospitalQueryRepository.findAllByHospitalName(
                 condition.getHospitalName(),
+                condition.isHasNightClinic(),
+                condition.isHasSundayAndHolidayClinic(),
                 condition.getLatitude(),
                 condition.getLongitude(),
                 pageable);
@@ -91,6 +93,8 @@ public class HospitalSearchService {
         } else if (result.startsWith("2")) {
             hospitalQueryRepository.findAllByHospitalName(
                     condition.getKeyword(),
+                    condition.getHasNightClinic(),
+                    condition.getHasSundayAndHolidayClinic(),
                     condition.getLatitude(),
                     condition.getLongitude(),
                     pageable);
