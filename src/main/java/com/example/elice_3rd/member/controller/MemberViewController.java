@@ -2,19 +2,18 @@ package com.example.elice_3rd.member.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 //@RequestMapping("/members")
 public class MemberViewController {
     @GetMapping("/register")
     public String register(){
-        return "member/user-register";
+        return "/member/register";
     }
 
     @GetMapping("/login")
     public String login(){
-        return "/member/another-login";
+        return "/member/login";
     }
 
     @GetMapping("/my-page")
@@ -40,5 +39,10 @@ public class MemberViewController {
     @GetMapping("/verify")
     public String verify(){
         return "/member/verify";
+    }
+
+    @GetMapping("members/update")
+    public String update(){
+        return "/member/update";
     }
 }
