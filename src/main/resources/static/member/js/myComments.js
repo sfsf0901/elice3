@@ -10,7 +10,7 @@ function renderList(data){
     <div class="alert alert-light my-5" role="alert">
       <div class="d-flex flex-column align-items-center justify-content-center text-center" style="height: 20vh;">
         <i class="fa-solid fa-triangle-exclamation h2"></i>
-        <h5 class="mt-2">상담내역이 존재하지 않습니다.</h5>
+        <h5 class="mt-2">답변내역이 존재하지 않습니다.</h5>
       </div>
     </div>`;
     return;
@@ -18,13 +18,13 @@ function renderList(data){
 
   items.forEach(item => {
     const itemDiv = document.createElement("div");
-    itemDiv.className = "counsel-item";
+    itemDiv.className = "counsel-item"
     itemDiv.innerHTML = `
       <div class="d-flex">
       <h3 class="counsel-title">${item.title}</h3>&nbsp
       <h6><span class="badge text-bg-secondary">${item.category}</span></h6>
       </div>
-      <p class="counsel-summary">${item.content}</p>
+      <p class="counsel-summary">내 답변: ${item.content}</p>
       <span class="counsel-date">${item.createdDate.split("T")[0]}</span>
     `;
 
@@ -52,7 +52,7 @@ function renderPagination(data) {
       }
       pageItem.classList.add("active");
 
-      api.get("counsels/my-counsels", {
+      api.get("comments/my-comments", {
         params: {page: i}
       })
         .then(response => {
@@ -65,7 +65,7 @@ function renderPagination(data) {
 }
 
 function search(){
-  api.get("counsels/my-counsels", {
+  api.get("comments/my-comments", {
     params: {
       keyword: document.getElementById("search-input").value
     }
@@ -87,7 +87,7 @@ document.getElementById("search-input").addEventListener("keydown", (event) => {
   }
 });
 
-api.get("members/counsels")
+api.get("comments/my-comments")
   .then(response => {
     console.log(response);
     renderList(response.data);

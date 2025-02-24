@@ -21,8 +21,8 @@ public class CounselRetrieveService {
     private final CounselRepository counselRepository;
     private final MemberRepository memberRepository;
 
-    public Page<CounselResponseDto> retrieveAll(Pageable pageable){
-        Page<Counsel> counselPage = counselRepository.findAll(pageable);
+    public Page<CounselResponseDto> retrieveAll(String keyword, Pageable pageable){
+        Page<Counsel> counselPage = counselRepository.searchAllByKeyword(keyword, pageable);
         return counselPage.map(Counsel::toDto);
     }
 
@@ -35,7 +35,7 @@ public class CounselRetrieveService {
 
     public Page<CounselResponseDto> retrieveMyCounsels(String email, Pageable pageable) {
         Member member = memberRepository.findByEmail(email).orElseThrow(
-                () -> new NoSuchDataException("")
+                () -> new NoSuchDataException("상담 상세 조회 실패: 요청 파라미터와 일치하는 상담 게시글이 없습니다.")
         );
         Page<Counsel> counselPage = counselRepository.findAllByMember(member, pageable);
 

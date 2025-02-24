@@ -1,31 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>Title</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>본인 인증 대기</title>
   <link rel="stylesheet" href="/license/css/in-progress.css">
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f8f9fa;
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      text-align: center;
+    }
+    .loader {
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #3498db;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
-<!-- Multi step form -->
-<section class="multi_step_form">
-  <form id="msform">
-    <!-- Tittle -->
-    <div class="tittle">
-      <h2>본인 인증을 완료해주세요</h2>
-      <!--            <p>In order to use this service, you have to complete this verification process</p>-->
-    </div>
-    <!-- progressbar -->
-    <ul id="progressbar">
-      <li class="active">Verify Phone</li>
-      <li>Upload Documents</li>
-      <li>Security Questions</li>
-    </ul>
-    <!-- fieldsets -->
-    <button onclick="window.close()" type="button" class="action-button previous previous_button">취소</button>
-    <a onclick="complete()" href="#" class="action-button">인증 완료</a>
-    </fieldset>
-  </form>
-</section>
-</body>
+<div class="container">
+  <h2>본인 인증을 확인 중입니다...</h2>
+  <div class="loader"></div>
+  <p>어플리케이션 인증 이후 아래의 버튼을 눌러서 인증을 완료해주세요</p>
+  <a style="color: #FFF; text-decoration: none; text-align: center; cursor: pointer;" onclick="window.close()"
+     target="_blank"><p
+      style="display: inline-block; width: 210px; height: 45px; margin: 30px 5px 40px; background-color: #919191; line-height: 45px; vertical-align: middle; font-size: 16px;">
+    취소
+  </p></a>
+  <a id="complete" style="color: #FFF; text-decoration: none; text-align: center; cursor: pointer;"
+      target="_blank"><p onclick="complete()"
+      style="display: inline-block; width: 210px; height: 45px; margin: 30px 5px 40px; background-color: #FF8D00; line-height: 45px; vertical-align: middle; font-size: 16px;">
+    인증 완료</p></a>
+</div>
 <script type="module" src="/license/js/in-progress.js"></script>
+</body>
 </html>

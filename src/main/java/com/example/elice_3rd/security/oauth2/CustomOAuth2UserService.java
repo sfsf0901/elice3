@@ -63,7 +63,6 @@ public class CustomOAuth2UserService implements OAuth2UserService {
     private Member saveOrUpdate(OAuth2Attributes attributes){
         MemberUpdateDto updateDto = MemberUpdateDto.builder()
                 .name(attributes.getName())
-                .contact(attributes.getContact())
                 .build();
 
         Member member = memberRepository.findByEmail(attributes.getEmail())

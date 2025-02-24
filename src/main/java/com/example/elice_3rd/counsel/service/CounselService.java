@@ -30,8 +30,8 @@ public class CounselService {
     }
 
     // 기본 정렬 최신순
-    public Page<CounselResponseDto> retrieveAll(Pageable pageable){
-        return retrieveService.retrieveAll(pageable);
+    public Page<CounselResponseDto> retrieveAll(String keyword, Pageable pageable){
+        return retrieveService.retrieveAll(keyword, pageable);
     }
 
     public CounselResponseDto retrieveDetail(Long id){

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -17,6 +18,7 @@ import java.security.Principal;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/comments")
+@Validated
 public class CommentAPIController {
     private final CommentService commentService;
 
@@ -29,5 +31,11 @@ public class CommentAPIController {
     @GetMapping
     public ResponseEntity<Page<CommentResponseDto>> retrieveAll(Long counselId, @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(commentService.retrieveAll(counselId, pageable));
+    }
+
+    @GetMapping("/my-comments")
+    public ResponseEntity<Page<CommentResponseDto>> retrieveMyComments(Principal principal, @RequestParam(defaultValue = "") String keyword,
+                                                                       @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable){
+        return ResponseEntity.ok(commentService.retrieveMyComments(principal.getName(), keyword, pageable));
     }
 }

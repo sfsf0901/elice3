@@ -30,5 +30,6 @@ async function complete() {
 
     window.close();
   }
-
 }
+
+document.getElementById("complete").addEventListener("click", complete);

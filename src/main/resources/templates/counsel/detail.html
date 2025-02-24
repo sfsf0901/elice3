@@ -1,35 +1,57 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout/layout}">>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>상담 상세 페이지</title>
   <link rel="stylesheet" href="/counsel/css/detail.css">
   <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+  <style>
+    textarea {
+      width: 100%;
+      height: 300px;
+      resize: none;
+    }
+  </style>
 </head>
 <body>
-<div class="counsel-detail-container">
-  <div class="d-flex justify-content-between">
-    <div id="title" class="counsel-title">제목</div>
-    <div sec:authorize="isAuthenticated()" th:if="${#authentication.principal.username == counsel.email && !isCommentExist}">
-      <button id="update">수정</button><button id="delete">삭제</button>
+<div layout:fragment="content">
+  <div class="counsel-detail-container" style="margin-right: 250px">
+    <div class="d-flex justify-content-between">
+      <div id="title" class="counsel-title">제목</div>
+      <div sec:authorize="isAuthenticated()"
+           th:if="${#authentication.principal.username == counsel.email && !isCommentExist}">
+        <a class="counsel-meta" id="update" style="cursor: pointer">수정</a>
+        <a class="counsel-meta" id="delete" style="cursor: pointer">삭제</a>
+      </div>
     </div>
-  </div>
-  <h6><span id="category" class="badge text-bg-secondary"></span></h6>
-  <div class="counsel-meta"><span id="name">홍길동</span> | <span id="time">n초 전</span></div>
-  <div id="content" class="counsel-content">
-    내용
-  </div>
-  <br>
-  <br>
-  <hr>
-  <div class="comment-title">답변</div>
-  <textarea id="comment-content" class="comment-box" placeholder="답변을 작성해주세요" style="display: none;"></textarea>
-  <button sec:authorize="hasRole('DOCTOR')" id="comment-btn" class="comment-btn" style="display: block;">답변 작성하기</button>
-  <button id="confirm-btn" class="comment-btn" style="display: none">등록</button>
+    <h6><span id="category" class="badge text-bg-secondary"></span></h6>
+    <div class="counsel-meta"><span id="name">홍길동</span> | <span id="time">n초 전</span></div>
+    <div id="content" class="counsel-content">
+      내용
+    </div>
+    <br>
+    <br>
+    <hr>
+    <div class="comment-title d-flex justify-content-between py-2">답변
+      <button sec:authorize="hasRole('DOCTOR')" id="comment-btn" class="comment-btn" style="display: block;">답변 작성하기
+      </button>
+      <button id="confirm-btn" class="comment-btn" style="display: none">등록</button>
+    </div>
+    <textarea id="comment-content" class="form-control" placeholder="답변을 작성해주세요" style="display: none;"></textarea>
 
-  <div id="comment-list" class="comment-list"></div>
+    <div id="comment-list" class="comment-list">
+    </div>
+    <br>
+    <nav aria-label="..." class="d-flex justify-content-center">
+      <ul id="pagination" class="pagination" style="cursor: pointer">
+      </ul>
+    </nav>
+  </div>
+  <script type="module" src="/counsel/js/detail.js"></script>
 </div>
-<script type="module" src="/counsel/js/detail.js"></script>
 </body>
 </html>
