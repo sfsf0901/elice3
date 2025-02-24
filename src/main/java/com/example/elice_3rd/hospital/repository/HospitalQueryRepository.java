@@ -4,14 +4,20 @@ import com.example.elice_3rd.hospital.dto.request.HospitalSearchByCategoryCondit
 import com.example.elice_3rd.hospital.dto.request.HospitalSearchByKeywordCondition;
 import com.example.elice_3rd.hospital.dto.request.HospitalSearchWithEmergencyCondition;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.NumberTemplate;
+import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import static com.example.elice_3rd.category.entity.QCategory.*;
@@ -31,7 +37,7 @@ public class HospitalQueryRepository {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
-    public List<Tuple> findAllByCategoryId(Long categoryId, Boolean hasNightClinic, Boolean hasSundayAndHolidayClinic, Double latitude, Double longitude, Pageable pageable) {
+    public List<Tuple> findAllByCategoryId(Long categoryId, Boolean isOpen, Boolean hasNightClinic, Boolean hasSundayAndHolidayClinic, Double latitude, Double longitude, Pageable pageable) {
         NumberTemplate<Double> distanceExpression = numberTemplate(Double.class,
                 "ST_Distance_Sphere(point({0}, {1}), point({2}, {3}))",
                 longitude, latitude, hospital.longitude, hospital.latitude);
@@ -43,6 +49,7 @@ public class HospitalQueryRepository {
                 .join(hospitalCategory.hospital, hospital)
                 .where(
                         categoryIdEq(categoryId),
+                        isOpenEq(isOpen),
                         hasNightClinicEq(hasNightClinic),
                         hasSundayAndHolidayClinicEq(hasSundayAndHolidayClinic),
                         hospital.latitude.between(latitude - LATITUDE_DELTA, latitude + LATITUDE_DELTA),
@@ -54,7 +61,7 @@ public class HospitalQueryRepository {
                 .fetch();
     }
 
-    public List<Tuple> findAllByHospitalName(String hospitalName, boolean hasNightClinic, boolean hasSundayAndHolidayClinic, double latitude, double longitude, Pageable pageable) {
+    public List<Tuple> findAllByHospitalName(String hospitalName, Boolean isOpen, Boolean hasNightClinic, Boolean hasSundayAndHolidayClinic, double latitude, double longitude, Pageable pageable) {
         NumberTemplate<Double> distanceExpression = numberTemplate(Double.class,
                 "ST_Distance_Sphere(point({0}, {1}), point({2}, {3}))",
                 longitude, latitude, hospital.longitude, hospital.latitude);
@@ -64,6 +71,7 @@ public class HospitalQueryRepository {
                 .from(hospital)
                 .where(
                         hospitalNameContains(hospitalName),
+                        isOpenEq(isOpen),
                         hasNightClinicEq(hasNightClinic),
                         hasSundayAndHolidayClinicEq(hasSundayAndHolidayClinic),
                         hospital.latitude.between(latitude - LATITUDE_DELTA, latitude + LATITUDE_DELTA),
@@ -107,17 +115,74 @@ public class HospitalQueryRepository {
         return hasNightEmergency ? hospital.hasNightEmergency.eq(true) : null;
     }
 
+    private BooleanExpression isOpenEq(Boolean isOpen) {
+        if (isOpen == null) {
+            return null;
+        }
+        // 현재 요일 및 시간 가져오기
+        DayOfWeek today = LocalDate.now().getDayOfWeek();
+        StringPath openTimeField = null, closeTimeField = null;
+
+        switch (today) {
+            case MONDAY -> {
+                openTimeField = hospital.mondayOpenTime;
+                closeTimeField = hospital.mondayCloseTime;
+            }
+            case TUESDAY -> {
+                openTimeField = hospital.tuesdayOpenTime;
+                closeTimeField = hospital.tuesdayCloseTime;
+            }
+            case WEDNESDAY -> {
+                openTimeField = hospital.wednesdayOpenTime;
+                closeTimeField = hospital.wednesdayCloseTime;
+            }
+            case THURSDAY -> {
+                openTimeField = hospital.thursdayOpenTime;
+                closeTimeField = hospital.thursdayCloseTime;
+            }
+            case FRIDAY -> {
+                openTimeField = hospital.fridayOpenTime;
+                closeTimeField = hospital.fridayCloseTime;
+            }
+            case SATURDAY -> {
+                openTimeField = hospital.saturdayOpenTime;
+                closeTimeField = hospital.saturdayCloseTime;
+            }
+            case SUNDAY -> {
+                openTimeField = hospital.sundayOpenTime;
+                closeTimeField = hospital.sundayCloseTime;
+            }
+            default -> {
+                return null;
+            }
+        }
+
+        // 필드가 null이면 조건을 적용하지 않음
+        if (openTimeField == null || closeTimeField == null) {
+            return null;
+        }
+
+        // 현재 시간 (HHmm 형식, 예: 10:30 → 1030)
+        int now = LocalTime.now().getHour() * 100 + LocalTime.now().getMinute();
+
+        // 병원의 운영시간을 정수로 변환하여 비교 (QueryDSL)
+        NumberExpression<Integer> openTimeInt = openTimeField.stringValue().castToNum(Integer.class);
+        NumberExpression<Integer> closeTimeInt = closeTimeField.stringValue().castToNum(Integer.class);
+
+        return openTimeInt.loe(now).and(closeTimeInt.gt(now));
+    }
+
     private BooleanExpression hasNightClinicEq(Boolean hasNightClinic) {
         if (hasNightClinic == null) {
             return null;
         }
-        return hasNightClinic ? hospitalCategory.hospital.hasNightClinic.eq(true) : null;
+        return hasNightClinic ? hospital.hasNightClinic.eq(true) : null;
     }
 
     private BooleanExpression hasSundayAndHolidayClinicEq(Boolean hasSundayAndHolidayClinic) {
         if (hasSundayAndHolidayClinic == null) {
             return null;
         }
-        return hasSundayAndHolidayClinic ? hospitalCategory.hospital.hasSundayAndHolidayClinic.eq(true) : null;
+        return hasSundayAndHolidayClinic ? hospital.hasSundayAndHolidayClinic.eq(true) : null;
     }
 }

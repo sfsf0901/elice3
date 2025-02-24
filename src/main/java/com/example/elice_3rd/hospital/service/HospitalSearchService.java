@@ -36,8 +36,9 @@ public class HospitalSearchService {
         long startTime = System.currentTimeMillis();
         List<Tuple> results = hospitalQueryRepository.findAllByCategoryId(
                 condition.getCategoryId(),
-                condition.isHasNightClinic(),
-                condition.isHasSundayAndHolidayClinic(),
+                condition.getIsOpen(),
+                condition.getHasNightClinic(),
+                condition.getHasSundayAndHolidayClinic(),
                 condition.getLatitude(),
                 condition.getLongitude(),
                 pageable);
@@ -51,8 +52,9 @@ public class HospitalSearchService {
         long startTime = System.currentTimeMillis();
         List<Tuple> results = hospitalQueryRepository.findAllByHospitalName(
                 condition.getHospitalName(),
-                condition.isHasNightClinic(),
-                condition.isHasSundayAndHolidayClinic(),
+                condition.getIsOpen(),
+                condition.getHasNightClinic(),
+                condition.getHasSundayAndHolidayClinic(),
                 condition.getLatitude(),
                 condition.getLongitude(),
                 pageable);
@@ -82,6 +84,7 @@ public class HospitalSearchService {
         if (category != null) {
             results = hospitalQueryRepository.findAllByCategoryId(
                     category.getId(),
+                    condition.getIsOpen(),
                     condition.getHasNightClinic(),
                     condition.getHasSundayAndHolidayClinic(),
                     condition.getLatitude(),
@@ -93,6 +96,7 @@ public class HospitalSearchService {
             Category findCategory = symptomCategoryService.findCategoryBySymptomWithHighestPriority(symptom);
             results = hospitalQueryRepository.findAllByCategoryId(
                     findCategory.getId(),
+                    condition.getIsOpen(),
                     condition.getHasNightClinic(),
                     condition.getHasSundayAndHolidayClinic(),
                     condition.getLatitude(),
@@ -113,6 +117,7 @@ public class HospitalSearchService {
 
                     results = hospitalQueryRepository.findAllByCategoryId(
                             analyzedCategory.getId(),
+                            condition.getIsOpen(),
                             condition.getHasNightClinic(),
                             condition.getHasSundayAndHolidayClinic(),
                             condition.getLatitude(),
@@ -122,6 +127,7 @@ public class HospitalSearchService {
             } else if (analyzedKeyword.startsWith("2")) {
                 results = hospitalQueryRepository.findAllByHospitalName(
                         condition.getKeyword(),
+                        condition.getIsOpen(),
                         condition.getHasNightClinic(),
                         condition.getHasSundayAndHolidayClinic(),
                         condition.getLatitude(),
