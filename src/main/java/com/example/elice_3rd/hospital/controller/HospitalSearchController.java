@@ -10,6 +10,8 @@ import com.example.elice_3rd.hospital.entity.Hospital;
 import com.example.elice_3rd.hospital.repository.HospitalDiagnosisSubjectRepository;
 import com.example.elice_3rd.hospital.service.HospitalSearchService;
 import com.example.elice_3rd.hospital.service.HospitalService;
+import com.example.elice_3rd.symptom.entity.Symptom;
+import com.example.elice_3rd.symptom.service.SymptomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +34,7 @@ public class HospitalSearchController {
     private final CategoryService categoryService;
     private final HospitalDiagnosisSubjectRepository hospitalDiagnosisSubjectRepository;
     private final HospitalService hospitalService;
+    private final SymptomService symptomService;
 
     @Value("${kakao.api.key}")
     private String kakaoApiKey;
@@ -40,6 +43,9 @@ public class HospitalSearchController {
     public String mainPage(Model model) {
         List<Category> categories = categoryService.findAll();
         model.addAttribute("categories", categories);
+
+        List<Symptom> symptoms = symptomService.findAll();
+        model.addAttribute("symptoms", symptoms);
         return "hospital/mainGet";
     }
 

@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
-public class HospitalTempDetailsBatchConfig {
+public class HospitalTempDetailsStepConfig {
 
     private final HospitalTempService hospitalTempService;
 

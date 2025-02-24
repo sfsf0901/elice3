@@ -2,7 +2,6 @@ package com.example.elice_3rd.hospital.batch.config;
 
 
 import com.example.elice_3rd.hospital.batch.entity.HospitalTemp;
-import com.example.elice_3rd.hospital.batch.service.HospitalTempService;
 import com.example.elice_3rd.hospital.entity.Hospital;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -22,12 +21,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import java.util.List;
-
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
-public class HospitalNormalizationBatchConfig {
+public class HospitalNormalizationStepConfig {
 
     private final EntityManager em;
 

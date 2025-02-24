@@ -8,6 +8,9 @@ import com.example.elice_3rd.hospital.dto.request.HospitalSearchWithEmergencyCon
 import com.example.elice_3rd.hospital.dto.response.HospitalResponse;
 import com.example.elice_3rd.hospital.entity.Hospital;
 import com.example.elice_3rd.hospital.repository.HospitalQueryRepository;
+import com.example.elice_3rd.symptom.entity.Symptom;
+import com.example.elice_3rd.symptom.service.SymptomCategoryService;
+import com.example.elice_3rd.symptom.service.SymptomService;
 import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +29,8 @@ public class HospitalSearchService {
     private final HospitalQueryRepository hospitalQueryRepository;
     private final OllamaService ollamaService;
     private final CategoryService categoryService;
+    private final SymptomService symptomService;
+    private final SymptomCategoryService symptomCategoryService;
 
     public Slice<HospitalResponse> findAllByCategoryId(HospitalSearchByCategoryCondition condition, Pageable pageable) {
         long startTime = System.currentTimeMillis();
@@ -67,12 +72,13 @@ public class HospitalSearchService {
     }
 
     public Slice<HospitalResponse> findAllByKeyword(HospitalSearchByKeywordCondition condition, Pageable pageable) {
-        String result = ollamaService.analyzeKeyword(condition.getKeyword());
-        System.out.println("########result = " + result);
-        
         List<Tuple> results = null;
 
+        // 1. 키워드를 기반으로 카테고리 또는 증상 찾기
         Category category = categoryService.findByName(condition.getKeyword());
+        Symptom symptom = symptomService.findByName(condition.getKeyword());
+
+        // 2. 카테고리 검색이 가능하면 바로 병원 조회
         if (category != null) {
             results = hospitalQueryRepository.findAllByCategoryId(
                     category.getId(),
@@ -81,29 +87,55 @@ public class HospitalSearchService {
                     condition.getLatitude(),
                     condition.getLongitude(),
                     pageable);
-        } else if (result.startsWith("1")) {
-            result = result.replace("1:", "").trim(); // 병원 이름만 남기기
+        }
+        // 3. 증상 검색이 가능하면 우선순위가 가장 높은 카테고리를 찾고 병원 조회
+        else if (symptom != null) {
+            Category findCategory = symptomCategoryService.findCategoryBySymptomWithHighestPriority(symptom);
             results = hospitalQueryRepository.findAllByCategoryId(
-                    categoryService.findByName(result).getId(),
+                    findCategory.getId(),
                     condition.getHasNightClinic(),
                     condition.getHasSundayAndHolidayClinic(),
                     condition.getLatitude(),
                     condition.getLongitude(),
                     pageable);
-        } else if (result.startsWith("2")) {
-            hospitalQueryRepository.findAllByHospitalName(
-                    condition.getKeyword(),
-                    condition.getHasNightClinic(),
-                    condition.getHasSundayAndHolidayClinic(),
-                    condition.getLatitude(),
-                    condition.getLongitude(),
-                    pageable);
-        } else {
-            // TODO 거리순으로 병원 검색하는 로직 추가
+        }
+        // 4. 위 두 경우가 아니라면, 키워드 분석을 실행
+        else {
+            String result = ollamaService.analyzeKeyword(condition.getKeyword());
+            System.out.println("########result = " + result);
+
+            if (result.startsWith("1")) {
+                result = result.replace("1:", "").trim(); // 병원 이름만 남기기
+                Category analyzedCategory = categoryService.findByName(result);
+                if (analyzedCategory != null) {
+                    // 증상 & 증상_카테고리 등록 비동기 처리
+//                    symptomCategoryService.saveSymptomAndCategoryAsync(condition.getKeyword(), result);
+
+                    results = hospitalQueryRepository.findAllByCategoryId(
+                            analyzedCategory.getId(),
+                            condition.getHasNightClinic(),
+                            condition.getHasSundayAndHolidayClinic(),
+                            condition.getLatitude(),
+                            condition.getLongitude(),
+                            pageable);
+                }
+            } else if (result.startsWith("2")) {
+                results = hospitalQueryRepository.findAllByHospitalName(
+                        condition.getKeyword(),
+                        condition.getHasNightClinic(),
+                        condition.getHasSundayAndHolidayClinic(),
+                        condition.getLatitude(),
+                        condition.getLongitude(),
+                        pageable);
+            } else {
+                // TODO 거리순으로 병원 검색하는 로직 추가
+                return null;
+            }
         }
 
         return getHospitalResponses(pageable, results);
     }
+
 
     private static SliceImpl<HospitalResponse> getHospitalResponses(Pageable pageable, List<Tuple> results) {
         List<HospitalResponse> hospitalResponses = results.stream()

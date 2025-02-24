@@ -21,5 +21,9 @@ public class Symptom extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String name;
 
-
+    public static Symptom create(String name) {
+        Symptom symptom = new Symptom();
+        symptom.name = name;
+        return symptom;
+    }
 }
