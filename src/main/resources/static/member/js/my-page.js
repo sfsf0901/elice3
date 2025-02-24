@@ -9,6 +9,18 @@ function popup() {
 
 document.getElementById("doctor-verification").addEventListener("click", popup);
 
+function renderMemberInfo(data){
+  console.log(document.getElementById("email"));
+  document.getElementById("name").textContent = data.name;
+  document.getElementById("email").textContent = `(${data.email})`;
+}
+
+api.get("members/info")
+  .then(response => {
+    console.log(response.data);
+    renderMemberInfo(response.data);
+  })
+
 // document.getElementById("quit").addEventListener("click", () => {
 //   if(confirm("정말 탈퇴하시겠습니까?")){
 //     api.patch("members/quit", {

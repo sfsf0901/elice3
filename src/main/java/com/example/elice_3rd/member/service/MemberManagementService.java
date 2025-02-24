@@ -54,10 +54,11 @@ public class MemberManagementService {
     }
 
     @Transactional
-    void quit(String email){
+    void quit(String email, String password){
         Member member = memberRepository.findByEmail(email).orElseThrow(
                 () -> new IllegalArgumentException("회원 탈퇴 실패: 이메일과 일치하는 회원이 존재하지 않습니다.")
         );
+        if(passwordEncoder.matches(password, member.getPassword()))
         member.quit();
     }
 

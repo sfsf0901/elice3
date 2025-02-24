@@ -70,7 +70,7 @@ public class MemberAPIController {
 
     @PatchMapping("quit")
     public ResponseEntity<Void> quit(Principal principal, @RequestBody String password){
-        memberService.quit(principal.getName());
+        memberService.quit(principal.getName(), password);
         return ResponseEntity.ok().header("Location", "/").build();
     }
 

@@ -7,17 +7,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>마이페이지</title>
   <link rel="stylesheet" href="/member/css/my-page.css">
-  <link rel="stylesheet" href="/common/css/bootstrap.min.css">
 </head>
 <body>
 <div layout:fragment="content">
   <div class="wrap container w-75" style="margin-right: 500px">
     <div class="orangeContainer">
       <div>
-        image 고려중
+        <i class="fas fa-regular fa-hospital-user fa-5x" style="color: black"
+          sec:authorize="hasRole('USER')"></i>
+        <i class="fas fa-light fa-user-doctor fa-5x"
+           sec:authorize="hasRole('DOCTOR')"></i>
       </div>
-      <div align="end">이름<br>
-        <small>(role or email)</small>
+      <div align="end">
+        <div id="name"></div>
+        <small id="email"></small>
       </div>
     </div>
     <svg viewBox="0 0 1440 200" style="background: white">
