@@ -20,12 +20,10 @@
             height: 60px;
             object-fit: contain;
         }
-        /* 링크 밑줄 제거 & 글씨색 검정 */
         .category-item a {
             text-decoration: none;
             color: black;
         }
-        /* 검색창 스타일 */
         .search-container {
             display: flex;
             justify-content: center;
@@ -39,7 +37,7 @@
         .search-input {
             width: 100%;
             padding: 14px 20px;
-            padding-right: 50px; /* 아이콘 공간 확보 */
+            padding-right: 50px;
             border: none;
             border-radius: 10px;
             background-color: #F6F6F6;
@@ -62,35 +60,33 @@
         .symptom-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px; /* 해시태그 간격 */
+            gap: 12px;
         }
-
         .symptom-tag {
             display: inline-block;
             padding: 10px 18px;
-            border-radius: 20px; /* 둥근 모서리 */
-            background-color: #F6F6F6; /* 연한 회색 배경 */
-            color: #333; /* 글씨 색 */
+            border-radius: 20px;
+            background-color: #F6F6F6;
+            color: #333;
             font-size: 16px;
             font-weight: 500;
             text-decoration: none;
             transition: background-color 0.3s ease;
         }
-
         .symptom-tag:hover {
-            background-color: #e0e0e0; /* Hover 시 색상 변경 */
+            background-color: #e0e0e0;
         }
-
     </style>
-
 </head>
 <body>
 <div layout:fragment="content">
     <h4>병원 찾기</h4>
     <div class="search-container">
         <div class="search-box">
-            <input type="search" id="searchInput" class="search-input" placeholder="병원, 진료과목, 증상" required onkeydown="handleEnter(event)">
-            <i class="fa-solid fa-magnifying-glass search-icon" onclick="updateActionAndSubmit(event)"></i>
+            <input type="search" id="searchInput" class="search-input"
+                   placeholder="병원, 진료과목, 증상" required
+                   onkeyup="handleEnter(event)">
+            <i class="fa-solid fa-magnifying-glass search-icon" onclick="searchHandler(event, null)"></i>
         </div>
     </div>
 
@@ -112,8 +108,8 @@
         <div class="symptom-list mt-5">
             <div class="symptom-item" th:each="symptom : ${symptoms}">
                 <a href="#" class="symptom-tag" th:text="'#' + ${symptom.name}"
-                   th:data-symptom-id="${symptom.id}" th:data-symptom-name="${symptom.name}"
-                   onclick="goToSymptomSearch(event, this)">
+                   th:data-symptom-name="${symptom.name}"
+                   onclick="searchHandler(event, this)">
                 </a>
             </div>
         </div>
@@ -131,11 +127,9 @@
                     const latitude = position.coords.latitude;
                     const longitude = position.coords.longitude;
 
-                    // URL에 조건 파라미터 붙이기
                     const url = `/hospitals/${encodeURIComponent(categoryName)}?categoryId=${categoryId}&latitude=${latitude}&longitude=${longitude}`;
                     window.location.href = url;
                 }, function () {
-                    // 위치 권한 거부 시 서울시청 좌표로 설정
                     const url = `/hospitals/${encodeURIComponent(categoryName)}?categoryId=${categoryId}&latitude=37.5665&longitude=126.9780`;
                     window.location.href = url;
                 });
@@ -145,61 +139,43 @@
         }
     </script>
     <script>
+        let searchTimeout;
+
         function handleEnter(event) {
             if (event.key === "Enter") {
                 event.preventDefault(); // 기본 form 제출 방지
-                updateActionAndSubmit(event);
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => searchHandler(event, null), 300);
             }
         }
 
-        function updateActionAndSubmit(event) {
+        function searchHandler(event, element) {
             event.preventDefault(); // 기본 동작 방지
 
-            let keyword = document.getElementById("searchInput").value.trim();
-            if (keyword === "") {
+            console.log("searchHandler 호출됨!"); // 실행 횟수 확인
+
+            let keyword = element
+                ? element.getAttribute("data-symptom-name") // 증상 선택 시
+                : document.getElementById("searchInput").value.trim(); // 검색창 사용 시
+
+            if (!keyword) {
                 alert("검색어를 입력해주세요.");
                 return;
             }
 
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function (position) {
-                    const latitude = position.coords.latitude;
-                    const longitude = position.coords.longitude;
-                    redirectToSearch(keyword, latitude, longitude);
+                    redirectToSearch(keyword, position.coords.latitude, position.coords.longitude);
                 }, function () {
-                    redirectToSearch(keyword, 37.5665, 126.9780); // 위치 권한 거부 시 기본값(서울)
+                    redirectToSearch(keyword, 37.5665, 126.9780); // 위치 권한 거부 시 서울 기본값
                 });
             } else {
-                redirectToSearch(keyword, 37.5665, 126.9780); // 브라우저 위치 정보 미지원 시 기본값
+                redirectToSearch(keyword, 37.5665, 126.9780);
             }
         }
 
         function redirectToSearch(keyword, latitude, longitude) {
             window.location.href = `/hospitals/search?keyword=${encodeURIComponent(keyword)}&latitude=${latitude}&longitude=${longitude}`;
-        }
-    </script>
-    <script>
-        function goToSymptomSearch(event, element) {
-            event.preventDefault(); // 기본 동작 방지
-
-            let symptomName = element.getAttribute("data-symptom-name"); // 클릭한 증상의 이름 가져오기
-
-            if (!symptomName) {
-                alert("증상을 찾을 수 없습니다.");
-                return;
-            }
-
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function (position) {
-                    const latitude = position.coords.latitude;
-                    const longitude = position.coords.longitude;
-                    redirectToSearch(symptomName, latitude, longitude);
-                }, function () {
-                    redirectToSearch(symptomName, 37.5665, 126.9780); // 위치 권한 거부 시 서울 기본값
-                });
-            } else {
-                redirectToSearch(symptomName, 37.5665, 126.9780); // 브라우저 위치 정보 미지원 시 기본값
-            }
         }
     </script>
 </div>

@@ -101,15 +101,15 @@ public class HospitalSearchService {
         }
         // 4. 위 두 경우가 아니라면, 키워드 분석을 실행
         else {
-            String result = ollamaService.analyzeKeyword(condition.getKeyword());
-            System.out.println("########result = " + result);
+            String analyzedKeyword = ollamaService.analyzeKeyword(condition.getKeyword());
+            System.out.println("########analyzedKeyword = " + analyzedKeyword);
 
-            if (result.startsWith("1")) {
-                result = result.replace("1:", "").trim(); // 병원 이름만 남기기
-                Category analyzedCategory = categoryService.findByName(result);
+            if (analyzedKeyword.startsWith("1")) {
+                analyzedKeyword = analyzedKeyword.replace("1:", "").trim(); // 병원 이름만 남기기
+                Category analyzedCategory = categoryService.findByName(analyzedKeyword);
                 if (analyzedCategory != null) {
                     // 증상 & 증상_카테고리 등록 비동기 처리
-//                    symptomCategoryService.saveSymptomAndCategoryAsync(condition.getKeyword(), result);
+                    symptomCategoryService.saveSymptomAndCategoryAsync(condition.getKeyword(), analyzedCategory);
 
                     results = hospitalQueryRepository.findAllByCategoryId(
                             analyzedCategory.getId(),
@@ -119,7 +119,7 @@ public class HospitalSearchService {
                             condition.getLongitude(),
                             pageable);
                 }
-            } else if (result.startsWith("2")) {
+            } else if (analyzedKeyword.startsWith("2")) {
                 results = hospitalQueryRepository.findAllByHospitalName(
                         condition.getKeyword(),
                         condition.getHasNightClinic(),

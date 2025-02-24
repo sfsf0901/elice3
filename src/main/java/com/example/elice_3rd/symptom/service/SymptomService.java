@@ -23,4 +23,8 @@ public class SymptomService {
     public Symptom findByName(String symptomName) {
         return symptomRepository.findByName(symptomName).orElse(null);
     }
+
+    public List<Symptom> findTop10ByOrderByIdAsc() {
+        return symptomRepository.findTop10ByOrderByIdAsc();
+    }
 }
