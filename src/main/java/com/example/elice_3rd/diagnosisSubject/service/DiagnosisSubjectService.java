@@ -12,9 +12,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 
@@ -40,15 +42,20 @@ public class DiagnosisSubjectService {
         // 진료과목 객체 만들기
         if (diagnosisSubjectRepository.count() == 0) {
             Resource resource = new ClassPathResource("diagnosis_subject.csv");
-            List<DiagnosisSubject> diagnosisSubjects = Files.readAllLines(resource.getFile().toPath(), StandardCharsets.UTF_8).stream()
-                    .map(line -> {
-                        String[] split = line.split(",");
-                        DiagnosisSubject diagnosisSubject = DiagnosisSubject.create(split[0], split[1], split[2]);
-                        // 진료과목에 검색 카테고리 매핑하기
-                        diagnosisSubject.updateCategory(categoryMap.get(diagnosisSubject.getCategoryName()));
-                        return diagnosisSubject;
-                    }).toList();
-            diagnosisSubjectRepository.saveAll(diagnosisSubjects);
+            try (InputStream inputStream = resource.getInputStream()) {
+                List<DiagnosisSubject> diagnosisSubjects = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))
+                        .lines()
+                        .map(line -> {
+                            String[] split = line.split(",");
+                            DiagnosisSubject diagnosisSubject = DiagnosisSubject.create(split[0], split[1], split[2]);
+                            // 진료과목에 검색 카테고리 매핑하기
+                            diagnosisSubject.updateCategory(categoryMap.get(diagnosisSubject.getCategoryName()));
+                            return diagnosisSubject;
+                        }).toList();
+                diagnosisSubjectRepository.saveAll(diagnosisSubjects);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
