@@ -45,4 +45,9 @@ public class MemberViewController {
     public String update(){
         return "/member/update";
     }
+
+    @GetMapping("/update-password")
+    public String updatePassword(){
+        return "/member/update-password";
+    }
 }

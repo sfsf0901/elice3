@@ -1,7 +1,5 @@
 import api from "/common/js/API.js";
 
-api.headers
-
 document.getElementById("licenseForm").addEventListener("submit", async function (event) {
   event.preventDefault(); // 기본 제출 방지
   document.getElementById("licenseForm").style.pointerEvents = "none";
@@ -24,23 +22,15 @@ document.getElementById("licenseForm").addEventListener("submit", async function
 
   console.log("폼 데이터:", formData);
 
-  // const data = (await axios.post("https://datahub-dev.scraping.co.kr/scrap/common/mohw/MedicalLicenseInquirySimple", {
-  //   headers: { "Authorization": "74d7823acb384f5db0b54ab9e40839aec2a13b46" }
-  // })).data;
+  const data = (await api.post('https://datahub-dev.scraping.co.kr/scrap/common/mohw/MedicalLicenseInquirySimple',
+    formData, // 본문 데이터
+    { headers: { "Authorization": "74d7823acb384f5db0b54ab9e40839aec2a13b46" } } // 올바른 headers 위치
+  )).data;
 
-  const response = await (await fetch('https://datahub-dev.scraping.co.kr/scrap/common/mohw/MedicalLicenseInquirySimple', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      "Authorization": "74d7823acb384f5db0b54ab9e40839aec2a13b46"
-    },
-    body: JSON.stringify(formData)
-  })).json();
+  console.log(data);
 
-  console.log(response);
-
-  localStorage.setItem("callbackId", response.data.callbackId);
-  localStorage.setItem("callbackType", response.data.callbackType);
+  localStorage.setItem("callbackId", data.callbackId);
+  localStorage.setItem("callbackType", data.callbackType);
 
   location.href = "/license/progress";
 });

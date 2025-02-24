@@ -8,6 +8,7 @@ import com.example.elice_3rd.counsel.service.CounselService;
 import com.example.elice_3rd.member.dto.MemberRequestDto;
 import com.example.elice_3rd.member.dto.MemberResponseDto;
 import com.example.elice_3rd.member.dto.MemberUpdateDto;
+import com.example.elice_3rd.member.dto.PasswordDto;
 import com.example.elice_3rd.member.service.MemberService;
 import com.example.elice_3rd.security.jwt.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -31,6 +32,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/members")
 @RequiredArgsConstructor
+@Validated
 public class MemberAPIController {
     private final MemberService memberService;
     // component를 주입 시키는 것에는 정답은 없음
@@ -38,7 +40,7 @@ public class MemberAPIController {
     private final CommentService commentService;
 
     @PostMapping
-    public ResponseEntity<Void> register(@RequestBody @Validated MemberRequestDto requestDto) throws JsonProcessingException {
+    public ResponseEntity<Void> register(@RequestBody MemberRequestDto requestDto) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         log.error(objectMapper.writeValueAsString(requestDto));
         try {
@@ -55,8 +57,8 @@ public class MemberAPIController {
     }
 
     @PatchMapping("password")
-    public ResponseEntity<Void> updatePassword(Principal principal, @RequestBody String password){
-        memberService.updatePassword(principal.getName(), password);
+    public ResponseEntity<Void> updatePassword(Principal principal, @Validated @RequestBody PasswordDto passwordDto){
+        memberService.updatePassword(principal.getName(), passwordDto);
         return ResponseEntity.ok().header("Location", "my-page").build();
     }
 
@@ -83,10 +85,4 @@ public class MemberAPIController {
                                                                        @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable){
         return ResponseEntity.ok(counselService.retrieveMyCounsels(principal.getName(), pageable));
     }
-
-//    @GetMapping("comments")
-//    public ResponseEntity<Page<CommentResponseDto>> retrieveMyComments(Principal principal, @RequestParam(defaultValue = "") String keyword,
-//                                                                       @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable){
-//        return ResponseEntity.ok(commentService.retrieveMyComments(principal.getName(), keyword, pageable));
-//    }
 }

@@ -18,9 +18,9 @@ public class Counsel extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long counselId;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 30)
     private String title;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String content;
 
     @ManyToOne

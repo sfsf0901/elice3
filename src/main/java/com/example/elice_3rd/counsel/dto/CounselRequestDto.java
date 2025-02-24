@@ -14,10 +14,11 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class CounselRequestDto {
     @NotBlank
-    @Size(min = 3)
+    @Size(min = 2, max = 500)
     private String title;
     @NotBlank
+    @Size(min = 2, max = 1000)
     private String content;
-    @NotNull
+    @NotBlank
     private String category;
 }

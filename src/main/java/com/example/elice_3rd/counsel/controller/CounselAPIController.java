@@ -6,8 +6,6 @@ import com.example.elice_3rd.counsel.dto.CounselRequestDto;
 import com.example.elice_3rd.counsel.dto.CounselResponseDto;
 import com.example.elice_3rd.counsel.dto.CounselUpdateDto;
 import com.example.elice_3rd.counsel.service.CounselService;
-import com.example.elice_3rd.diagnosisSubject.entity.DiagnosisSubject;
-import com.example.elice_3rd.diagnosisSubject.service.DiagnosisSubjectService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -27,6 +26,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/counsels")
+@Validated
 public class CounselAPIController {
     private final CounselService counselService;
     private final CategoryService categoryService;

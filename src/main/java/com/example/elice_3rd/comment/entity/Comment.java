@@ -15,14 +15,15 @@ public class Comment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentId;
+    @Column(nullable = false, length = 500)
     private String content;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "counsel_id")
+    @JoinColumn(name = "counsel_id", nullable = false)
     private Counsel counsel;
 
     public CommentResponseDto toDto(){
