@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Service
 @Transactional
@@ -34,6 +36,8 @@ public class SymptomCategoryService {
     private final CategoryService categoryService;
     private final DiagnosisSubjectService diagnosisSubjectService;
     private final SymptomCategoryQueryRepository symptomCategoryQueryRepository;
+
+    private final ReentrantLock lock = new ReentrantLock(); // 락 객체 생성
 
     @PostConstruct
     public void initSymptomAndSymptomCategory() {
@@ -78,7 +82,40 @@ public class SymptomCategoryService {
         }
     }
 
+    @Transactional(readOnly = true)
     public Category findCategoryBySymptomWithHighestPriority(Symptom symptom) {
         return symptomCategoryQueryRepository.findCategoryBySymptomWithHighestPriority(symptom);
+    }
+
+    @Async
+    @Transactional
+    public void saveSymptomAndCategoryAsync(String symptomName, Category category) {
+        log.info("########비동기 실행 시작 - Thread: {}", Thread.currentThread().getName());
+
+        lock.lock(); // 락 획득
+        try {
+            // 새로운 증상 저장 (기존에 없을 경우에만)
+            Symptom symptom = symptomRepository.findByName(symptomName).orElse(null);
+
+            if (symptom == null) {
+                symptom = Symptom.create(symptomName);
+                symptomRepository.save(symptom);
+                SymptomCategory createdSymptomCategory = SymptomCategory.create(symptom, category, 2, symptom.getName());
+                symptomCategoryRepository.save(createdSymptomCategory);
+            } else {
+                // 기존에 등록된 관계가 없으면 저장
+                SymptomCategory symptomCategory = symptomCategoryRepository.findBySymptomAndCategory(symptom, category).orElse(null);
+                if (symptomCategory == null) {
+                    SymptomCategory createdSymptomCategory = SymptomCategory.create(symptom, category, 2, symptom.getName());
+                    symptomCategoryRepository.save(createdSymptomCategory);
+                }
+            }
+        } catch (Exception e) {
+            log.error("########비동기 작업 중 예외 발생", e);
+        } finally {
+            lock.unlock(); // 락 해제
+        }
+
+        log.info("########비동기 실행 완료 - Thread: {}", Thread.currentThread().getName());
     }
 }

@@ -39,12 +39,12 @@ public class HospitalSearchController {
     @Value("${kakao.api.key}")
     private String kakaoApiKey;
 
-    @GetMapping("/main")
+    @GetMapping("/")
     public String mainPage(Model model) {
         List<Category> categories = categoryService.findAll();
         model.addAttribute("categories", categories);
 
-        List<Symptom> symptoms = symptomService.findAll();
+        List<Symptom> symptoms = symptomService.findTop10ByOrderByIdAsc();
         model.addAttribute("symptoms", symptoms);
         return "hospital/mainGet";
     }
