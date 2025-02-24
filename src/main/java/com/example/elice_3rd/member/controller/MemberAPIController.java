@@ -69,8 +69,8 @@ public class MemberAPIController {
     }
 
     @PatchMapping("quit")
-    public ResponseEntity<Void> quit(Principal principal, @RequestBody String password){
-        memberService.quit(principal.getName(), password);
+    public ResponseEntity<Void> quit(Principal principal, @RequestBody PasswordDto passwordDto){
+        memberService.quit(principal.getName(), passwordDto.getCurrentPassword());
         return ResponseEntity.ok().header("Location", "/").build();
     }
 

@@ -7,12 +7,14 @@ import com.example.elice_3rd.member.dto.PasswordDto;
 import com.example.elice_3rd.member.entity.Member;
 import com.example.elice_3rd.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Base64;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class MemberManagementService {
@@ -58,8 +60,12 @@ public class MemberManagementService {
         Member member = memberRepository.findByEmail(email).orElseThrow(
                 () -> new IllegalArgumentException("회원 탈퇴 실패: 이메일과 일치하는 회원이 존재하지 않습니다.")
         );
+        log.error("email: {}", email);
+        log.error("password: {}", password);
         if(passwordEncoder.matches(password, member.getPassword()))
-        member.quit();
+            member.quit();
+        else
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
     }
 
     @Transactional
