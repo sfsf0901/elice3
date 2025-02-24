@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
-public class HospitalDiagnosisSubjectBatchConfig {
+public class HospitalDiagnosisSubjectStepConfig {
 
     private final EntityManager em;
     private final HospitalService hospitalService;

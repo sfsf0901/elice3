@@ -29,4 +29,14 @@ public class SymptomCategory extends BaseEntity {
     private Category category;
 
     private Integer priority; // 우선순위 추가
+    private String symptomName;
+
+    public static SymptomCategory create(Symptom symptom, Category category, Integer priority, String symptomName) {
+        SymptomCategory symptomCategory = new SymptomCategory();
+        symptomCategory.symptom = symptom;
+        symptomCategory.category = category;
+        symptomCategory.priority = priority;
+        symptomCategory.symptomName = symptomName;
+        return symptomCategory;
+    }
 }

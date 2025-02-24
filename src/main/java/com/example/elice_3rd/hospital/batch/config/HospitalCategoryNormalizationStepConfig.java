@@ -11,12 +11,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import java.util.Optional;
-
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
-public class HospitalCategoryNormalizationBatchConfig {
+public class HospitalCategoryNormalizationStepConfig {
 
     private final EntityManager em;
 

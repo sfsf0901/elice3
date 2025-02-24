@@ -24,7 +24,7 @@ import java.util.List;
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
-public class HospitalTempBatchConfig {
+public class HospitalTempStepConfig {
 
     private final HospitalTempService hospitalTempService;
     private final DiagnosisSubjectService diagnosisSubjectService;

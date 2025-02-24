@@ -2,10 +2,8 @@ package com.example.elice_3rd.hospital.batch.config;
 
 
 import com.example.elice_3rd.hospital.batch.entity.HospitalTemp;
-import com.example.elice_3rd.hospital.batch.service.HospitalTempService;
 import com.example.elice_3rd.hospital.entity.Hospital;
 import com.example.elice_3rd.hospital.entity.HospitalCategory;
-import com.example.elice_3rd.hospital.repository.HospitalCategoryRepository;
 import com.example.elice_3rd.hospital.service.HospitalService;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +29,7 @@ import java.util.stream.Collectors;
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
-public class HospitalCategoryBatchConfig {
+public class HospitalCategoryStepConfig {
 
     private final EntityManager em;
     private final HospitalService hospitalService;

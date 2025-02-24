@@ -4,6 +4,7 @@ import com.example.elice_3rd.category.dto.request.CreateCategoryRequest;
 import com.example.elice_3rd.category.entity.Category;
 import com.example.elice_3rd.category.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.springframework.core.io.ClassPathResource;
@@ -20,11 +21,12 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    public void initCategories() throws IOException {
+    public void initCategories() {
         if (categoryRepository.count() == 0) {
             Resource resource = new ClassPathResource("categories.csv");
 
@@ -38,6 +40,9 @@ public class CategoryService {
                         .toList();
 
                 categoryRepository.saveAll(categories);
+            } catch (IOException e) {
+                e.printStackTrace();
+                log.error("########카테고리 생성 실패");
             }
         }
     }
@@ -57,7 +62,7 @@ public class CategoryService {
 
     public Long updateDescription(Long categoryId, CreateCategoryRequest request) {
         Category category = findByCategoryId(categoryId);
-        category.updateName(request.getDescription());
+        category.updateDescription(request.getDescription());
         return category.getId();
     }
 

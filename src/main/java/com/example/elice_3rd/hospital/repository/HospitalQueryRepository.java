@@ -31,7 +31,7 @@ public class HospitalQueryRepository {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
-    public List<Tuple> findAllByCategoryId(Long categoryId, boolean hasNightClinic, boolean hasSundayAndHolidayClinic, Double latitude, Double longitude, Pageable pageable) {
+    public List<Tuple> findAllByCategoryId(Long categoryId, Boolean hasNightClinic, Boolean hasSundayAndHolidayClinic, Double latitude, Double longitude, Pageable pageable) {
         NumberTemplate<Double> distanceExpression = numberTemplate(Double.class,
                 "ST_Distance_Sphere(point({0}, {1}), point({2}, {3}))",
                 longitude, latitude, hospital.longitude, hospital.latitude);
@@ -107,11 +107,17 @@ public class HospitalQueryRepository {
         return hasNightEmergency ? hospital.hasNightEmergency.eq(true) : null;
     }
 
-    private BooleanExpression hasNightClinicEq(boolean hasNightClinic) {
+    private BooleanExpression hasNightClinicEq(Boolean hasNightClinic) {
+        if (hasNightClinic == null) {
+            return null;
+        }
         return hasNightClinic ? hospitalCategory.hospital.hasNightClinic.eq(true) : null;
     }
 
-    private BooleanExpression hasSundayAndHolidayClinicEq(boolean hasSundayAndHolidayClinic) {
+    private BooleanExpression hasSundayAndHolidayClinicEq(Boolean hasSundayAndHolidayClinic) {
+        if (hasSundayAndHolidayClinic == null) {
+            return null;
+        }
         return hasSundayAndHolidayClinic ? hospitalCategory.hospital.hasSundayAndHolidayClinic.eq(true) : null;
     }
 }
