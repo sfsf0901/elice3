@@ -8,19 +8,30 @@ import api from "/common/js/API.js";
 
   // Loop over them and prevent submission
   Array.prototype.slice.call(forms).forEach((form) => {
-    form.addEventListener('submit', (event) => {
+    form.addEventListener('input', (event) => {
+      const password = document.getElementById("password");
+      const confirmPassword = document.getElementById("confirmPassword");
+      const passwordMatch = password.value === confirmPassword.value && password.length > 0;
+
+      if (password.value !== confirmPassword.value) {
+        confirmPassword.setCustomValidity("비밀번호가 일치하지 않습니다.");
+      } else {
+        confirmPassword.setCustomValidity(""); // 문제 없으면 초기화
+      }
+
       if (!form.checkValidity()) {
+        document.getElementById("submit-button").disabled = true;
         event.preventDefault();
         event.stopPropagation();
+      } else{
+        document.getElementById("submit-button").disabled = false;
       }
       form.classList.add('was-validated');
+
     }, false);
+
   });
 })();
-
-// document.querySelectorAll("input").forEach(element => {
-//   element.addEventListener("input", )
-// })
 
 const code = Math.random().toString(36).substring(2, 11);
 
