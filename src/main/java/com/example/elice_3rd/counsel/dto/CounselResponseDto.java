@@ -25,4 +25,6 @@ public class CounselResponseDto {
     private String category;
     @NotNull
     private LocalDateTime createdDate;
+    @NotBlank
+    private String name;
 }
