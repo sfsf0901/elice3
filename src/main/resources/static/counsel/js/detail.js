@@ -67,7 +67,7 @@ function renderPagination(data) {
   for (let i = 0; i < data.totalPages; i++) {
     const pageItem = document.createElement("li");
     pageItem.className = "page-item"
-    pageItem.innerHTML = `<span class="page-link">${i + 1}</span>`
+    pageItem.innerHTML = `<span class="page-link page-item">${i + 1}</span>`
     if (i === 0)
       pageItem.classList.add("active");
 

@@ -19,9 +19,9 @@ function renderList(data){
   items.forEach(item => {
     const itemDiv = document.createElement("div");
     let content = item.content;
-    if(content.length > 65)
-      content = content.substring(0, 65) + "...";
-    console.log(item);
+    if(content.length > 50)
+      content = content.substring(0, 50) + "...";
+
     itemDiv.className = "counsel-item"
     itemDiv.innerHTML = `
       <div class="d-flex">
