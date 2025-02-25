@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     const memberId = response.data.memberId;
                     window.location.href = "/chat/chat-room/"  + chatRoomId + "/" + memberId;
                 } else {
-                    alert('상담을 연결하는데 오류가 발생하였습니다. 다시 시도해 주세요');
+                    alert("상담을 연결하는데 오류가 발생하였습니다. 다시 시도해 주세요");
                 }
             })
             .catch(error =>

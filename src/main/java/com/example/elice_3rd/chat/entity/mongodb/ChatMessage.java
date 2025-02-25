@@ -1,4 +1,4 @@
-package com.example.elice_3rd.chat.entity;
+package com.example.elice_3rd.chat.entity.mongodb;
 
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;

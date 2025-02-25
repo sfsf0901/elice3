@@ -1,25 +1,21 @@
-// 채팅방 ID와 사용자 ID 설정.
 const chatRoomId = document.getElementById("messages").getAttribute("data-chat-room-id");
 const memberId = document.getElementById("messages").getAttribute("data-member-id");
 
-window.onload = function() {
-    // 서버에서 초기 메시지 로드
-    axios.get(`/api/chat/${chatRoomId}/${memberId}`)
+function fetchChat() {
+    axios.get(`/api/chat/${chatRoomId}`)
         .then(response => {
-            // 응답 받은 메시지를 모두 화면에 표시
             response.data.forEach(message => {
                 displayMessage(message);
             });
         })
         .catch(error => {
-            console.error('초기 메시지 로드 실패', error);
+            console.error("초기 메시지 로드 실패", error);
         });
 
     // WebSocket 연결
     connectWebSocket();
 };
 
-// 초기 메시지 표시
 function displayMessage(message) {
     const messageBox = document.getElementById("messages");
 
@@ -29,15 +25,12 @@ function displayMessage(message) {
     if (message.senderId == memberId) {
         messageElement.classList.add("my-message");
 
-        const senderNameElement = document.createElement("span");
-        senderNameElement.classList.add("sender-name");
-        senderNameElement.textContent = "You";
-        senderNameElement.style.display = "none";
-        messageElement.appendChild(senderNameElement);
-
         const messageTextElement = document.createElement("div");
         messageTextElement.classList.add("message-text");
         messageTextElement.textContent = message.message;
+
+        const TimeElement = document.createElement("div");
+        TimeElement.classList.add("time");
 
         const createdDateElement = document.createElement("span");
         createdDateElement.classList.add("message-time");
@@ -45,17 +38,26 @@ function displayMessage(message) {
 
         const messageContentElement = document.createElement("div");
         messageContentElement.classList.add("message-content");
-        messageContentElement.appendChild(createdDateElement);
-        messageContentElement.appendChild(messageTextElement);
 
         const deleteButton = document.createElement("button");
-        deleteButton.textContent = "삭제";
-        deleteButton.classList.add("delete-button");
-        deleteButton.addEventListener("click", function () {
+        deleteButton.classList.add("delete-button","bi-trash");
+        deleteButton.style.visibility = "hidden";
+
+        messageContentElement.addEventListener("click", () => {
+            deleteButton.style.visibility = "visible";
+        });
+
+        deleteButton.addEventListener("click", (e) => {
+            e.stopPropagation();
             deleteMessage(message.chatMessageId, messageElement);
         });
 
+        TimeElement.appendChild(createdDateElement);
+
+        messageContentElement.appendChild(TimeElement);
+        messageContentElement.appendChild(messageTextElement);
         messageContentElement.appendChild(deleteButton);
+
         messageElement.appendChild(messageContentElement);
     } else {
         messageElement.classList.add("other-message");
@@ -69,25 +71,28 @@ function displayMessage(message) {
         messageTextElement.classList.add("message-text");
         messageTextElement.textContent = message.message;
 
+        const TimeElement = document.createElement("div");
+        TimeElement.classList.add("time");
+
         const createdDateElement = document.createElement("span");
         createdDateElement.classList.add("message-time");
         createdDateElement.textContent = formatDate(message.createdDate);
 
         const messageContentElement = document.createElement("div");
         messageContentElement.classList.add("message-content");
+
+        TimeElement.appendChild(createdDateElement);
         messageContentElement.appendChild(messageTextElement);
-        messageContentElement.appendChild(createdDateElement);
+        messageContentElement.appendChild(TimeElement);
 
         messageElement.appendChild(messageContentElement);
     }
 
     messageBox.appendChild(messageElement);
 
-    // 자동 스크롤
     messageBox.scrollTop = messageBox.scrollHeight;
 }
 
-// 날짜 포맷 함수 (예: "2025-02-21 15:30")
 function formatDate(dateString) {
     const date = new Date(dateString);
     const hours = date.getHours().toString().padStart(2, '0');
@@ -98,33 +103,33 @@ function formatDate(dateString) {
     return `${month}-${day} ${hours}:${minutes}`;
 }
 
-
-// WebSocket 연결을 설정하여 실시간 채팅 처리
 let stompClient = null;
+let isWebSocketConnected = false;
 
 function connectWebSocket() {
     const socket = new SockJS("/ws");
     stompClient = Stomp.over(socket);
 
-    stompClient.connect({}, function(frame) {
-        console.log('WebSocket 연결 성공: ' + frame);
+    stompClient.connect({}, (frame) => {
+        console.log("WebSocket 연결 성공: " + frame);
+        isWebSocketConnected = true;
 
-        // WebSocket을 통해 채팅방에 대한 메시지 수신
         stompClient.subscribe(`/topic/${chatRoomId}`, (response) => {
             const message = JSON.parse(response.body);
             displayMessage(message);
         });
 
+        enableMessageActions();
+
     }, (error) => {
-         console.error('WebSocket 연결 실패', error);
+         console.error("WebSocket 연결 실패", error);
          setTimeout(connectWebSocket, 5000);  // 5초 후 재연결 시도
     });
 }
 
-// 메시지 전송
 function sendMessage() {
     const messageContent = document.getElementById("messageInput").value;
-    if (messageContent.trim() !== "") {
+    if (messageContent.trim() !== "" && isWebSocketConnected) {
         const message = {
             message: messageContent,
             senderId: memberId,
@@ -134,14 +139,12 @@ function sendMessage() {
         if (stompClient && stompClient.connected) {
             stompClient.send(`/app/send-message/${chatRoomId}`, {}, JSON.stringify(message));
         }
-        document.getElementById("messageInput").value = '';  // 입력 필드 초기화
+        document.getElementById("messageInput").value = '';
     }
 }
 
-// 전송 버튼 클릭 시 메시지 전송
 document.getElementById("sendButton").onclick = sendMessage;
 
-// Enter 키로 메시지 전송
 document.getElementById("messageInput").addEventListener("keypress", (e) => {
     if (e.key === "Enter") {
         sendMessage();
@@ -185,4 +188,19 @@ document.getElementById("leaveBtn").addEventListener("click", (e) => {
 
 document.getElementById("cancelBtn").addEventListener("click", (e) => {
     window.location.href = "/chat/chat-rooms";
+});
+
+function disableMessageActions() {
+    document.getElementById("sendButton").disabled = true;
+    document.getElementById("messageInput").disabled = true;
+}
+
+function enableMessageActions() {
+    document.getElementById("sendButton").disabled = false;
+    document.getElementById("messageInput").disabled = false;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    fetchChat();
+    disableMessageActions();
 });

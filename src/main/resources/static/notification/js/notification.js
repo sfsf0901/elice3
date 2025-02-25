@@ -1,113 +1,121 @@
-// 채팅방 ID와 사용자 ID 설정
-// const chatRoomId = document.getElementById("messages").getAttribute("data-chat-room-id");
-// const memberId = document.getElementById("messages").getAttribute("data-member-id");
-const chatRoomId = 3;
-const memberId = 1;
-
 let unreadCount = 0;
+let notificationList, notificationBadge;
 
-window.onload = function() {
-    loadUnreadNotifications(memberId);
-};
+document.addEventListener("DOMContentLoaded", () => {
+    notificationList = document.getElementById("notification-list");
+    notificationBadge = document.getElementById("notification-badge");
+    checkLogin();
+});
 
-// 서버에서 확인하지 않은 알림 메세지 로드
-function loadUnreadNotifications(memberId) {
-    axios.get(`/api/notification/unread/${memberId}`)
+function checkLogin() {
+    axios.get('/api/notification/is-login')
         .then(response => {
-            unreadCount = 0;
-            response.data.forEach(notification => {
-                showNotification(notification);
-            });
-
-            // 읽지 않은 알림이 있을 경우 뱃지 표시
-            const notificationBadge = document.getElementById('notification-badge');
-            if (unreadCount > 0) {
-                notificationBadge.style.display = 'inline';
-                notificationBadge.textContent = unreadCount;
+            if (response.data.isLogin) {
+                console.log("User is logged in, establishing SSE connection...");
+                fetchUnreadNotifications();
+                connectSSE();
             } else {
-                notificationBadge.style.display = 'none';
+                console.log("User is not logged in, SSE connection not established.");
             }
         })
         .catch(error => {
-            console.error('알림 로드 실패', error);
+            console.error('Error checking login status:', error);
         });
+}
 
-    // WebSocket 연결
-    connectWebSocket();
-};
-
-// 알림 읽음 처리 API 호출
-function markNotificationAsRead(notificationId) {
-    axios.put(`/api/notification/read/${notificationId}`)
+function fetchUnreadNotifications() {
+    axios.get('/api/notification/unread')
         .then(response => {
-            if (response.status === 200) {
-                console.log('Notification marked as read');
-                loadUnreadNotifications(memberId);
-            }
+            response.data.forEach(notification => {
+                displayMessage(notification);
+                unreadCount++;
+            });
+            updateBadge();
         })
-        .catch(error => console.error('Error marking notification as read:', error));
-}
-
-// 알림 항목 표시
-function showNotification(notification) {
-    const notificationList = document.getElementById('notification-list');
-
-    // 알림 아이템 생성
-    const listItem = document.createElement('li');
-    listItem.classList.add('dropdown-item');
-    listItem.textContent = notification.message;
-
-    // 알림 클릭 시 해당 채팅방으로 이동
-    listItem.addEventListener('click', function() {
-        window.location.href = `/chat/chat-room/${notification.chatRoomId}/${notification.receiverId}`;
-    });
-
-    // 알림 읽음 처리 버튼 추가
-    const markAsReadButton = document.createElement('button');
-    markAsReadButton.textContent = '읽음 처리';
-    markAsReadButton.classList.add('btn', 'btn-sm', 'btn-secondary');
-    markAsReadButton.addEventListener('click', (e) => {
-        e.stopPropagation();
-        markNotificationAsRead(notification.notificationId);
-    });
-
-    listItem.appendChild(markAsReadButton);
-
-    notificationList.appendChild(listItem);
-
-    unreadCount++;
-}
-
-// WebSocket 연결
-let stompClient = null;
-
-function connectWebSocket() {
-    const socket = new SockJS("/ws");
-    stompClient = Stomp.over(socket);
-
-    stompClient.connect({}, function(frame) {
-        console.log('WebSocket 연결 성공: ' + frame);
-
-        stompClient.subscribe(`/topic/${chatRoomId}`, (response) => {
-            const message = JSON.parse(response.body);
-            showNotification(message);
+        .catch(error => {
+            console.error("'Error fetching unread notifications:", error);
         });
-
-    }, (error) => {
-        console.error('WebSocket 연결 실패', error);
-        setTimeout(connectWebSocket, 5000);  // 5초 후 재연결 시도
-    });
 }
 
-// 메시지 전송
-function sendMessage() {
-    const notification = {
-        message: message,
-        receiverId: memberId,
-        chatRoomId: chatRoomId
+function connectSSE() {
+    const eventSource = new EventSource("/api/notification");
+
+    eventSource.onopen = (e) => {
+        console.log("'Connection established");
     };
 
-    if (stompClient && stompClient.connected) {
-        stompClient.send(`/app/send-notification/${chatRoomId}`, {}, JSON.stringify(notification));
+    eventSource.onmessage = (e) => {
+        const notification = JSON.parse(e.data);
+        console.log("Received notification:", notification);
+        displayMessage(notification)
+        unreadCount++;
+        updateBadge();
+    };
+
+    eventSource.onerror = (e) => {
+        console.error("Error occurred while receiving SSE events:", e);
+        setTimeout(() => {
+            eventSource.close();
+            connectSSE();
+        }, 5000);
+    };
+}
+
+function displayMessage(notification) {
+    const notificationItem = document.createElement("li");
+    notificationItem.classList.add("dropdown-item");
+    notificationItem.textContent = notification.message;
+
+    notificationItem.onclick = () => {
+        window.location.href = `/chat/chat-room/${notification.chatRoomId}/${notification.receiverId}`;
+    };
+
+    const readButton = document.createElement("button");
+    readButton.classList.add("btn", "'btn-sm", "bi-check-lg");
+    readButton.style.visibility  = "hidden";
+    readButton.onclick = function(e) {
+        e.stopPropagation();
+        markAsRead(notification.notificationId, notificationItem);
+    };
+
+    notificationItem.appendChild(readButton);
+
+    notificationItem.onmouseover = function() {
+        readButton.style.visibility = "visible";
+    };
+    notificationItem.onmouseout = function() {
+        readButton.style.visibility = "hidden";
+    };
+
+    notificationList.insertBefore(notificationItem, notificationList.firstChild);
+
+    if (notificationList.children.length > 10) {
+        notificationList.removeChild(notificationList.lastChild);
+    }
+}
+
+// 알림을 읽음 처리하는 함수
+function markAsRead(notificationId, notificationItem) {
+    axios.put(`/api/notification/read/${notificationId}`)
+        .then(response => {
+            unreadCount--;
+            if (unreadCount <= 0) {
+                notificationBadge.style.display = "none";
+            } else {
+                updateBadge();
+            }
+            notificationList.removeChild(notificationItem);
+        })
+        .catch(error => {
+            console.error("Error marking notification as read:", error);
+        });
+}
+
+function updateBadge() {
+    if (unreadCount > 0) {
+        notificationBadge.style.display = "inline-block";
+        notificationBadge.textContent = unreadCount;
+    } else {
+        notificationBadge.style.display = "none";
     }
 }

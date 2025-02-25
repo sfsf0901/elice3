@@ -39,12 +39,12 @@ public class ChatController {
 
     @GetMapping("/chat-rooms")
     public String getChatRoomsPage(Model model, Principal principal) {
-        Long loggedInUserId = Long.parseLong(principal.getName());
-        log.debug("Logged In User ID: {}", loggedInUserId);
+//        Long loggedInUserId = Long.parseLong(principal.getName());
+//        log.debug("Logged In User ID: {}", loggedInUserId);
 
         // 테스트용
-//        Long loggedInUserId = 1L;
-//        log.debug("Logged In User ID: {}", loggedInUserId);
+        Long loggedInUserId = 1L;
+        log.debug("Logged In User ID: {}", loggedInUserId);
         //
         if (loggedInUserId == null) {
             return "redirect:/member/another-login";

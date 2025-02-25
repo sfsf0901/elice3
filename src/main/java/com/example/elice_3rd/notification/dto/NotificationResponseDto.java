@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NotificationDto {
+public class NotificationResponseDto {
+
+    private Long notificationId;
 
     private Long chatRoomId;
 
@@ -22,8 +24,9 @@ public class NotificationDto {
 
     private Boolean readStatus;
 
-    public static NotificationDto toDto(Notification notification) {
-        return NotificationDto.builder()
+    public static NotificationResponseDto toDto(Notification notification) {
+        return NotificationResponseDto.builder()
+                .notificationId(notification.getNotificationId())
                 .chatRoomId(notification.getChatRoomId().getChatRoomId())
                 .receiverId(notification.getReceiverId().getMemberId())
                 .message(notification.getMessage())

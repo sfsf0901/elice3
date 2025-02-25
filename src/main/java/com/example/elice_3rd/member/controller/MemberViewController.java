@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class MemberViewController {
     @GetMapping("/register")
     public String register(){
-        return "member/user-register";
+        return "/member/user-register";
     }
 
     @GetMapping("/login")

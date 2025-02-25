@@ -1,6 +1,6 @@
 package com.example.elice_3rd.notification.entity;
 
-import com.example.elice_3rd.chat.entity.ChatRoom;
+import com.example.elice_3rd.chat.entity.mysql.ChatRoom;
 import com.example.elice_3rd.common.BaseEntity;
 import com.example.elice_3rd.member.entity.Member;
 import jakarta.persistence.*;
@@ -22,11 +22,13 @@ public class Notification extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_room_id", nullable = false)
-    private ChatRoom chatRoom;
+    private ChatRoom chatRoomId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id", nullable = false)
-    private Member receiver;
+    private Member receiverId;
+
+    private String chatMessageId;
 
     @Column(nullable = false)
     private String message;

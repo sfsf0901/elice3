@@ -8,24 +8,18 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #f0f0f0;
+    background-color: #FFFFFF;
     padding: 10px;
     height: 60px;
 }
 
 .chat-header button {
-    background-color: #007bff;
-    color: white;
-    padding: 5px 10px;
+    background: none;
     border: none;
     cursor: pointer;
 }
 
-.chat-header button:hover {
-    background-color: #0056b3;
-}
-
-.chat-header h2 {
+.chat-header h3 {
     flex-grow: 1;
     text-align: center;
     margin: 0;
@@ -37,7 +31,6 @@
     overflow-y: auto;
     padding: 10px;
 }
-
 
 .message {
     display: flex;
@@ -58,18 +51,49 @@
     flex-direction: column;
 }
 
+.message-content {
+    display: flex;
+}
+
 .sender-name {
-    font-weight: bold;
+    margin-left: 2px;
     margin-bottom: 5px;
 }
 
 .message-text {
-    background-color: #FD7E14;
     border-radius: 10px;
     padding: 10px;
     max-width: 100%;
     word-wrap: break-word;
     display: inline-block;
+}
+
+.other-message .message-text {
+    background-color: #f0f0f0;
+    margin-right: 5px;
+}
+
+.my-message .message-text {
+    background-color: #FFA32D;
+    margin-left: 5px;
+}
+
+.time {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.message-time {
+    font-size: 0.9rem;
+}
+
+.delete-button {
+    visibility: hidden;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
 
 .messageInputSection {
     display: flex;
@@ -79,40 +103,22 @@
 }
 
 #messageInput {
-    min-width: 80%
+    flex-grow: 1;
     padding: 10px;
     box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    outline: none;
 }
 
 #sendButton {
-    min-width: 20%;
+    flex-shrink: 0;
+    width: 20%;
     padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-#sendButton:hover {
-    background-color: #0056b3;
-}
-
-#messageInput {
-    padding: 10px;
-    box-sizing: border-box;
-}
-
-#sendButton {
-    padding: 10px;
-    background-color: #007bff;
+    background-color: #FF8D00;
     color: white;
     border: none;
     cursor: pointer;
 }
 
 #sendButton:hover {
-    background-color: #0056b3;
+    background-color: #FF8D00;
 }
