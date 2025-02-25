@@ -32,17 +32,12 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/members")
 @RequiredArgsConstructor
-@Validated
 public class MemberAPIController {
     private final MemberService memberService;
-    // component를 주입 시키는 것에는 정답은 없음
     private final CounselService counselService;
-    private final CommentService commentService;
 
     @PostMapping
-    public ResponseEntity<Void> register(@RequestBody MemberRequestDto requestDto) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        log.error(objectMapper.writeValueAsString(requestDto));
+    public ResponseEntity<Void> register(@Validated @RequestBody MemberRequestDto requestDto) {
         try {
             memberService.register(requestDto);
             return ResponseEntity.created(URI.create("/login")).build();
@@ -63,13 +58,13 @@ public class MemberAPIController {
     }
 
     @PatchMapping("info")
-    public ResponseEntity<Void> updateMemberInfo(Principal principal, @RequestBody MemberUpdateDto updateDto){
+    public ResponseEntity<Void> updateMemberInfo(Principal principal, @RequestBody @Validated MemberUpdateDto updateDto){
         memberService.updateMemberInfo(principal.getName(), updateDto);
         return ResponseEntity.ok().header("Location", "my-page").build();
     }
 
     @PatchMapping("quit")
-    public ResponseEntity<Void> quit(Principal principal, @RequestBody PasswordDto passwordDto){
+    public ResponseEntity<Void> quit(Principal principal, @RequestBody @Validated PasswordDto passwordDto){
         memberService.quit(principal.getName(), passwordDto.getCurrentPassword());
         return ResponseEntity.ok().header("Location", "/").build();
     }
@@ -84,5 +79,11 @@ public class MemberAPIController {
     public ResponseEntity<Page<CounselResponseDto>> retrieveMyCounsels(Principal principal,
                                                                        @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable){
         return ResponseEntity.ok(counselService.retrieveMyCounsels(principal.getName(), pageable));
+    }
+
+    @GetMapping("/exist")
+    public ResponseEntity<Boolean> isExist(String email){
+        log.error(email);
+        return ResponseEntity.ok(memberService.isExist(email));
     }
 }

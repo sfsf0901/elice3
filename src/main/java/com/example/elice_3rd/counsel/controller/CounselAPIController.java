@@ -32,13 +32,13 @@ public class CounselAPIController {
     private final CategoryService categoryService;
 
     @PostMapping
-    public ResponseEntity<Void> write(Principal principal, @RequestBody CounselRequestDto requestDto){
+    public ResponseEntity<Void> write(Principal principal, @Validated @RequestBody CounselRequestDto requestDto){
         counselService.create(principal.getName(), requestDto);
         return ResponseEntity.created(URI.create("/counsels")).build();
     }
 
     @PatchMapping
-    public ResponseEntity<Void> update(Principal principal, @RequestBody CounselUpdateDto updateDto) throws JsonProcessingException {
+    public ResponseEntity<Void> update(Principal principal, @Validated @RequestBody CounselUpdateDto updateDto) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         System.out.println(mapper.writeValueAsString(updateDto));
         counselService.update(principal.getName(), updateDto);

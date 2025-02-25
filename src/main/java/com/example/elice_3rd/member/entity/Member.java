@@ -50,6 +50,7 @@ public class Member extends BaseEntity {
                 .email(email)
                 .password(password)
                 .role(role.getKey())
+                .isDeleted(isDeleted)
                 .build();
     }
 

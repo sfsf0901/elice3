@@ -36,6 +36,10 @@ public class CustomUserDetails implements UserDetails {
         return memberDetail.getEmail();
     }
 
+    public Boolean isDeleted(){
+        return memberDetail.getIsDeleted();
+    }
+
 //    @Override
 //    public boolean isAccountNonExpired() {
 //        return true;

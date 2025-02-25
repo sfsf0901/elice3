@@ -75,4 +75,8 @@ public class MemberManagementService {
         );
         member.updateRoleDoctor();
     }
+
+    Boolean isExist(String email){
+        return memberRepository.existsByEmail(email);
+    }
 }
