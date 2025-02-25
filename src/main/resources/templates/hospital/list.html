@@ -107,6 +107,7 @@
         <script>
             $(document).ready(function () {
                 $('.form-check-input').on('change', function () {
+                    console.log("체크박스 상태 변경 감지됨");  // 디버깅용 로그 추가
                     reloadPageWithFilters();
                 });
 
@@ -116,7 +117,7 @@
                     const latitude = "[[${condition.latitude}]]";
                     const longitude = "[[${condition.longitude}]]";
 
-                    // 체크박스 상태 가져오기
+                    // 체크박스 상태 가져오기 (버그 수정)
                     const isOpen = $('#isOpen').prop('checked') ? "true" : "false";
                     const hasNightClinic = $('#hasNightClinic').prop('checked') ? "true" : "false";
                     const hasSundayAndHolidayClinic = $('#hasSundayAndHolidayClinic').prop('checked') ? "true" : "false";

@@ -1,10 +1,7 @@
 package com.example.elice_3rd.hospital.repository;
 
-import com.example.elice_3rd.hospital.dto.request.HospitalSearchByCategoryCondition;
-import com.example.elice_3rd.hospital.dto.request.HospitalSearchByKeywordCondition;
 import com.example.elice_3rd.hospital.dto.request.HospitalSearchWithEmergencyCondition;
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.NumberTemplate;
@@ -116,7 +113,7 @@ public class HospitalQueryRepository {
     }
 
     private BooleanExpression isOpenEq(Boolean isOpen) {
-        if (isOpen == null) {
+        if (isOpen == null || isOpen == false) {
             return null;
         }
         // 현재 요일 및 시간 가져오기
