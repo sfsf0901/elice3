@@ -9,9 +9,9 @@ public class HospitalSearchByCategoryCondition {
     private Double latitude;
     private Double longitude;
 
-    private boolean isOpen;
-    private boolean hasNightClinic;
-    private boolean hasSundayAndHolidayClinic;
+    private Boolean isOpen;
+    private Boolean hasNightClinic;
+    private Boolean hasSundayAndHolidayClinic;
 
     private String hospitalName;
 }

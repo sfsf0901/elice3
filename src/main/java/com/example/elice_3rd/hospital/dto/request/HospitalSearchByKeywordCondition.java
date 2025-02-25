@@ -10,6 +10,7 @@ public class HospitalSearchByKeywordCondition {
     private Double latitude;
     private Double longitude;
 
+    private Boolean isOpen;
     private Boolean hasNightClinic;
     private Boolean hasSundayAndHolidayClinic;
 

@@ -3,11 +3,14 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <nav th:fragment="sideNavFragment(currentMenu)" class="nav flex-column">
-  <a class="nav-link" th:classappend="${currentMenu == 'password'} ? 'active'" th:href="@{/counsels}">실시간 의료 상담</a>
-  <a class="nav-link" th:classappend="${currentMenu == 'main'} ? 'active'" th:href="@{/main}">병원 찾기</a>
-  <a class="nav-link" th:classappend="${currentMenu == 'emergency'} ? 'active'" href="#" onclick="submitLocationForEmergency(); return false;">응급실 찾기</a>
-  <a class="nav-link" th:classappend="${currentMenu == 'map'} ? 'active'" th:href="@{/hospitals/map}">지도로 병원 찾기</a>
-  <a class="nav-link" th:classappend="${currentMenu == 'withdrawal'} ? 'active'" th:href="@{/my-page}">마이페이지</a>
+  <a class="nav-link" th:classappend="${currentMenu == 'password'} ? 'active'"
+     th:href="@{/counsels}" >
+    🩺&nbsp;&nbsp;&nbsp;실시간 의료 상담
+  </a>
+  <a class="nav-link mt-3" th:classappend="${currentMenu == 'main'} ? 'active'" th:href="@{/}">🏥&nbsp;&nbsp;&nbsp;병원 찾기</a>
+  <a class="nav-link mt-3" th:classappend="${currentMenu == 'emergency'} ? 'active'" href="#" onclick="submitLocationForEmergency(); return false;">🚑&nbsp;&nbsp;&nbsp;응급실 찾기</a>
+  <a class="nav-link mt-3" th:classappend="${currentMenu == 'map'} ? 'active'" th:href="@{/hospitals/map}">📍&nbsp;&nbsp;&nbsp;지도로 병원 찾기</a>
+  <a class="nav-link mt-3" th:classappend="${currentMenu == 'myPage'} ? 'active'" th:href="@{/my-page}" sec:authorize="isAuthenticated()">👤&nbsp;&nbsp;&nbsp;마이페이지</a>
 
   <!-- 응급실 위치 폼 -->
   <form id="emergencyForm" action="/hospitals/emergency" method="get" style="display:none;">

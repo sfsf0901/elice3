@@ -55,15 +55,15 @@ public class HospitalSearchController {
                                    @RequestParam(value = "page", defaultValue = "0") int page,
                                    @PageableDefault(size = 20) Pageable pageable,
                                    Model model) {
-        System.out.println("### isOpen: " + condition.isOpen());
-        System.out.println("### hasNightClinic: " + condition.isHasNightClinic());
-        System.out.println("### hasSundayAndHolidayClinic: " + condition.isHasSundayAndHolidayClinic());
+        System.out.println("### isOpen: " + condition.getIsOpen());
+        System.out.println("### hasNightClinic: " + condition.getHasNightClinic());
+        System.out.println("### hasSundayAndHolidayClinic: " + condition.getHasSundayAndHolidayClinic());
         long startTime = System.currentTimeMillis();
 
-//        if (condition.getLatitude() == null) condition.setLatitude(37.5665); // 서울 위도
-//        if (condition.getLongitude() == null) condition.setLongitude(126.9780); // 서울 위도
-        condition.setLatitude(37.5665); // 서울 위도
-        condition.setLongitude(126.9780); // 서울 위도
+        if (condition.getLatitude() == null) condition.setLatitude(37.5665); // 서울 위도
+        if (condition.getLongitude() == null) condition.setLongitude(126.9780); // 서울 위도
+//        condition.setLatitude(37.5665); // 서울 위도
+//        condition.setLongitude(126.9780); // 서울 위도
 
         Pageable customPageable = Pageable.ofSize(pageable.getPageSize()).withPage(page);
 
@@ -167,6 +167,8 @@ public class HospitalSearchController {
 
         if (condition.getLatitude() == null) condition.setLatitude(37.5665); // 서울 위도
         if (condition.getLongitude() == null) condition.setLongitude(126.9780); // 서울 위도
+//        condition.setLatitude(37.5665); // 서울 위도
+//        condition.setLongitude(126.9780); // 서울 위도
 
         Pageable customPageable = Pageable.ofSize(pageable.getPageSize()).withPage(page);
 
@@ -195,6 +197,8 @@ public class HospitalSearchController {
                                                   @PageableDefault(size = 20) Pageable pageable) {
         if (condition.getLatitude() == null) condition.setLatitude(37.5665);
         if (condition.getLongitude() == null) condition.setLongitude(126.9780);
+//        condition.setLatitude(37.5665); // 서울 위도
+//        condition.setLongitude(126.9780); // 서울 위도
 
         Pageable customPageable = Pageable.ofSize(pageable.getPageSize()).withPage(page);
 

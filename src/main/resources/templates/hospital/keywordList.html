@@ -63,7 +63,7 @@
 <div layout:fragment="content">
 
     <div class="header-container">
-        <a href="/main" class="back-button">
+        <a href="/" class="back-button">
             <i class="fa-solid fa-chevron-left"></i>
         </a>
         <div class="search-container">
@@ -74,6 +74,27 @@
         </div>
     </div>
 
+    <div class="mt-4 d-flex flex-wrap gap-3">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" th:checked="${condition.isOpen}" id="isOpen">
+            <label class="form-check-label" for="isOpen">
+                진료중
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" th:checked="${condition.hasNightClinic}" id="hasNightClinic">
+            <label class="form-check-label" for="hasNightClinic">
+                야간진료
+            </label>
+        </div>
+        <!--            <div class="form-check">
+                        <input class="form-check-input" type="checkbox" th:checked="${condition.hasSundayAndHolidayClinic}" id="hasSundayAndHolidayClinic">
+                        <label class="form-check-label" for="hasSundayAndHolidayClinic">
+                            휴일진료
+                        </label>
+                    </div>-->
+
+    </div>
 
     <!-- 병원 리스트 & 더보기 버튼 -->
     <div id="hospitalList" class="mt-4">
@@ -138,39 +159,66 @@
     </div>
 
     <script>
+        $(document).ready(function () {
+            $('.form-check-input').on('change', function () {
+                reloadPageWithFilters();
+            });
+
+            function reloadPageWithFilters() {
+                const keyword = document.getElementById("searchInput").value.trim();
+                const latitude = "[[${condition.latitude}]]";
+                const longitude = "[[${condition.longitude}]]";
+
+                // 체크박스 상태 가져오기
+                const isOpen = $('#isOpen').prop('checked') ? "true" : "false";
+                const hasNightClinic = $('#hasNightClinic').prop('checked') ? "true" : "false";
+
+                // 새로운 URL로 이동 (새로고침)
+                window.location.href = `/hospitals/search?keyword=${keyword}&latitude=${latitude}&longitude=${longitude}&isOpen=${isOpen}&hasNightClinic=${hasNightClinic}`;
+            }
+        });
+    </script>
+
+    <script>
+        let searchTimeout;
+
         function handleEnter(event) {
             if (event.key === "Enter") {
                 event.preventDefault(); // 기본 form 제출 방지
-                updateActionAndSubmit(event);
+                clearTimeout(searchTimeout); // 기존 요청 취소
+                searchTimeout = setTimeout(() => updateActionAndSubmit(event), 300);
             }
         }
 
         function updateActionAndSubmit(event) {
             event.preventDefault(); // 기본 동작 방지
+            clearTimeout(searchTimeout); // 기존 요청 취소
+            searchTimeout = setTimeout(() => {
+                let keyword = document.getElementById("searchInput").value.trim();
+                if (keyword === "") {
+                    alert("검색어를 입력해주세요.");
+                    return;
+                }
 
-            let keyword = document.getElementById("searchInput").value.trim();
-            if (keyword === "") {
-                alert("검색어를 입력해주세요.");
-                return;
-            }
-
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function (position) {
-                    const latitude = position.coords.latitude;
-                    const longitude = position.coords.longitude;
-                    redirectToSearch(keyword, latitude, longitude);
-                }, function () {
-                    redirectToSearch(keyword, 37.5665, 126.9780); // 위치 권한 거부 시 기본값(서울)
-                });
-            } else {
-                redirectToSearch(keyword, 37.5665, 126.9780); // 브라우저 위치 정보 미지원 시 기본값
-            }
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+                        redirectToSearch(keyword, latitude, longitude);
+                    }, function () {
+                        redirectToSearch(keyword, 37.5665, 126.9780); // 위치 권한 거부 시 기본값(서울)
+                    });
+                } else {
+                    redirectToSearch(keyword, 37.5665, 126.9780); // 브라우저 위치 정보 미지원 시 기본값
+                }
+            }, 300); // 300ms 딜레이 후 실행
         }
 
         function redirectToSearch(keyword, latitude, longitude) {
             window.location.href = `/hospitals/search?keyword=${encodeURIComponent(keyword)}&latitude=${latitude}&longitude=${longitude}`;
         }
     </script>
+
     <script>
         $('#hospitalList').on('click', '#loadMoreBtn', function () {
             const nextPage = $(this).data('next-page');
@@ -178,10 +226,21 @@
             const lng = $(this).data('lng');
             const keyword = new URLSearchParams(window.location.search).get('keyword'); // 현재 검색어 가져오기
 
+            // 체크박스 상태 가져오기
+            const isOpen = $('#isOpen').prop('checked') ? "true" : "false";
+            const hasNightClinic = $('#hasNightClinic').prop('checked') ? "true" : "false";
+
             $.ajax({
                 url: `/api/hospitals/search`,
                 type: 'GET',
-                data: { keyword, latitude: lat, longitude: lng, page: nextPage },
+                data: {
+                    keyword,
+                    latitude: lat,
+                    longitude: lng,
+                    page: nextPage,
+                    isOpen,
+                    hasNightClinic
+                },
                 success: function (response) {
                     if (response.hospitals.length === 0) {
                         $('#loadMoreWrapper').remove();

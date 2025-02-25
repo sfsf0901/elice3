@@ -12,7 +12,7 @@
     <div layout:fragment="content">
 
         <div class="d-flex align-items-center">
-            <a href="/main" class="text-decoration-none text-dark">
+            <a href="/" class="text-decoration-none text-dark">
                 <i class="fa-solid fa-chevron-left me-3 fs-4"></i>
             </a>
             <p class="mb-0 fs-4" th:text="${categoryName}"></p>
@@ -107,6 +107,7 @@
         <script>
             $(document).ready(function () {
                 $('.form-check-input').on('change', function () {
+                    console.log("체크박스 상태 변경 감지됨");  // 디버깅용 로그 추가
                     reloadPageWithFilters();
                 });
 
@@ -116,19 +117,19 @@
                     const latitude = "[[${condition.latitude}]]";
                     const longitude = "[[${condition.longitude}]]";
 
-                    // 체크박스 상태 가져오기
-                    const isOpen = $('#isOpen').prop('checked');
-                    const hasNightClinic = $('#hasNightClinic').prop('checked');
-                    const hasSundayAndHolidayClinic = $('#hasSundayAndHolidayClinic').prop('checked');
+                    // 체크박스 상태 가져오기 (버그 수정)
+                    const isOpen = $('#isOpen').prop('checked') ? "true" : "false";
+                    const hasNightClinic = $('#hasNightClinic').prop('checked') ? "true" : "false";
+                    const hasSundayAndHolidayClinic = $('#hasSundayAndHolidayClinic').prop('checked') ? "true" : "false";
 
                     // 새로운 URL로 이동 (새로고침)
-                    window.location.href = `/hospitals/${categoryName}?categoryId=${categoryId}&latitude=${latitude}&longitude=${longitude}&isOpen=${isOpen}&hasNightClinic=${hasNightClinic}&hasSundayAndHolidayClinic=${hasSundayAndHolidayClinic}`;
+                    window.location.href = `/hospitals/${categoryName}?categoryId=${categoryId}&latitude=${latitude}&longitude=${longitude}&isOpen=${isOpen}&hasNightClinic=${hasNightClinic}`;
                 }
             });
         </script>
         <script>
             $(document).ready(function () {
-                // ✅ 더보기 버튼 클릭 시 필터 조건을 함께 전달
+                // 더보기 버튼 클릭 시 필터 조건을 함께 전달
                 $('#hospitalList').on('click', '#loadMoreBtn', function () {
                     const nextPage = $(this).data('next-page');
                     const categoryId = $(this).data('category-id');
@@ -136,10 +137,10 @@
                     const lat = $(this).data('lat');
                     const lng = $(this).data('lng');
 
-                    // ✅ 체크박스 상태 가져오기 (추가)
-                    const isOpen = $('#isOpen').prop('checked');
-                    const hasNightClinic = $('#hasNightClinic').prop('checked');
-                    const hasSundayAndHolidayClinic = $('#hasSundayAndHolidayClinic').prop('checked');
+                    // 체크박스 상태 가져오기 (추가)
+                    const isOpen = $('#isOpen').prop('checked') ? "true" : "false";
+                    const hasNightClinic = $('#hasNightClinic').prop('checked') ? "true" : "false";
+                    const hasSundayAndHolidayClinic = $('#hasSundayAndHolidayClinic').prop('checked') ? "true" : "false";
 
                     $.ajax({
                         url: `/api/hospitals/${categoryName}`,
