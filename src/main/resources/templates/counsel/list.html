@@ -1,19 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout/layout}">
 <head>
   <meta charset="UTF-8">
   <title>상담 리스트</title>
   <link rel="stylesheet" href="/counsel/css/list.css">
-  <link rel="stylesheet" href="/common/css/bootstrap.min.css">
 </head>
 <body>
-<div style="width: 600px" class="d-flex flex-column justify-content-center">
-  <div id="list-container" class="counsel-container"></div>
-  <nav aria-label="..." class="d-flex justify-content-center">
-    <ul id="pagination" class="pagination">
-    </ul>
-  </nav>
-</div>
+<div layout:fragment="content">
+  <div class="search-container d-flex justify-content-around">
+    <div style="width: 50%;" class="search-box">
+      <input type="search" id="search-input" class="search-input" placeholder="진료과목, 증상">
+      <i id="search" class="fa-solid fa-magnifying-glass search-icon"></i>
+    </div>
+  </div>
+  <div style="width: 600px" class="d-flex flex-column">
+    <div id="list-container" class="counsel-container"></div>
+    <button class="btn btn-primary" onclick="location.href = 'counsels/write'">질문 하기</button>
+    <br>
+    <nav aria-label="..." class="d-flex justify-content-center">
+      <ul id="pagination" class="pagination">
+      </ul>
+    </nav>
+  </div>
 <script type="module" src="/counsel/js/list.js"></script>
+</div>
 </body>
 </html>

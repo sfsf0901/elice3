@@ -16,8 +16,8 @@ public class HospitalService {
 
     private final HospitalRepository hospitalRepository;
 
-    public Optional<Hospital> findByYkiho(String ykiho) {
-        return hospitalRepository.findByYkiho(ykiho);
+    public Hospital findByYkiho(String ykiho) {
+        return hospitalRepository.findByYkiho(ykiho).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 병원입니다. ykiho: " + ykiho));
     }
 
     public List<Hospital> findAll() {

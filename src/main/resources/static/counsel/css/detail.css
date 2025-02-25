@@ -1,12 +1,13 @@
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 20px;
-  background-color: #f8f9fa;
-}
+/*body {*/
+/*  font-family: Arial, sans-serif;*/
+/*  margin: 0;*/
+/*  padding: 20px;*/
+/*  background-color: #f8f9fa;*/
+/*}*/
 
 .counsel-detail-container {
-  max-width: 600px;
+  /*max-width: 600px;*/
+  width: 700px;
   margin: 0 auto;
   padding: 20px;
   background: white;
@@ -29,4 +30,100 @@ body {
 .counsel-content {
   font-size: 16px;
   line-height: 1.6;
+}
+
+.comment-container {
+  max-width: 600px;
+  background: #ffffff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+}
+.comment-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.comment-box {
+  width: 90%;
+  height: 150px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 14px;
+  resize: vertical;
+  outline: none;
+}
+.comment-box:focus {
+  border-color: #FF9D00;
+}
+.comment-btn {
+  background: #FF8D00;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 10px;
+  transition: background 0.3s;
+}
+.comment-btn:hover {
+  background: #FF9D00;
+}
+.comment-list {
+  margin-top: 20px;
+}
+.comment-item {
+  padding: 10px;
+  /*border-bottom: 1px solid #ddd;*/
+}
+.comment-item:last-child {
+  border-bottom: none;
+}
+
+.comment-section {
+  max-width: 600px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.comment-form input, .comment-form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+.comment-form button {
+  padding: 10px;
+  background: #5cb85c;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.comment-form button:hover {
+  background: #4cae4c;
+}
+.comment-list {
+  margin-top: 20px;
+}
+.comment {
+  /*border-bottom: 1px solid #ddd;*/
+  padding: 10px 0;
+}
+.comment .comment-meta {
+  font-size: 12px;
+  color: #888;
+}
+.comment .comment-text {
+  margin-top: 5px;
 }

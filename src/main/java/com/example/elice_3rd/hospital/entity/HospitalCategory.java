@@ -4,12 +4,14 @@ import com.example.elice_3rd.category.entity.Category;
 import com.example.elice_3rd.diagnosisSubject.entity.DiagnosisSubject;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class HospitalCategory {
 
     @Id

@@ -26,6 +26,26 @@
         left: auto;
       }
     }
+    .btn-custom {
+      background-color: #ff7a00;
+      color: white;
+      border: none;
+    }
+    .btn-custom:hover {
+      background-color: #e66a00; /* 마우스 오버 시 더 어두운 주황색 */
+    }
+    .btn-custom-outline {
+      background-color: #fff6ec;
+      color: #ff7a00;
+      border: 1px solid #ffe1c4;
+    }
+    .btn-custom-outline:hover {
+      background-color: #ff7a00; /* 마우스 오버 시 더 어두운 주황색 */
+    }
+    .nav-link {
+      color: #6c6c6c !important; /* 글자색을 검은색으로 강제 적용 */
+      font-size: 17px;
+    }
   </style>
 </head>
 <body>
@@ -45,7 +65,7 @@
     <div class="row">
       <div class="col-3">
         <div class="side-nav-fixed">
-          <div th:replace="~{common/layout/fragments/sideNav :: sideNavFragment(currentMenu)}"></div>
+          <div th:replace="~{common/layout/fragments/sideNav :: sideNavFragment(currentMenu=${currentMenu})}"></div>
         </div>
       </div>
 

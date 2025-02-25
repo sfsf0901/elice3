@@ -20,7 +20,6 @@ public class MemberControllerTest {
         MemberRequestDto requestDto = MemberRequestDto.builder()
                 .email("test")
                 .name("test name")
-                .contact("test contact")
                 .password("test")
                 .build();
         memberService.register(requestDto);

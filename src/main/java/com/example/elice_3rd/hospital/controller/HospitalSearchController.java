@@ -3,10 +3,15 @@ package com.example.elice_3rd.hospital.controller;
 import com.example.elice_3rd.category.entity.Category;
 import com.example.elice_3rd.category.service.CategoryService;
 import com.example.elice_3rd.hospital.dto.request.HospitalSearchByCategoryCondition;
-import com.example.elice_3rd.hospital.dto.request.HospitalSearchCondition;
+import com.example.elice_3rd.hospital.dto.request.HospitalSearchByKeywordCondition;
+import com.example.elice_3rd.hospital.dto.request.HospitalSearchWithEmergencyCondition;
 import com.example.elice_3rd.hospital.dto.response.HospitalResponse;
 import com.example.elice_3rd.hospital.entity.Hospital;
+import com.example.elice_3rd.hospital.repository.HospitalDiagnosisSubjectRepository;
 import com.example.elice_3rd.hospital.service.HospitalSearchService;
+import com.example.elice_3rd.hospital.service.HospitalService;
+import com.example.elice_3rd.symptom.entity.Symptom;
+import com.example.elice_3rd.symptom.service.SymptomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
@@ -27,32 +32,52 @@ public class HospitalSearchController {
 
     private final HospitalSearchService hospitalSearchService;
     private final CategoryService categoryService;
+    private final HospitalDiagnosisSubjectRepository hospitalDiagnosisSubjectRepository;
+    private final HospitalService hospitalService;
+    private final SymptomService symptomService;
 
     @Value("${kakao.api.key}")
     private String kakaoApiKey;
 
-    @GetMapping("/main")
+    @GetMapping("/")
     public String mainPage(Model model) {
         List<Category> categories = categoryService.findAll();
         model.addAttribute("categories", categories);
+
+        List<Symptom> symptoms = symptomService.findTop10ByOrderByIdAsc();
+        model.addAttribute("symptoms", symptoms);
         return "hospital/mainGet";
     }
 
     @GetMapping("/hospitals/{categoryName}")
-    public String searchByCategoryGet(@PathVariable String categoryName,
-                                      @ModelAttribute HospitalSearchByCategoryCondition condition,
-                                      @RequestParam(value = "page", defaultValue = "0") int page,
-                                      @PageableDefault(size = 20) Pageable pageable,
-                                      Model model) {
+    public String searchByCategory(@PathVariable String categoryName,
+                                   @ModelAttribute HospitalSearchByCategoryCondition condition,
+                                   @RequestParam(value = "page", defaultValue = "0") int page,
+                                   @PageableDefault(size = 20) Pageable pageable,
+                                   Model model) {
+        System.out.println("### isOpen: " + condition.getIsOpen());
+        System.out.println("### hasNightClinic: " + condition.getHasNightClinic());
+        System.out.println("### hasSundayAndHolidayClinic: " + condition.getHasSundayAndHolidayClinic());
         long startTime = System.currentTimeMillis();
-        System.out.println("condition.getCategoryId() = " + condition.getCategoryId());
 
         if (condition.getLatitude() == null) condition.setLatitude(37.5665); // 서울 위도
         if (condition.getLongitude() == null) condition.setLongitude(126.9780); // 서울 위도
+//        condition.setLatitude(37.5665); // 서울 위도
+//        condition.setLongitude(126.9780); // 서울 위도
 
         Pageable customPageable = Pageable.ofSize(pageable.getPageSize()).withPage(page);
 
-        Slice<HospitalResponse> hospitals = hospitalSearchService.findAllByCategoryIdV2(condition, customPageable);
+        Slice<HospitalResponse> hospitals = null;
+
+        if (condition.getCategoryId() == null) {
+            return "hospital/mainGet";
+        } else if (condition.getCategoryId() == 7) { // 소아과
+            condition.setHospitalName("소아과");
+            hospitals = hospitalSearchService.findAllByHospitalName(condition, customPageable);
+        } else {
+            hospitals = hospitalSearchService.findAllByCategoryId(condition, customPageable);
+        }
+
         model.addAttribute("hospitals", hospitals);
         model.addAttribute("condition", condition);
         model.addAttribute("categoryName", categoryName);
@@ -74,7 +99,14 @@ public class HospitalSearchController {
 
         Pageable customPageable = Pageable.ofSize(pageable.getPageSize()).withPage(page);
 
-        Slice<HospitalResponse> hospitals = hospitalSearchService.findAllByCategoryIdV2(condition, customPageable);
+        Slice<HospitalResponse> hospitals = null;
+
+        if (condition.getCategoryId() ==7) { // 소아과
+            condition.setHospitalName("소아과");
+            hospitals = hospitalSearchService.findAllByHospitalName(condition, customPageable);
+        } else {
+            hospitals = hospitalSearchService.findAllByCategoryId(condition, customPageable);
+        }
 
         Map<String, Object> result = new HashMap<>();
         result.put("hospitals", hospitals.getContent());
@@ -83,36 +115,20 @@ public class HospitalSearchController {
         return result;
     }
 
-    @GetMapping("/hospital/{hospitalName}")
-    public String getHospitalDetails(@RequestParam("ykiho") String ykiho, Model model) {
-        List<Hospital> hospitalList = hospitalSearchService.findByYkiho(ykiho);
-
-        List<String> diagnosisSubjectNames = new ArrayList<>();
-        for (Hospital hospital : hospitalList) {
-//            diagnosisSubjectNames.add(hospital.getDiagnosisSubject().getName());
-        }
-
-        model.addAttribute("hospital", new HospitalResponse(hospitalList.get(0), 0));
-        model.addAttribute("diagnosisSubjectNames", diagnosisSubjectNames);
-        model.addAttribute("kakaoApiKey", kakaoApiKey);
-
-        return "hospital/hospitalDetails";
-    }
-
     @GetMapping("/hospitals/emergency")
-    public String searchByCategoryWithEmergency(
-            @ModelAttribute HospitalSearchCondition condition,
+    public String searchEmergency(
+            @ModelAttribute HospitalSearchWithEmergencyCondition condition,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @PageableDefault(size = 20) Pageable pageable,
             Model model) {
-
         if (condition.getLatitude() == null) condition.setLatitude(37.5665); // 서울 위도
         if (condition.getLongitude() == null) condition.setLongitude(126.9780); // 서울 위도
+
 
         Pageable customPageable = Pageable.ofSize(pageable.getPageSize()).withPage(page);
 
         condition.setHasNightEmergency(true);
-        Slice<HospitalResponse> hospitals = hospitalSearchService.findAllByCategoryIdV3(condition, customPageable);
+        Slice<HospitalResponse> hospitals = hospitalSearchService.findAllWithEmergency(condition, customPageable);
 
         model.addAttribute("hospitals", hospitals);
         model.addAttribute("latitude", condition.getLatitude());
@@ -123,27 +139,95 @@ public class HospitalSearchController {
 
     @GetMapping("/api/hospitals/emergency")
     @ResponseBody
-    public Map<String, Object> searchEmergencyAjax(
-            @RequestParam Double latitude,
-            @RequestParam Double longitude,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @PageableDefault(size = 20) Pageable pageable) {
+    public Map<String, Object> searchEmergencyAjax(@ModelAttribute HospitalSearchWithEmergencyCondition condition,
+                                                   @RequestParam(value = "page", defaultValue = "0") int page,
+                                                   @PageableDefault(size = 20) Pageable pageable) {
+        if (condition.getLatitude() == null) condition.setLatitude(37.5665);
+        if (condition.getLongitude() == null) condition.setLongitude(126.9780);
 
         Pageable customPageable = Pageable.ofSize(pageable.getPageSize()).withPage(page);
 
-        HospitalSearchCondition condition = new HospitalSearchCondition();
-        condition.setLatitude(latitude);
-        condition.setLongitude(longitude);
         condition.setHasNightEmergency(true);
 
-        Slice<HospitalResponse> hospitals = hospitalSearchService.findAllByCategoryIdV3(condition, customPageable);
+        Slice<HospitalResponse> hospitals = hospitalSearchService.findAllWithEmergency(condition, customPageable);
 
         Map<String, Object> result = new HashMap<>();
-        result.put("hospitals", hospitals.getContent());
+        result.put("hospitals", hospitals.isEmpty() ? new ArrayList<>() : hospitals.getContent());
         result.put("nextPage", hospitals.hasNext() ? page + 1 : null);
 
         return result;
     }
 
+    @GetMapping("/hospitals/search")
+    public String searchByKeyword(@ModelAttribute HospitalSearchByKeywordCondition condition,
+                                  @RequestParam(value = "page", defaultValue = "0") int page,
+                                  @PageableDefault(size = 20) Pageable pageable,
+                                  Model model) {
+        long startTime = System.currentTimeMillis();
 
+        if (condition.getLatitude() == null) condition.setLatitude(37.5665); // 서울 위도
+        if (condition.getLongitude() == null) condition.setLongitude(126.9780); // 서울 위도
+//        condition.setLatitude(37.5665); // 서울 위도
+//        condition.setLongitude(126.9780); // 서울 위도
+
+        Pageable customPageable = Pageable.ofSize(pageable.getPageSize()).withPage(page);
+
+        Slice<HospitalResponse> hospitals = null;
+
+        if (condition.getKeyword() == null) {
+            return "hospital/mainGet";
+        } else {
+            System.out.println("########condition.getKeyword() = " + condition.getKeyword());
+            hospitals = hospitalSearchService.findAllByKeyword(condition, customPageable);
+        }
+
+        model.addAttribute("hospitals", hospitals);
+        model.addAttribute("condition", condition);
+
+        long endTime = System.currentTimeMillis();
+        System.out.println("컨트롤러 처리 전체 시간(ms): " + (endTime - startTime));
+
+        return "hospital/keywordList";
+    }
+
+    @GetMapping("/api/hospitals/search")
+    @ResponseBody
+    public Map<String, Object> searchByKeywordAjax(@ModelAttribute HospitalSearchByKeywordCondition condition,
+                                                  @RequestParam(value = "page", defaultValue = "0") int page,
+                                                  @PageableDefault(size = 20) Pageable pageable) {
+        if (condition.getLatitude() == null) condition.setLatitude(37.5665);
+        if (condition.getLongitude() == null) condition.setLongitude(126.9780);
+//        condition.setLatitude(37.5665); // 서울 위도
+//        condition.setLongitude(126.9780); // 서울 위도
+
+        Pageable customPageable = Pageable.ofSize(pageable.getPageSize()).withPage(page);
+
+        Slice<HospitalResponse> hospitals = hospitalSearchService.findAllByKeyword(condition, customPageable);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("hospitals", hospitals.isEmpty() ? new ArrayList<>() : hospitals.getContent());
+        result.put("nextPage", hospitals.hasNext() ? page + 1 : null);
+
+        return result;
+    }
+
+    @GetMapping("/hospital/{hospitalName}")
+    public String getHospitalDetails(@RequestParam("ykiho") String ykiho, Model model) {
+        Hospital hospital = hospitalService.findByYkiho(ykiho);
+        List<String> diagnosisSubjectNames = hospitalDiagnosisSubjectRepository.findDiagnosisSubjectNamesByHospital(hospital);
+
+        model.addAttribute("hospital",hospital);
+        model.addAttribute("diagnosisSubjectNames", diagnosisSubjectNames);
+        model.addAttribute("kakaoApiKey", kakaoApiKey);
+
+        return "hospital/hospitalDetails";
+    }
+
+    @GetMapping("/hospitals/map")
+    public String getHospitalMap(Model model) {
+        System.out.println("카카오 API 키 확인: " + kakaoApiKey); // 로그 확인
+        model.addAttribute("kakaoApiKey", kakaoApiKey);
+
+        return "hospital/kakaoMap";
+    }
 }

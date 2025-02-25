@@ -6,9 +6,12 @@ import lombok.Data;
 public class HospitalSearchByCategoryCondition {
 
     private Long categoryId;
-    private Boolean hasNightClinic;
-    private Boolean hasSundayAndHolidayClinic;
     private Double latitude;
     private Double longitude;
 
+    private Boolean isOpen;
+    private Boolean hasNightClinic;
+    private Boolean hasSundayAndHolidayClinic;
+
+    private String hospitalName;
 }

@@ -38,7 +38,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.authorizeHttpRequests(authorize -> {
-            authorize.requestMatchers("/doctor").hasRole("DOCTOR")
+            authorize
                     .anyRequest().permitAll();
         });
 
