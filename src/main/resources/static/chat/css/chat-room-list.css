@@ -1,9 +1,50 @@
-a {
-    display: inline-block;
-    text-decoration: none;
+#chat-room-container {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
-button {
-    display: inline-block;
+.chat-room {
+    display: flex;
+    justify-content: space-between;
+    height: 80px;
+}
+
+.chat-content p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 20ch;
+}
+
+.chat-side-content {
+    display:grid;
+    justify-items: end;
+}
+
+.chat-side-content-detail{
+    display: flex;
+}
+
+.chat-side-content-detail .badge{
+    margin-right: 5px;
+}
+
+.badge {
+    width: 25px;
+    height: 25px;
+    background-color: #FF8D00;
+    color: #FFFFFF;
+}
+
+.leaveBtn {
+    width: 25px;
+    height: 25px;
+    background-color: #FF8D00;
+    border: #FF8D00;
+    color: #FFFFFF;
+    border-radius: 5px;
     cursor: pointer;
 }

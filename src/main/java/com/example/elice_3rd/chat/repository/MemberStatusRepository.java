@@ -1,7 +1,7 @@
 package com.example.elice_3rd.chat.repository;
 
 
-import com.example.elice_3rd.chat.entity.MemberStatus;
+import com.example.elice_3rd.chat.entity.mysql.MemberStatus;
 import com.example.elice_3rd.chat.entity.status.MemberStatusType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

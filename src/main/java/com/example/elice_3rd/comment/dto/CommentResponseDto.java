@@ -24,6 +24,8 @@ public class CommentResponseDto {
     private String email;
     @NotBlank
     private String name;
+    @NotBlank
+    private Long memberId;
     @NotNull
     private LocalDateTime createdDate;
 }

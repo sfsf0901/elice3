@@ -1,0 +1,52 @@
+.fa-bell {
+    position: relative;
+    font-size: 2rem;
+}
+
+#notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    font-size: 0.5rem;
+    padding: 0.2rem 0.4rem;
+    border-radius: 50%;
+    z-index: 10;
+    background-color: #FF8D00;
+    color: #FFFFFF;
+}
+
+.nav-item {
+    position: relative;
+}
+
+.dropdown-menu {
+    min-width: 150px;
+    text-align: center;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+}
+
+.dropdown-toggle::after {
+    display: none;
+}
+
+.dropdown-item:hover {
+    background-color: #f1f1f1;
+}
+
+#notification-list {
+    width: 250px;
+}
+
+.dropdown-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 10px;
+}
+
+.dropdown-item .btn {
+    margin-left: 10px;
+}

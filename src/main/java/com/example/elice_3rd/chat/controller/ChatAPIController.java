@@ -30,59 +30,42 @@ public class ChatAPIController {
     // 채팅방 연결
     @PostMapping("/check-chat-room")
     public ResponseEntity<ChatRoomResponseDto> checkChatRoom(@RequestBody ChatRoomRequestDto request, Principal principal) {
-        try {
-            Long loggedInUserId = Long.parseLong(principal.getName());
-            log.debug("Logged In User ID: {}", loggedInUserId);
+        Long loggedInUserId = chatService.findByMemberId(principal.getName());
+        log.debug("Logged In User ID: {}", loggedInUserId);
 
-            Long doctorUserId  = request.getMemberIds().stream()
-                    .filter(id -> !id.equals(loggedInUserId))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid Doctor User ID"));
-            log.debug("Doctor User ID: {}", doctorUserId );
+        Long doctorUserId  = request.getMemberIds().stream()
+                .filter(id -> !id.equals(loggedInUserId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Doctor User ID"));
+        log.debug("Doctor User ID: {}", doctorUserId );
 
-            // 테스트용
-//            Long loggedInUserId = 1L;
-//            log.debug("Logged In User ID: {}", loggedInUserId);
-//
-//            Long doctorUserId = 2L;
-//            log.debug("Doctor User ID: {}", doctorUserId);
-            //
+        request.setMemberIds(new HashSet<>(Arrays.asList(loggedInUserId, doctorUserId)));
 
-            request.setMemberIds(new HashSet<>(Arrays.asList(loggedInUserId, doctorUserId )));
+        ChatRoomResponseDto chatRoomDto = chatService.checkChatRoom(request, loggedInUserId);
+        return ResponseEntity.ok(chatRoomDto);
 
-            ChatRoomResponseDto chatRoomDto = chatService.checkChatRoom(request, loggedInUserId);
-            return ResponseEntity.ok(chatRoomDto);
-        } catch (IllegalArgumentException e) {
-            log.error("Error checking chat room: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(null);
-        }
     }
 
     // 특정 멤버가 속한 모든 채팅방 목록 조회
-    @GetMapping("/chat-rooms/{memberId}")
-    public ResponseEntity<List<ChatRoomListDto>> getMemberChatRooms(@PathVariable Long memberId) {
-        if (memberId == null || memberId <= 0) {
-            return ResponseEntity.badRequest().build();
-        }
-        List<ChatRoomListDto> chatRooms = chatService.getMemberChatRooms(memberId);
+    @GetMapping("/chat-rooms")
+    public ResponseEntity<List<ChatRoomListDto>> getMemberChatRooms(Principal principal) {
+        Long loggedInUserId = chatService.findByMemberId(principal.getName());
+        log.debug("Logged In User ID: {}", loggedInUserId);
+
+        List<ChatRoomListDto> chatRooms = chatService.getMemberChatRooms(loggedInUserId);
         return ResponseEntity.ok(chatRooms);
     }
 
     // 채팅방에 있는 모든 메시지 가져오기 (오프라인 상태에서 재입장 시)
-    @GetMapping("/{chatRoomId}/{memberId}")
-    public ResponseEntity<Flux<ChatMessageDto>> getChatRoomMessages(@PathVariable Long chatRoomId, @PathVariable Long memberId) {
-        if (chatRoomId <= 0) {
-            return ResponseEntity.badRequest().body(Flux.empty());
-        }
-
-        if (memberId == null || memberId <= 0) {
-            throw new IllegalArgumentException("Invalid memberId: " + memberId);
-        }
+    @GetMapping("/{chatRoomId}")
+    public ResponseEntity<Flux<ChatMessageDto>> getChatRoomMessages(@PathVariable Long chatRoomId, Principal principal) {
+        Long loggedInUserId = chatService.findByMemberId(principal.getName());
+        log.debug("Logged In User ID: {}", loggedInUserId);
 
         if (!chatService.isChatRoomExist(chatRoomId)) {
             return ResponseEntity.notFound().build();
         }
-        Flux<ChatMessageDto> messages = chatService.getChatRoomMessages(chatRoomId, memberId);
+        Flux<ChatMessageDto> messages = chatService.getChatRoomMessages(chatRoomId, loggedInUserId);
 
         return ResponseEntity.ok(messages);
     }
@@ -96,8 +79,7 @@ public class ChatAPIController {
             throw new IllegalArgumentException("Invalid chatRoomId");
         }
         log.info("Sending message to chat room: " + chatRoomId);
-        chatService.sendMessageToKafka(chatMessageDto);
-        return chatMessageDto;
+        return chatService.sendMessageToKafka(chatMessageDto);
     }
 
 //    @PutMapping("/{chatMessageId}")
@@ -119,6 +101,7 @@ public class ChatAPIController {
     @PostMapping("/leave-room")
     public ResponseEntity<Void> leaveChatRoom(@RequestBody LeaveRoomRequest request) {
         if (request.getChatRoomId() == null || request.getMemberId() == null) {
+            log.error("Invalid chat room ID or member ID");
             return ResponseEntity.badRequest().build();
         }
         chatService.leaveChatRoom(request.getChatRoomId(), request.getMemberId());
