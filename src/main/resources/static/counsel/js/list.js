@@ -18,6 +18,9 @@ function renderList(data){
 
   items.forEach(item => {
     const itemDiv = document.createElement("div");
+    let content = item.content;
+    if(content.length > 65)
+      content = content.substring(0, 65) + "...";
     console.log(item);
     itemDiv.className = "counsel-item"
     itemDiv.innerHTML = `
@@ -25,7 +28,7 @@ function renderList(data){
       <h3 class="counsel-title">${item.title}</h3>&nbsp
       <h6><span class="badge text-bg-secondary">${item.category}</span></h6>
       </div>
-      <p class="counsel-summary">${item.content}</p>
+      <p class="counsel-summary">${content}</p>
       <span class="counsel-date">${item.createdDate.split("T")[0]}</span>
     `;
 
