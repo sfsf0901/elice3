@@ -1,4 +1,5 @@
-import api from "/common/js/API.js"
+import api from "/common/js/API.js";
+
 
 api.get("counsels/detail", {
   params: {id: location.pathname.split("/").pop()}
@@ -13,11 +14,30 @@ api.get("comments", {
   renderPagination(response.data);
 })
 
+function time(date){
+  const start = new Date(date);
+  const end = new Date();
+
+  const seconds = Math.floor((end.getTime() - start.getTime()) / 1000);
+  if (seconds < 60) return '방금 전';
+
+  const minutes = seconds / 60;
+  if (minutes < 60) return `${Math.floor(minutes)}분 전`;
+
+  const hours = minutes / 60;
+  if (hours < 24) return `${Math.floor(hours)}시간 전`;
+
+  const days = hours / 24;
+  if (days < 7) return `${Math.floor(days)}일 전`;
+
+  return `${start.toLocaleDateString()}`;
+}
+
 async function renderContent(data) {
   document.getElementById("title").textContent = data.title;
   document.getElementById("content").textContent = data.content;
-  document.getElementById("name").textContent = data.email;
-  document.getElementById("time").textContent = data.createdDate;
+  document.getElementById("name").textContent = data.name;
+  document.getElementById("time").textContent = time(data.createdDate);
   document.getElementById("category").textContent = data.category;
 }
 
@@ -32,7 +52,7 @@ async function renderComment(data) {
 
     commentDiv.innerHTML = `
       <div class="comment">
-        <div class="comment-meta">${item.email} | ${item.createdDate}</div>
+        <div class="comment-meta">${item.name} | ${time(item.createdDate)}</div>
         <div class="comment-item">${item.content}</div>
       </div>
     `

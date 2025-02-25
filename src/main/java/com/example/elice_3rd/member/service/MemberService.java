@@ -37,4 +37,8 @@ public class MemberService {
     public void updateRole(String email){
         managementService.updateRole(email);
     }
+
+    public Boolean isExist(String email){
+        return retrieveService.isExist(email);
+    }
 }
