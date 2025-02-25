@@ -32,7 +32,8 @@ function displayChatRoom(room) {
     const chatRoomContentElement = document.createElement("div");
     chatRoomContentElement.classList.add("chat-content");
 
-    const opponentNameElement = document.createElement("h5");
+    const opponentNameElement = document.createElement("p");
+    opponentNameElement.classList.add("opponent-name");
     opponentNameElement.textContent = room.opponentName;
 
     const lastMessageElement = document.createElement("p");

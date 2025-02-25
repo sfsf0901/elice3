@@ -193,8 +193,7 @@ public class ChatService {
     }
 
     public boolean isChatRoomExist(Long chatRoomId) {
-        Optional<ChatRoom> chatRoom = chatRoomRepository.findById(chatRoomId);
-        return chatRoom.isPresent();  // 존재하면 true, 없으면 false 반환
+        return chatRoomRepository.existsById(chatRoomId);
     }
 
     // 채팅방 메시지 가져오기
