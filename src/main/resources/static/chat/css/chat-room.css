@@ -17,6 +17,7 @@
     background: none;
     border: none;
     cursor: pointer;
+    font-size: 25px;
 }
 
 .chat-header h3 {
@@ -98,7 +99,7 @@
 .messageInputSection {
     display: flex;
     justify-content: center;
-    width: 100%;
+    width: 95%;
     margin-top: 10px;
 }
 
@@ -117,12 +118,13 @@
     border-top-right-radius: 20px;
     border-bottom-right-radius: 20px;
     flex-shrink: 0;
-    width: 20%;
+    width: 10%;
     padding: 10px;
     background-color: #FF8D00;
     color: white;
     border: none;
     cursor: pointer;
+    font-weight: bold;
 }
 
 #sendButton:hover {
