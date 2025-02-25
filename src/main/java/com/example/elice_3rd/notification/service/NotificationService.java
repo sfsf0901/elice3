@@ -17,6 +17,8 @@ import com.example.elice_3rd.notification.repository.NotificationRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -147,14 +149,24 @@ public class NotificationService {
     // 사용자가 수신자가 맞는지 확인
     public boolean isValidReceiver(NotificationDto notificationDto) {
         Long receiverId = notificationDto.getReceiverId();
-//        Member member = getCurrentMember();
-//        Long memberId = member.getMemberId();
-        Long memberId = 2L;
+        Member member = getCurrentMember();
+        Long memberId = member.getMemberId();
 
         if (!receiverId.equals(memberId)){
             return false;
         }
         return chatRoomRepository.existsByMembers_MemberId(memberId);
+    }
+
+    private Member getCurrentMember() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new IllegalArgumentException("No authenticated Member.");
+        }
+
+        String email = authentication.getName();
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found."));
     }
 
     // 알림 읽음 상태 변화

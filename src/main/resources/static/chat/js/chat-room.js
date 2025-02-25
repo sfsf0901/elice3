@@ -5,18 +5,17 @@ function fetchChat() {
     axios.get(`/api/chat/${chatRoomId}`)
         .then(response => {
             response.data.forEach(message => {
-                displayMessage(message);
+                displayChatMessage(message);
             });
         })
         .catch(error => {
             console.error("초기 메시지 로드 실패", error);
         });
 
-    // WebSocket 연결
     connectWebSocket();
 };
 
-function displayMessage(message) {
+function displayChatMessage(message) {
     const messageBox = document.getElementById("messages");
 
     const messageElement = document.createElement("div");
@@ -116,7 +115,7 @@ function connectWebSocket() {
 
         stompClient.subscribe(`/topic/${chatRoomId}`, (response) => {
             const message = JSON.parse(response.body);
-            displayMessage(message);
+            displayChatMessage(message);
         });
 
         enableMessageActions();

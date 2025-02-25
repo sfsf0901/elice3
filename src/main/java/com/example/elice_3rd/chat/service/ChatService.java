@@ -58,10 +58,19 @@ public class ChatService {
         // 요청이 1:1 채팅이라면 기존 채팅방을 확인 (그룹 채팅 기능 확장 가능하게 코드 구성)
         if (request.getMemberIds().size() == 2) {
             // 1:1 채팅방이 이미 존재하는지 확인
-            Optional<ChatRoom> existingChatRoom = chatRoomRepository.findByMembers_MemberIdIn(request.getMemberIds());
+            List<ChatRoom> existingChatRooms = chatRoomRepository.findByMembers_MemberIdIn(request.getMemberIds());
 
-            if (existingChatRoom.isPresent()) {
-                ChatRoom chatRoom = existingChatRoom.get();
+            Optional<ChatRoom> exactMatchChatRoom = existingChatRooms.stream()
+                    .filter(chatRoom -> {
+                        Set<Long> memberIdsInRoom = chatRoom.getMembers().stream()
+                                .map(member -> member.getMemberId())
+                                .collect(Collectors.toSet());
+                        return memberIdsInRoom.equals(new HashSet<>(request.getMemberIds()));
+                    })
+                    .findFirst();
+
+            if (exactMatchChatRoom.isPresent()) {
+                ChatRoom chatRoom = exactMatchChatRoom.get();
 
                 // 채팅방 상태가 INACTIVE인 경우 새로운 채팅방 생성
                 if (chatRoom.getRoomStatus() == RoomStatus.INACTIVE) {

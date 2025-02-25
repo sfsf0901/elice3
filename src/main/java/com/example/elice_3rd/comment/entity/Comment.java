@@ -34,6 +34,7 @@ public class Comment extends BaseEntity {
                 .content(content)
                 .name(member.getName())
                 .email(member.getEmail())
+                .memberId(member.getMemberId())
                 .createdDate(getCreatedDate())
                 .build();
     }

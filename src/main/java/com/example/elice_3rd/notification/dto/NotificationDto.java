@@ -18,7 +18,7 @@ public class NotificationDto {
 
     private String chatMessageId;
 
-    private String message;
+    private String content;
 
     private Boolean readStatus;
 
@@ -26,7 +26,7 @@ public class NotificationDto {
         return NotificationDto.builder()
                 .chatRoomId(notification.getChatRoomId().getChatRoomId())
                 .receiverId(notification.getReceiverId().getMemberId())
-                .message(notification.getMessage())
+                .content(notification.getMessage())
                 .readStatus(notification.isReadStatus())
                 .build();
     }

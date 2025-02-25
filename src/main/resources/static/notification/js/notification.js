@@ -2,8 +2,6 @@ let unreadCount = 0;
 let notificationList, notificationBadge;
 
 document.addEventListener("DOMContentLoaded", () => {
-    notificationList = document.getElementById("notification-list");
-    notificationBadge = document.getElementById("notification-badge");
     checkLogin();
 });
 
@@ -12,6 +10,8 @@ function checkLogin() {
         .then(response => {
             if (response.data.isLogin) {
                 console.log("User is logged in, establishing SSE connection...");
+                notificationList = document.getElementById("notification-list");
+                notificationBadge = document.getElementById("notification-badge");
                 fetchUnreadNotifications();
                 connectSSE();
             } else {
@@ -27,7 +27,7 @@ function fetchUnreadNotifications() {
     axios.get('/api/notification/unread')
         .then(response => {
             response.data.forEach(notification => {
-                displayMessage(notification);
+                displayNotification(notification);
                 unreadCount++;
             });
             updateBadge();
@@ -47,7 +47,7 @@ function connectSSE() {
     eventSource.onmessage = (e) => {
         const notification = JSON.parse(e.data);
         console.log("Received notification:", notification);
-        displayMessage(notification)
+        displayNotification(notification)
         unreadCount++;
         updateBadge();
     };
@@ -61,10 +61,16 @@ function connectSSE() {
     };
 }
 
-function displayMessage(notification) {
+function displayNotification(notification) {
     const notificationItem = document.createElement("li");
     notificationItem.classList.add("dropdown-item");
-    notificationItem.textContent = notification.message;
+
+    const maxLength = 10;
+    let message = notification.message;
+    if (message.length > maxLength) {
+        message = message.substring(0, maxLength) + '...';
+    }
+    notificationItem.textContent = message;
 
     notificationItem.onclick = () => {
         window.location.href = `/chat/chat-room/${notification.chatRoomId}/${notification.receiverId}`;
@@ -94,7 +100,6 @@ function displayMessage(notification) {
     }
 }
 
-// 알림을 읽음 처리하는 함수
 function markAsRead(notificationId, notificationItem) {
     axios.put(`/api/notification/read/${notificationId}`)
         .then(response => {

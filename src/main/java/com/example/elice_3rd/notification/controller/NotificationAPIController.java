@@ -24,13 +24,9 @@ public class NotificationAPIController {
 
     @GetMapping("/is-login")
     public ResponseEntity<NotificationLoginResponseDto> getMember(Principal principal) {
-//        String loggedInUserId = principal.getName();
-//        log.debug("Logged In User ID: {}", loggedInUserId);
-
-        // 테스트용
-        String loggedInUserId = "3213@323213";
+        String loggedInUserId = principal.getName();
         log.debug("Logged In User ID: {}", loggedInUserId);
-        //
+
         NotificationLoginResponseDto loginStatus = notificationService.isLogin(loggedInUserId);
         return ResponseEntity.ok(loginStatus);
     }
@@ -38,31 +34,21 @@ public class NotificationAPIController {
     // 멤버별 확인되지 않은 알림 가져오기
     @GetMapping("/unread")
     public ResponseEntity<List<NotificationResponseDto>> getUnreadNotificationsForMember(Principal principal) {
-//        Long loggedInUserId = chatService.findByMemberId(principal.getName());
-//        log.debug("Logged In User ID: {}", loggedInUserId);
-
-        // 테스트용
-        Long loggedInUserId = 2L;
+        Long loggedInUserId = notificationService.findByMemberId(principal.getName());
         log.debug("Logged In User ID: {}", loggedInUserId);
-        //
+
         List<NotificationResponseDto> unreadNotifications = notificationService.getUnreadNotificationsForMember(loggedInUserId);
         return ResponseEntity.ok(unreadNotifications);
     }
 
     // SSE로 알림 수신
     @GetMapping(produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter getNotifications(Principal principa) {
-//        Long loggedInUserId = notificationService.findByMemberId(principal.getName());
-//        log.debug("Logged In User ID: {}", loggedInUserId);
-
-        // 테스트용
-        Long loggedInUserId = 2L;
+    public SseEmitter getNotifications(Principal principal) {
+        Long loggedInUserId = notificationService.findByMemberId(principal.getName());
         log.debug("Logged In User ID: {}", loggedInUserId);
-        //
 
         return notificationService.addEmitter(loggedInUserId);
     }
-
 
     // 알림 확인 상태 변경
     @PutMapping("/read/{notificationId}")

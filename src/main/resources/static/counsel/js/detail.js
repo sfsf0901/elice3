@@ -1,5 +1,5 @@
 import api from "/common/js/API.js";
-
+import startChat from "/chat/js/create-chat-room.js";
 
 api.get("counsels/detail", {
   params: {id: location.pathname.split("/").pop()}
@@ -52,12 +52,25 @@ async function renderComment(data) {
 
     commentDiv.innerHTML = `
       <div class="comment">
-        <div class="comment-meta">${item.name} | ${time(item.createdDate)}</div>
+        <div class="comment-meta">${item.name} | ${time(item.createdDate)}
+            <button id="check-chat-room-btn"
+                class="btn btn-outline-secondary btn-sm bi bi-chat-fill"
+            >
+            상담
+            </button>
+        </div>
         <div class="comment-item">${item.content}</div>
       </div>
     `
 
     commentList.appendChild(commentDiv);
+
+    const chatButton = document.getElementById(`check-chat-room-btn`);
+    if (chatButton) {
+      chatButton.addEventListener("click", (e) =>
+        startChat(item.memberId)
+      );
+    }
   })
 }
 
