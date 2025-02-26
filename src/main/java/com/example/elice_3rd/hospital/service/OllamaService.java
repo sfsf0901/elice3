@@ -11,7 +11,7 @@ import java.util.Map;
 public class OllamaService {
 
     private final WebClient webClient = WebClient.builder()
-            .baseUrl("http://localhost:11434/api/generate") // Ollama API 엔드포인트
+            .baseUrl("http://34.47.78.233:11434/api/generate") // Ollama API 엔드포인트
             .build();
 
     public String analyzeKeyword(String keyword) {
