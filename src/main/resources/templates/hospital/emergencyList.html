@@ -80,20 +80,25 @@
                 success: function (response) {
                     response.hospitals.forEach(hospital => {
                         const hospitalHtml = `
-                                <div>
-                                    <h5 class="pt-2">
-                                        <a href="/hospital/${hospital.hospitalName}?ykiho=${hospital.ykiho}" class="text-dark text-decoration-none">${hospital.hospitalName}</a>
-                                    </h5>
-                                    <div>
-                                        <small class="text-muted">${hospital.hospitalType}</small>
+                                <div class="row py-2">
+                                    <div class="col-10">
+                                        <h5>
+                                            <a href="/hospital/${hospital.hospitalName}?ykiho=${hospital.ykiho}" class="text-dark text-decoration-none">${hospital.hospitalName}</a>
+                                        </h5>
+                                        <div>
+                                            <small class="text-muted">${hospital.hospitalType}</small>
+                                        </div>
+                                        <div class="text-muted">
+                                            <i class="fa-solid fa-location-dot"></i>
+                                            <small class="distance-text" data-distance="${hospital.distanceFromUser}"></small>
+                                            <small class="text-muted address-text" data-address="${hospital.address}"></small>
+                                        </div>
                                     </div>
-                                    <div class="text-muted pb-2">
-                                        <i class="fa-solid fa-location-dot"></i>
-                                        <small class="distance-text" data-distance="${hospital.distanceFromUser}"></small>
-                                        <small class="text-muted address-text" data-address="${hospital.address}"></small>
+                                    <div class="col-2 d-flex align-items-center">
+                                        <a href="tel:${hospital.emergencyContact}" class="btn btn-danger py-2">응급실 연결</a>
                                     </div>
-                                    <hr>
                                 </div>
+                                <hr>
                             `;
                         $('#loadMoreWrapper').before(hospitalHtml);
                     });

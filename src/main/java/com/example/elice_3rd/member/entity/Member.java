@@ -52,6 +52,7 @@ public class Member extends BaseEntity {
         return MemberDetail.builder()
                 .email(email)
                 .password(password)
+                .name(name)
                 .role(role.getKey())
                 .isDeleted(isDeleted)
                 .isOauth(isOauth)
