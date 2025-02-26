@@ -1,7 +1,3 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="ko" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"-->
-<!--      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
-<!--      layout:decorate="~{common/layout/layout}">>-->
 <!--<head>-->
 <!--  <meta charset="UTF-8">-->
 <!--  <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
@@ -90,34 +86,14 @@
 <!--    &lt;!&ndash;  <div class="infoContainer">&ndash;&gt;-->
 <!--    &lt;!&ndash;  </div>&ndash;&gt;-->
 <!--  </div>-->
-<!--  <div class="modal fade" id="update-name" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"-->
-<!--       aria-labelledby="staticBackdropLabel" aria-hidden="true">-->
-<!--    <div class="modal-dialog modal-dialog-centered">-->
-<!--      <div class="modal-content">-->
-<!--        <div class="modal-header">-->
-<!--          <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>-->
-<!--        </div>-->
-<!--        <div class="modal-body">-->
-<!--          기존 닉네임: <span id="current-name"></span>-->
-<!--          <br>-->
-<!--          <input id="name-input" class="form-control"/>-->
-<!--        </div>-->
-<!--        <div class="modal-footer">-->
-<!--          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>-->
-<!--          <button id="name-confirm-button" type="button" class="btn btn-primary">변경사항 저장</button>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--  <script type="module" src="/member/js/my-page.js"></script>-->
-<!--  <script src="/common/js/bootstrap.bundle.min.js"></script>-->
 <!--</div>-->
 <!--</body>-->
 <!--</html>-->
 
 <!DOCTYPE html>
-<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{common/layout/layout}">>>
+<html lang="ko" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout/layout}">>
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -126,17 +102,23 @@
 </head>
 <body>
 <div layout:fragment="content">
-  <div class="container mx-xxl-5 my-xxl-5" style="width: 50%">
+  <div class="container" style="width: 50%; margin-right: 350px; margin-top: 100px">
     <div>
-      <div class="bg-white relative shadow rounded-lg ">
-        <div class="flex justify-center">
-          <img src="https://avatars0.githubusercontent.com/u/35900628?v=4" alt=""
-               class="rounded-full mx-auto absolute -top-20 w-32 h-32 shadow-md border-4 border-white transition duration-200 transform hover:scale-110">
+      <div class="bg-white relative rounded-lg ">
+        <div class="relative flex justify-center" sec:authorize="hasRole('USER')">
+          <div class="rounded-full mx-auto absolute -top-20 w-32 h-32 shadow-md border-4 border-white transition duration-200 transform hover:scale-110">
+            <i class="fas fa-hospital-user fa-5x" style="margin-top: 20px; margin-left: 15px"></i>
+          </div>
+        </div>
+        <div class="relative flex justify-center" sec:authorize="hasRole('DOCTOR')">
+          <div class="rounded-full mx-auto absolute -top-20 w-32 h-32 shadow-md border-4 border-white transition duration-200 transform hover:scale-110">
+            <i class="fas fa-user-doctor fa-5x" style="margin-top: 20px; margin-left: 25px"></i>
+          </div>
         </div>
 
         <div class="mt-16">
-          <h1 class="font-bold text-center text-3xl text-gray-900">닉네임</h1>
-          <p class="text-center text-sm text-gray-400 font-medium">이메일</p>
+          <h1 id="name" class="font-bold text-center text-3xl text-gray-900">닉네임</h1>
+          <p id="email" class="text-center text-sm text-gray-400 font-medium">이메일</p>
           <p>
                         <span>
 
@@ -145,17 +127,17 @@
 
           <div class="w-full">
             <div class="mt-5 w-full flex flex-col items-center overflow-hidden text-sm">
-              <div
-                  class="w-full border-t border-gray-100 text-gray-600 py-4 pl-6 pr-3 hover:bg-gray-100 transition duration-150 flex items-center justify-between">
+              <a href="/my-page/counsels"
+                  class="itemList w-full border-t border-gray-100 text-gray-600 py-4 pl-6 pr-3 hover:bg-gray-100 transition duration-150 flex items-center justify-between">
                 <div class="flex items-center">
                   <span class="pr-2">❓</span>
-                  <span class="text-lg">상담 내역</span>
+                  <span class="text-lg">내 상담 내역</span>
                 </div>
                 <span class="text-gray-500 pr-4">&gt;</span>
-              </div>
+              </a>
 
               <div
-                  class="w-full border-t border-gray-100 text-gray-600 py-4 pl-6 pr-3 hover:bg-gray-100 transition duration-150 flex items-center justify-between">
+                  class="itemList w-full border-t border-gray-100 text-gray-600 py-4 pl-6 pr-3 hover:bg-gray-100 transition duration-150 flex items-center justify-between" style="cursor: pointer">
                 <div class="flex items-center">
                   <span class="pr-2">💬</span>
                   <span class="text-lg">실시간 상담 내역</span>
@@ -163,17 +145,26 @@
                 <span class="text-gray-500 pr-4">&gt;</span>
               </div>
 
-              <div
-                  class="w-full border-t border-gray-100 text-gray-600 py-4 pl-6 pr-3 hover:bg-gray-100 transition duration-150 flex items-center justify-between">
+              <div id="doctor-verification" sec:authorize="hasRole('USER')"
+                  class="itemList w-full border-t border-gray-100 text-gray-600 py-4 pl-6 pr-3 hover:bg-gray-100 transition duration-150 flex items-center justify-between" style="cursor: pointer">
                 <div class="flex items-center">
                   <span class="pr-2">🩺</span>
                   <span class="text-lg">의사 인증</span>
                 </div>
                 <span class="text-gray-500 pr-4">&gt;</span>
               </div>
+              <a href="/my-page/comments" sec:authorize="hasRole('DOCTOR')"
+                   class="itemList w-full border-t border-gray-100 text-gray-600 py-4 pl-6 pr-3 hover:bg-gray-100 transition duration-150 flex items-center justify-between" style="cursor: pointer">
+                <div class="flex items-center">
+                  <span class="pr-2">✅</span>
+                  <span class="text-lg">내 답변 내역</span>
+                </div>
+                <span class="text-gray-500 pr-4">&gt;</span>
+              </a>
 
               <div
-                  class="w-full border-t border-gray-100 text-gray-600 py-4 pl-6 pr-3 hover:bg-gray-100 transition duration-150 flex items-center justify-between">
+                  class="itemList w-full border-t border-gray-100 text-gray-600 py-4 pl-6 pr-3 hover:bg-gray-100 transition duration-150 flex items-center justify-between" style="cursor: pointer"
+                  data-bs-toggle="modal" data-bs-target="#update-name">
                 <div class="flex items-center">
                   <span class="pr-2">🪪</span>
                   <span class="text-lg">닉네임 변경</span>
@@ -181,7 +172,8 @@
                 <span class="text-gray-500 pr-4">&gt;</span>
               </div>
               <div
-                  class="w-full border-t border-gray-100 text-gray-600 py-4 pl-6 pr-3 hover:bg-gray-100 transition duration-150 flex items-center justify-between">
+                  class="itemList w-full border-t border-gray-100 text-gray-600 py-4 pl-6 pr-3 hover:bg-gray-100 transition duration-150 flex items-center justify-between" style="cursor: pointer"
+                  data-bs-toggle="modal" data-bs-target="#quit-modal">
                 <div class="flex items-center">
                   <span class="pr-2">🚪</span>
                   <span class="text-lg">회원 탈퇴</span>
@@ -196,6 +188,48 @@
 
     </div>
   </div>
+  <div class="modal fade" id="update-name" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+       aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+        </div>
+        <div class="modal-body">
+          기존 닉네임: <span id="current-name"></span>
+          <br>
+          <input id="name-input" class="form-control"/>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+          <button id="name-confirm-button" type="button" class="btn btn-primary">변경사항 저장</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="quit-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+       aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Modal title</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          탈퇴 시 계정은 <span style="color: #c83e3e">삭제되며 복구되지 않습니다!</span><br>
+          그래도 정말 탈퇴하시겠습니까?<br>
+          <small style="font-size: 12px">탈퇴 이후 작성한 게시글 및 답변은 삭제되지 않으며 회원 정보는 30일간 보관 됩니다.</small>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+          <button id="quit-confirm-button" type="button" class="btn btn-primary">변경사항 저장</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/common/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="/member/js/my-page.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
 </div>
 </body>

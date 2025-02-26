@@ -30,8 +30,8 @@ public class MemberService {
         managementService.updateInfo(email, updateDto);
     }
 
-    public void quit(String email, String password){
-        managementService.quit(email, password);
+    public void quit(String email){
+        managementService.quit(email);
     }
 
     public void updateRole(String email){
