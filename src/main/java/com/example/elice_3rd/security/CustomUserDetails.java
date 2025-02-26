@@ -44,6 +44,10 @@ public class CustomUserDetails implements UserDetails {
         return memberDetail.getIsOauth();
     }
 
+    public String getName(){
+        return memberDetail.getName();
+    }
+
 //    @Override
 //    public boolean isAccountNonExpired() {
 //        return true;
