@@ -15,7 +15,7 @@
 <img src="https://img.shields.io/badge/spring_boot-6DB33F?style=for-the-badge&logo=spring_boot&logoColor=white">
 <img src="https://img.shields.io/badge/spring_security-6DB33F?style=for-the-badge&logo=spring_security&logoColor=white">
 ![Spring](https://img.shields.io/badge/spring_data_jpa-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
-
+![redis](https://img.shields.io/badge/redis-%FF4438.svg?style=for-the-badge&logo=redis&logoColor=white)
 ## 와이어 프레임
 
 ## ERD
