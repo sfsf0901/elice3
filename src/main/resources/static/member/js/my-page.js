@@ -7,7 +7,8 @@ function popup() {
   window.open(url, name, option);
 }
 
-document.getElementById("doctor-verification").addEventListener("click", popup);
+if(document.getElementById("doctor-verification") !== null)
+  document.getElementById("doctor-verification").addEventListener("click", popup);
 
 function renderMemberInfo(data) {
   console.log(document.getElementById("email"));
