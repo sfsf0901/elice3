@@ -123,7 +123,8 @@ public class HospitalSearchController {
             Model model) {
         if (condition.getLatitude() == null) condition.setLatitude(37.5665); // 서울 위도
         if (condition.getLongitude() == null) condition.setLongitude(126.9780); // 서울 위도
-
+//        condition.setLatitude(37.5665); // 서울 위도
+//        condition.setLongitude(126.9780); // 서울 위도
 
         Pageable customPageable = Pageable.ofSize(pageable.getPageSize()).withPage(page);
 
@@ -144,6 +145,8 @@ public class HospitalSearchController {
                                                    @PageableDefault(size = 20) Pageable pageable) {
         if (condition.getLatitude() == null) condition.setLatitude(37.5665);
         if (condition.getLongitude() == null) condition.setLongitude(126.9780);
+//        condition.setLatitude(37.5665); // 서울 위도
+//        condition.setLongitude(126.9780); // 서울 위도
 
         Pageable customPageable = Pageable.ofSize(pageable.getPageSize()).withPage(page);
 
