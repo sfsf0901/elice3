@@ -1,18 +1,11 @@
-/*body {*/
-/*  font-family: Arial, sans-serif;*/
-/*  margin: 0;*/
-/*  padding: 20px;*/
-/*  background-color: #f8f9fa;*/
-/*}*/
-
 .counsel-detail-container {
   /*max-width: 600px;*/
   width: 700px;
   margin: 0 auto;
   padding: 20px;
-  background: white;
+  /*background: white;*/
   border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  /*box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);*/
 }
 
 .counsel-title {
@@ -40,6 +33,7 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   margin: 0 auto;
 }
+
 .comment-title {
   font-size: 18px;
   font-weight: bold;
@@ -55,28 +49,30 @@
   resize: vertical;
   outline: none;
 }
-.comment-box:focus {
-  border-color: #FF9D00;
-}
+/*.comment-box:focus {*/
+/*  border-color: #FF9D00;*/
+/*}*/
 .comment-btn {
   background: #FF8D00;
   color: white;
   border: none;
-  padding: 10px 15px;
+  padding: 10px 10px;
   border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
-  margin-top: 10px;
+  /*margin-top: 10px;*/
   transition: background 0.3s;
 }
 .comment-btn:hover {
-  background: #FF9D00;
+  background: #ff720a;
 }
 .comment-list {
   margin-top: 20px;
 }
 .comment-item {
   padding: 10px;
+  word-break: break-word;
+  overflow-wrap: break-word;
   /*border-bottom: 1px solid #ddd;*/
 }
 .comment-item:last-child {
@@ -96,23 +92,13 @@
   flex-direction: column;
   gap: 10px;
 }
-.comment-form input, .comment-form textarea {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-}
-.comment-form button {
-  padding: 10px;
-  background: #5cb85c;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-.comment-form button:hover {
-  background: #4cae4c;
-}
+/*.comment-form input, .comment-form textarea {*/
+/*  width: 100%;*/
+/*  padding: 10px;*/
+/*  border: 1px solid #ddd;*/
+/*  border-radius: 5px;*/
+/*}*/
+
 .comment-list {
   margin-top: 20px;
 }
@@ -126,4 +112,9 @@
 }
 .comment .comment-text {
   margin-top: 5px;
+}
+
+.form-control:focus {
+  border-color: #FF8D00;
+  box-shadow: 0 0 0 0.2rem rgba(255, 114, 10, 0.25);
 }

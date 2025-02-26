@@ -1,7 +1,14 @@
 package com.example.elice_3rd.member.controller;
 
+import com.example.elice_3rd.security.CustomUserDetails;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+
+import java.security.Principal;
 
 @Controller
 //@RequestMapping("/members")
@@ -17,7 +24,8 @@ public class MemberViewController {
     }
 
     @GetMapping("/my-page")
-    public String myPage() {
+    public String myPage(@AuthenticationPrincipal CustomUserDetails member, Model model) {
+        model.addAttribute("member", member);
         return "member/my-page";
     }
 
