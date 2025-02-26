@@ -52,11 +52,7 @@ public class NotificationService {
                 .orElseThrow(() -> new EntityNotFoundException("Member not found"));
 
         NotificationLoginResponseDto responseDto = new NotificationLoginResponseDto();
-        if (member == null) {
-            responseDto.setIsLogin(false);
-        } else {
-            responseDto.setIsLogin(true);
-        }
+        responseDto.setIsLogin(member != null);
         return responseDto;
     }
 
