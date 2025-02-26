@@ -82,3 +82,18 @@ h1 {
   font-size: 18px;
   cursor: pointer;
 }
+
+button {
+  background: #FF8D00;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+button:hover {
+  background: #ff720a;
+}

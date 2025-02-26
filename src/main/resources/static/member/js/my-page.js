@@ -7,7 +7,8 @@ function popup() {
   window.open(url, name, option);
 }
 
-document.getElementById("doctor-verification").addEventListener("click", popup);
+if(document.getElementById("doctor-verification") !== null)
+  document.getElementById("doctor-verification").addEventListener("click", popup);
 
 function renderMemberInfo(data) {
   console.log(document.getElementById("email"));
@@ -32,10 +33,8 @@ api.get("members/info")
   })
 
 document.getElementById("quit-confirm-button").addEventListener("click", () => {
-  const password = document.getElementById("password-input").value;
   if (confirm("정말 탈퇴하시겠습니까?")) {
-    api.patch("members/quit", {currentPassword: password}
-    ).then(response => {
+    api.patch("members/quit").then(response => {
       if(response.status !== 200){
         alert(response.data.message);
       } else {

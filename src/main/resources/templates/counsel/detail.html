@@ -16,6 +16,25 @@
       height: 300px;
       resize: none;
     }
+
+    .pagination .page-link {
+      color: gray;
+      text-decoration: underline;
+      border: none;
+      background: none;
+    }
+
+    .pagination .page-item.active .page-link {
+      font-weight: bold;
+      color: black;
+      text-decoration: none;
+    }
+
+    .page-link:focus {
+      outline: none;
+      box-shadow: none;
+      border: none;
+    }
   </style>
 </head>
 <body>
@@ -37,12 +56,13 @@
     <br>
     <br>
     <hr>
-    <div class="comment-title d-flex justify-content-between py-2">답변
+    <div class="comment-title d-flex justify-content-between py-2">
+      <h3>답변</h3>
       <button sec:authorize="hasRole('DOCTOR')" id="comment-btn" class="comment-btn" style="display: block;">답변 작성하기
       </button>
-      <button id="confirm-btn" class="comment-btn" style="display: none">등록</button>
+      <button sec:authorize="hasRole('DOCTOR')" id="confirm-btn" class="comment-btn" style="display: none">등록</button>
     </div>
-    <textarea id="comment-content" class="form-control" placeholder="답변을 작성해주세요" style="display: none;"></textarea>
+    <textarea id="comment-content" class="form-control" minlength="2" maxlength="500" required placeholder="답변을 작성해주세요" style="display: none;"></textarea>
 
     <div id="comment-list" class="comment-list">
     </div>
