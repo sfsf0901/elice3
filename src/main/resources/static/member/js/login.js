@@ -15,7 +15,6 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
       throw new Error("로그인 실패");
     } else
       location.href = "/";
-
   } catch (error) {
     alert("회원 정보가 일치하지 않습니다. 다시 시도해주세요");
   }
