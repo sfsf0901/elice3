@@ -15,6 +15,7 @@
 <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=spring_boot&logoColor=white">
 <img src="https://img.shields.io/badge/springsecurity-6DB33F?style=for-the-badge&logo=spring_security&logoColor=white">
 <img src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring_data_jpa&logoColor=white">
+![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
 
 ## 와이어 프레임
 
