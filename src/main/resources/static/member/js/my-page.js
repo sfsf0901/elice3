@@ -63,8 +63,7 @@ document.getElementById("quit-confirm-button").addEventListener("click", () => {
         alert(response.data.message);
       } else {
         alert("탈퇴가 완료되었습니다.");
-        api.post("http://localhost:8080/logout");
-        location.href = "/";
+        fetch("/logout", {method: "POST"}).then(() => {location.href = "/";});
       }
     }).catch(error => {
       alert(error.response.data.message);
