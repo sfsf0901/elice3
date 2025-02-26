@@ -26,6 +26,9 @@ function checkLogin() {
 function fetchUnreadNotifications() {
     axios.get('/api/notification/unread')
         .then(response => {
+            if (response.data.length === 0) {
+                displayEmptyNotificationMessage();
+            }
             response.data.forEach(notification => {
                 displayNotification(notification);
                 unreadCount++;
@@ -98,6 +101,19 @@ function displayNotification(notification) {
     if (notificationList.children.length > 10) {
         notificationList.removeChild(notificationList.lastChild);
     }
+}
+
+function displayEmptyNotificationMessage() {
+    const emptyMessage = document.createElement("div");
+    emptyMessage.classList.add("empty-message");
+    emptyMessage.style.minHeight = "20vh";
+    emptyMessage.classList.add("d-flex", "align-items-center", "justify-content-center", "text-center");
+    emptyMessage.innerHTML = `
+        <p class="mt-2" style="font-size: 14px;">새로운 알림이 존재하지 않습니다.</p>
+    `;
+
+    notificationList.innerHTML = '';
+    notificationList.appendChild(emptyMessage);
 }
 
 function markAsRead(notificationId, notificationItem) {

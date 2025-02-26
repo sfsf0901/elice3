@@ -104,7 +104,7 @@ public class ChatService {
         memberStatus.setStatus(MemberStatusType.ONLINE);
         memberStatusRepository.save(memberStatus);
 
-        log.info("User {} status updated to ONLINE in chat room {}", loggedInUserId, chatRoom.getChatRoomId());
+        log.info("Member {} status updated to ONLINE in chat room {}", loggedInUserId, chatRoom.getChatRoomId());
     }
 
     // 채팅방 개설 (새로운 채팅방 생성)
@@ -208,7 +208,7 @@ public class ChatService {
             memberStatus.setStatus(MemberStatusType.ONLINE);
             memberStatusRepository.save(memberStatus);
 
-            log.info("User {} has entered the chat room {} and status is updated to ONLINE", memberId, chatRoomId);
+            log.info("Member {} has entered the chat room {} and status is updated to ONLINE", memberId, chatRoomId);
         }
 
         // 입장 시간을 기준으로 메시지 조회
@@ -272,8 +272,8 @@ public class ChatService {
                 throw new RuntimeException("Failed to save chat message.");
             }
 
-            log.info("Saved chat message: {}", chatMessage);
-            log.info("Saved chat message Id: {}", chatMessage.getChatMessageId());
+            log.debug("Saved chat message: {}", chatMessage);
+            log.info("Chat message with ID {} Saved successfully.", chatMessage.getChatMessageId());
 
             processChatRoomAndStatus(savedMessage);
 
@@ -364,7 +364,7 @@ public class ChatService {
         memberStatus.setStatus(MemberStatusType.LEFT);
         memberStatusRepository.save(memberStatus);
 
-        log.info("User {} has left the chat room {}", memberId, chatRoomId);
+        log.info("Member {} has left the chat room {}", memberId, chatRoomId);
 
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new EntityNotFoundException("ChatRoom not found"));
@@ -386,6 +386,6 @@ public class ChatService {
         memberStatus.setStatus(MemberStatusType.OFFLINE);
         memberStatusRepository.save(memberStatus);
 
-        log.info("User {} status updated to OFFLINE due to WebSocket disconnection.", memberId);
+        log.info("Member {} status updated to OFFLINE due to WebSocket disconnection.", memberId);
     }
 }
