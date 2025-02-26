@@ -15,7 +15,12 @@
 <img src="https://img.shields.io/badge/spring_boot-6DB33F?style=for-the-badge&logo=spring_boot&logoColor=white">
 <img src="https://img.shields.io/badge/spring_security-6DB33F?style=for-the-badge&logo=spring_security&logoColor=white">
 ![Spring](https://img.shields.io/badge/spring_data_jpa-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
+![MySQL](https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white)
 ![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
+![Apache Kafka](https://img.shields.io/badge/Apache%20Kafka-000?style=for-the-badge&logo=apachekafka)
+
+
 ## 와이어 프레임
 
 ## ERD
