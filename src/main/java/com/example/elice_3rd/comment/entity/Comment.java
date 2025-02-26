@@ -32,7 +32,9 @@ public class Comment extends BaseEntity {
                 .title(counsel.toDto().getTitle())
                 .category(counsel.toDto().getCategory())
                 .content(content)
+                .name(member.getName())
                 .email(member.getEmail())
+                .memberId(member.getMemberId())
                 .createdDate(getCreatedDate())
                 .build();
     }

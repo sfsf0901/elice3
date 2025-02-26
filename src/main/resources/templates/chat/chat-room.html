@@ -5,19 +5,20 @@
 <head>
     <meta charset="UTF-8">
     <title>채팅방 채팅 내역</title>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <link rel="stylesheet" th:href="@{/chat/css/chat-room.css}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <link rel="stylesheet" th:href="@{/chat/css/chat-room.css}">
     <script defer th:src="@{/chat/js/chat-room.js}" type="text/javascript"></script>
 </head>
 <body>
     <div layout:fragment="content">
         <div class="chat-container">
             <div class="chat-header">
-                <button id="cancelBtn">목록</button>
-                <h2> <span th:text="${chatRoomMemberDto.name}"></span> 에 문의하기</h2>
-                <button id="leaveBtn" th:data-chat-room-id="${chatRoomId}">나가기</button>
+                <button id="cancelBtn" class="bi-chevron-left"></button>
+                <h3> <span th:text="${chatRoomMemberDto.name}"></span> 에 문의하기</h3>
+                <button id="leaveBtn"
+                        th:data-chat-room-id="${chatRoomId}" class="bi-box-arrow-right">
+                </button>
             </div>
             <div id="messages" class="message-box"
                  th:data-chat-room-id="${chatRoomId}"
@@ -26,7 +27,7 @@
             </div>
             <div class="messageInputSection">
                 <input type="text" id="messageInput" placeholder="메시지를 입력하세요" />
-                <button id="sendButton">전송</button>
+                <button id="sendButton" class="bi bi-send"></button>
             </div>
         </div>
     </div>

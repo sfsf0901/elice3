@@ -1,91 +1,108 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{common/layout/layout}">>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>마이페이지</title>
-  <link rel="stylesheet" href="/member/css/my-page.css">
-  <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.tailwindcss.com" rel="stylesheet">
 </head>
 <body>
 <div layout:fragment="content">
-  <div class="wrap container w-75" style="margin-right: 500px">
-    <div class="orangeContainer">
-      <div>
-        <i class="fas fa-regular fa-hospital-user fa-5x" style="color: black"
-           sec:authorize="hasRole('USER')"></i>
-        <i class="fas fa-light fa-user-doctor fa-5x"
-           sec:authorize="hasRole('DOCTOR')"></i>
+  <div class="container" style="width: 50%; margin-right: 350px; margin-top: 100px">
+    <div>
+      <div class="bg-white relative rounded-lg ">
+        <div class="relative flex justify-center" sec:authorize="hasRole('USER')">
+          <div class="rounded-full mx-auto absolute -top-20 w-32 h-32 shadow-md border-4 border-white transition duration-200 transform hover:scale-110">
+            <i class="fas fa-hospital-user fa-5x" style="margin-top: 20px; margin-left: 15px"></i>
+          </div>
+        </div>
+        <div class="relative flex justify-center" sec:authorize="hasRole('DOCTOR')">
+          <div class="rounded-full mx-auto absolute -top-20 w-32 h-32 shadow-md border-4 border-white transition duration-200 transform hover:scale-110">
+            <i class="fas fa-user-doctor fa-5x" style="margin-top: 20px; margin-left: 25px"></i>
+          </div>
+        </div>
+
+        <div class="mt-16">
+          <h1 id="name" class="font-bold text-center text-3xl text-gray-900">닉네임</h1>
+          <p id="email" class="text-center text-sm text-gray-400 font-medium">이메일</p>
+          <p>
+                        <span>
+
+                        </span>
+          </p>
+
+          <div class="w-full">
+            <div class="mt-5 w-full flex flex-col items-center overflow-hidden text-sm">
+              <a href="/my-page/counsels"
+                  class="itemList w-full border-t border-gray-100 text-gray-600 py-4 pl-6 pr-3 hover:bg-gray-100 transition duration-150 flex items-center justify-between">
+                <div class="flex items-center">
+                  <span class="pr-2">❓</span>
+                  <span class="text-lg">내 상담 내역</span>
+                </div>
+                <span class="text-gray-500 pr-4">&gt;</span>
+              </a>
+
+              <a href="/chat/chat-rooms"
+                  class="itemList w-full border-t border-gray-100 text-gray-600 py-4 pl-6 pr-3 hover:bg-gray-100 transition duration-150 flex items-center justify-between" style="cursor: pointer">
+                <div class="flex items-center">
+                  <span class="pr-2">💬</span>
+                  <span class="text-lg">실시간 상담 내역</span>
+                </div>
+                <span class="text-gray-500 pr-4">&gt;</span>
+              </a>
+
+              <div id="doctor-verification" sec:authorize="hasRole('USER')"
+                  class="itemList w-full border-t border-gray-100 text-gray-600 py-4 pl-6 pr-3 hover:bg-gray-100 transition duration-150 flex items-center justify-between" style="cursor: pointer">
+                <div class="flex items-center">
+                  <span class="pr-2">🩺</span>
+                  <span class="text-lg">의사 인증</span>
+                </div>
+                <span class="text-gray-500 pr-4">&gt;</span>
+              </div>
+              <a href="/my-page/comments" sec:authorize="hasRole('DOCTOR')"
+                   class="itemList w-full border-t border-gray-100 text-gray-600 py-4 pl-6 pr-3 hover:bg-gray-100 transition duration-150 flex items-center justify-between" style="cursor: pointer">
+                <div class="flex items-center">
+                  <span class="pr-2">✅</span>
+                  <span class="text-lg">내 답변 내역</span>
+                </div>
+                <span class="text-gray-500 pr-4">&gt;</span>
+              </a>
+
+              <div
+                  class="itemList w-full border-t border-gray-100 text-gray-600 py-4 pl-6 pr-3 hover:bg-gray-100 transition duration-150 flex items-center justify-between" style="cursor: pointer"
+                  data-bs-toggle="modal" data-bs-target="#update-name">
+                <div class="flex items-center">
+                  <span class="pr-2">🪪</span>
+                  <span class="text-lg">닉네임 변경</span>
+                </div>
+                <span class="text-gray-500 pr-4">&gt;</span>
+              </div>
+              <a th:if="${!member.isOauth()}" href="/update-password"
+                  class="itemList w-full border-t border-gray-100 text-gray-600 py-4 pl-6 pr-3 hover:bg-gray-100 transition duration-150 flex items-center justify-between" style="cursor: pointer"
+                  >
+                <div class="flex items-center">
+                  <span class="pr-2">🔒</span>
+                  <span class="text-lg">비밀번호 변경</span>
+                </div>
+                <span class="text-gray-500 pr-4">&gt;</span>
+              </a>
+              <div
+                  class="itemList w-full border-t border-gray-100 text-gray-600 py-4 pl-6 pr-3 hover:bg-gray-100 transition duration-150 flex items-center justify-between" style="cursor: pointer"
+                  data-bs-toggle="modal" data-bs-target="#quit-modal">
+                <div class="flex items-center">
+                  <span class="pr-2">🚪</span>
+                  <span class="text-lg">회원 탈퇴</span>
+                </div>
+                <span class="text-gray-500 pr-4">&gt;</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div align="end">
-        <div id="name"></div>
-        <small id="email"></small>
-      </div>
-    </div>
-    <svg viewBox="0 0 1440 200" style="background: white">
-      <path fill="#FF8D00"
-            d="M0,160L48,154.7C96,149,192,139,288,133.3C384,128,480,128,576,144C672,160,768,192,864,197.3C960,203,1056,181,1152,170.7C1248,160,1344,160,1392,160L1440,160L1440,320L0,320Z"
-            transform="scale(1, -1) translate(0, -200)">
-      </path>
-    </svg>
-    <div class="listContainer">
-      <a href="/my-page/counsels" class="item">
-        <div class="icon">❓</div>
-        <div class="text">상담 내역</div>
-        <div class="right"> ></div>
-      </a>
-      <div href="#" class="item">
-        <div class="icon">💬</div>
-        <div class="text">실시간 상담 내역</div>
-        <div class="right"> ></div>
-      </div>
-      <div href="#" class="item">
-        <div class="icon">🏥</div>
-        <div class="text">찜한 병원</div>
-        <div class="right"> ></div>
-      </div>
-      <div id="doctor-verification" class="item" sec:authorize="hasRole('USER')">
-        <div class="icon">🩺</div>
-        <div class="text">의사 인증하기</div>
-        <div class="right"> ></div>
-      </div>
-      <a href="/my-page/comments" class="item" sec:authorize="hasRole('DOCTOR')">
-        <div class="icon">✅</div>
-        <div class="text">내 답변 내역</div>
-        <div class="right"> ></div>
-      </a>
-    </div>
-    <div class="listContainer">
-      <!--    <a href="#" class="item">-->
-      <!--      <div class="icon">ii</div>-->
-      <!--      <div class="text">-->
-      <!--        <span>내지갑</span>-->
-      <!--        <span class="smallLight">-->
-      <!--            <span>|</span>-->
-      <!--            <span>보유 적립금</span>-->
-      <!--          </span>-->
-      <!--      </div>-->
-      <!--      <div class="right">-->
-      <!--        <span class="blct">175 BLCT</span>-->
-      <!--        > </div>-->
-      <!--    </a>-->
-      <div class="item" data-bs-toggle="modal" data-bs-target="#update-name">
-        <div class="icon">🪪</div>
-        <div class="text">닉네임 변경</div>
-        <div class="right"> ></div>
-      </div>
-      <a href="/update-password" class="item">
-        <div class="icon">🔒</div>
-        <div class="text">비밀번호 변경</div>
-        <div class="right"> ></div>
-      </a>
-      <div id="quit" class="item" data-bs-toggle="modal" data-bs-target="#quit-modal">
-        <div class="icon">🚪</div>
-        <div class="text">회원 탈퇴</div>
-        <div class="right"> ></div>
-      </div>
+
     </div>
     <!--  <div class="infoContainer">-->
     <!--  </div>-->
@@ -120,18 +137,21 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          현재 비밀번호를 입력하세요 <br>
-          <input id="password-input" type="password" class="form-control"/>
+          탈퇴 시 계정은 <span style="color: #c83e3e">삭제되며 복구되지 않습니다!</span><br>
+          그래도 정말 탈퇴하시겠습니까?<br>
+          <small style="font-size: 12px">탈퇴 이후 작성한 게시글 및 답변은 삭제되지 않으며 회원 정보는 30일간 보관 됩니다.</small>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-          <button id="quit-confirm-button" type="button" class="btn btn-primary">변경사항 저장</button>
+          <button id="quit-confirm-button" type="button" class="btn btn-primary" style="background-color: #c83e3e">탈퇴하기</button>
         </div>
       </div>
     </div>
   </div>
-  <script type="module" src="/member/js/my-page.js"></script>
+
   <script src="/common/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="/member/js/my-page.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </div>
 </body>
 </html>

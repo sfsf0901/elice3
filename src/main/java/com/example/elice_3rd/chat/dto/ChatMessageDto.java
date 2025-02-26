@@ -1,6 +1,6 @@
 package com.example.elice_3rd.chat.dto;
 
-import com.example.elice_3rd.chat.entity.ChatMessage;
+import com.example.elice_3rd.chat.entity.mongodb.ChatMessage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

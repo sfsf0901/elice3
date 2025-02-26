@@ -27,7 +27,6 @@ import java.util.Collections;
 @Transactional
 public class CustomOAuth2UserService implements OAuth2UserService {
     private final MemberRepository memberRepository;
-    private final JwtUtil jwtUtil;
     private final ObjectMapper objectMapper;
 
     @Override

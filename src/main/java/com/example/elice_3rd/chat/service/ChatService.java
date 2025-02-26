@@ -1,10 +1,10 @@
 package com.example.elice_3rd.chat.service;
 
 import com.example.elice_3rd.chat.dto.*;
-import com.example.elice_3rd.chat.entity.ChatMessage;
-import com.example.elice_3rd.chat.entity.ChatReadStatus;
-import com.example.elice_3rd.chat.entity.ChatRoom;
-import com.example.elice_3rd.chat.entity.MemberStatus;
+import com.example.elice_3rd.chat.entity.mongodb.ChatMessage;
+import com.example.elice_3rd.chat.entity.mysql.ChatReadStatus;
+import com.example.elice_3rd.chat.entity.mysql.ChatRoom;
+import com.example.elice_3rd.chat.entity.mysql.MemberStatus;
 import com.example.elice_3rd.chat.entity.status.MemberStatusType;
 import com.example.elice_3rd.chat.entity.status.RoomStatus;
 import com.example.elice_3rd.chat.repository.ChatMessageRepository;
@@ -13,6 +13,9 @@ import com.example.elice_3rd.chat.repository.ChatRoomRepository;
 import com.example.elice_3rd.chat.repository.MemberStatusRepository;
 import com.example.elice_3rd.member.entity.Member;
 import com.example.elice_3rd.member.repository.MemberRepository;
+import com.example.elice_3rd.notification.dto.NotificationDto;
+import com.example.elice_3rd.notification.entity.Notification;
+import com.example.elice_3rd.notification.repository.NotificationRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,8 +38,15 @@ public class ChatService {
     private final MemberRepository memberRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
+    private final NotificationRepository notificationRepository;
     private final MemberStatusRepository memberStatusRepository;
     private final ChatReadStatusRepository chatReadStatusRepository;
+
+    public Long findByMemberId (String memberId){
+        Member member = memberRepository.findByEmail(memberId)
+                .orElseThrow(() -> new EntityNotFoundException("Member not found"));
+        return member.getMemberId();
+    }
 
     // 기존 채팅방이 있는지 확인하고 채팅방 개설 혹은 연결
     @Transactional
@@ -48,10 +58,19 @@ public class ChatService {
         // 요청이 1:1 채팅이라면 기존 채팅방을 확인 (그룹 채팅 기능 확장 가능하게 코드 구성)
         if (request.getMemberIds().size() == 2) {
             // 1:1 채팅방이 이미 존재하는지 확인
-            Optional<ChatRoom> existingChatRoom = chatRoomRepository.findByMembers_MemberIdIn(request.getMemberIds());
+            List<ChatRoom> existingChatRooms = chatRoomRepository.findByMembers_MemberIdIn(request.getMemberIds());
 
-            if (existingChatRoom.isPresent()) {
-                ChatRoom chatRoom = existingChatRoom.get();
+            Optional<ChatRoom> exactMatchChatRoom = existingChatRooms.stream()
+                    .filter(chatRoom -> {
+                        Set<Long> memberIdsInRoom = chatRoom.getMembers().stream()
+                                .map(member -> member.getMemberId())
+                                .collect(Collectors.toSet());
+                        return memberIdsInRoom.equals(new HashSet<>(request.getMemberIds()));
+                    })
+                    .findFirst();
+
+            if (exactMatchChatRoom.isPresent()) {
+                ChatRoom chatRoom = exactMatchChatRoom.get();
 
                 // 채팅방 상태가 INACTIVE인 경우 새로운 채팅방 생성
                 if (chatRoom.getRoomStatus() == RoomStatus.INACTIVE) {
@@ -174,8 +193,7 @@ public class ChatService {
     }
 
     public boolean isChatRoomExist(Long chatRoomId) {
-        Optional<ChatRoom> chatRoom = chatRoomRepository.findById(chatRoomId);
-        return chatRoom.isPresent();  // 존재하면 true, 없으면 false 반환
+        return chatRoomRepository.existsById(chatRoomId);
     }
 
     // 채팅방 메시지 가져오기
@@ -223,6 +241,8 @@ public class ChatService {
                 .flatMapMany(exists -> exists ? chatMessages : Flux.empty());
     }
 
+
+    // 채팅방 상대 표시를 위해 멤버중 1명 추출
     public ChatRoomMemberDto findOtherMemberInChatRoom(Long chatRoomId, Long loggedInUserId) {
         // 채팅방 조회
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
@@ -241,17 +261,21 @@ public class ChatService {
 
     // 채팅방 메시지 Kafka로 전송
     @Transactional
-    public void sendMessageToKafka(ChatMessageDto chatMessageDto) {
+    public ChatMessageDto sendMessageToKafka(ChatMessageDto chatMessageDto) {
         try {
             // mongoDB에 저장
             ChatMessage chatMessage = chatMessageDto.toEntity();
             ChatMessage savedMessage = chatMessageRepository.save(chatMessage).block();
+
+            if (savedMessage == null) {
+                log.error("Failed to save chat message. The saved message is null.");
+                throw new RuntimeException("Failed to save chat message.");
+            }
+
             log.info("Saved chat message: {}", chatMessage);
             log.info("Saved chat message Id: {}", chatMessage.getChatMessageId());
 
-            if (savedMessage != null){
-                processChatRoomAndStatus(savedMessage);
-            }
+            processChatRoomAndStatus(savedMessage);
 
             // Kafka 메시지 전송, 실패 시 롤백
             kafkaProducer.sendMessage(chatMessage)
@@ -260,6 +284,8 @@ public class ChatService {
                         throw new RuntimeException("Transaction rollback due to Kafka message transmission failure.", e);
                     })
                     .join(); // 동기적으로 처리하여 예외 발생 시 트랜잭션 롤백
+
+            return ChatMessageDto.toDto(savedMessage);
 
         } catch (Exception e) {
             log.error("Error processing chat message: {}", chatMessageDto.getMessage(), e);
@@ -306,6 +332,20 @@ public class ChatService {
 
     // 채팅방 메시지 삭제
     public Mono<Void> deleteChatMessage(String chatMessageId) {
+        // 메세지 읽음 상태 삭제
+        List<ChatReadStatus> chatReadStatuses = chatReadStatusRepository.findByChatMessageId(chatMessageId);
+        for (ChatReadStatus chatReadStatus : chatReadStatuses) {
+            chatReadStatusRepository.delete(chatReadStatus);
+        }
+
+        List<Notification> notifications = notificationRepository.findByChatMessageId(chatMessageId);
+        // 알림 업데이트
+        notifications.forEach(notification -> {
+            notification.setChatMessageId(null);
+            notification.setMessage("삭제된 메시지입니다.");
+            notificationRepository.save(notification);
+        });
+
         // 메시지 조회 및 삭제
         return chatMessageRepository.findById(chatMessageId)
                 .switchIfEmpty(Mono.error(new EntityNotFoundException("ChatMessage not found")))

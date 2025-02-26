@@ -71,6 +71,7 @@ public class OAuth2Attributes {
                 .name(name)
                 .email(email)
                 .role(Role.USER)
+                .isOauth(true)
                 .password(UUID.randomUUID().toString())
                 .build();
     }

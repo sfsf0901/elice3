@@ -1,8 +1,8 @@
 package com.example.elice_3rd.chat.scheduler;
 
 import com.example.elice_3rd.chat.dto.ChatRoomDeletedEvent;
-import com.example.elice_3rd.chat.entity.ChatMessage;
-import com.example.elice_3rd.chat.entity.ChatRoom;
+import com.example.elice_3rd.chat.entity.mongodb.ChatMessage;
+import com.example.elice_3rd.chat.entity.mysql.ChatRoom;
 import com.example.elice_3rd.chat.entity.status.RoomStatus;
 import com.example.elice_3rd.chat.repository.ChatMessageRepository;
 import com.example.elice_3rd.chat.repository.ChatReadStatusRepository;

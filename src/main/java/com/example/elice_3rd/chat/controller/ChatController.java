@@ -20,12 +20,6 @@ public class ChatController {
 
     private final ChatService chatService;
 
-    // TODO : 이후에 상담 상세 페이지로 해당 버튼 이전 필요
-    @GetMapping("/check-chat-room")
-    public String getChatRoomBtnPage() {
-        return "chat/create-chat-room";
-    }
-
     @GetMapping("/chat-room/{chatRoomId}/{memberId}")
     public String getChatRoom(@PathVariable Long chatRoomId, @PathVariable Long memberId, Model model) {
         if (!chatService.isChatRoomExist(chatRoomId)) {
@@ -39,13 +33,9 @@ public class ChatController {
 
     @GetMapping("/chat-rooms")
     public String getChatRoomsPage(Model model, Principal principal) {
-        Long loggedInUserId = Long.parseLong(principal.getName());
+        Long loggedInUserId = chatService.findByMemberId(principal.getName());
         log.debug("Logged In User ID: {}", loggedInUserId);
 
-        // 테스트용
-//        Long loggedInUserId = 1L;
-//        log.debug("Logged In User ID: {}", loggedInUserId);
-        //
         if (loggedInUserId == null) {
             return "redirect:/member/another-login";
         }

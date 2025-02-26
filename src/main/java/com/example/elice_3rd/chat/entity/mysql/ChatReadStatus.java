@@ -1,4 +1,4 @@
-package com.example.elice_3rd.chat.entity;
+package com.example.elice_3rd.chat.entity.mysql;
 
 import com.example.elice_3rd.member.entity.Member;
 import jakarta.persistence.*;

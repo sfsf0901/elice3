@@ -110,7 +110,6 @@
     height: 16px;
 }
 
-
 /*=================== 주문목록 ~ 찜한상품 리스트 ==================*/
 .listContainer{
     padding: 0;
@@ -195,4 +194,8 @@
     width: 100%;
     height: 50px;
     z-index: 1;
+}
+
+.itemList {
+    cursor: pointer;
 }

@@ -36,6 +36,9 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
     private LocalDateTime deletedDate;
+    @Column(nullable = false)
+    @ColumnDefault("false")
+    private Boolean isOauth;
 
     public MemberResponseDto toResponseDto(){
         return MemberResponseDto.builder()
@@ -50,6 +53,8 @@ public class Member extends BaseEntity {
                 .email(email)
                 .password(password)
                 .role(role.getKey())
+                .isDeleted(isDeleted)
+                .isOauth(isOauth)
                 .build();
     }
 

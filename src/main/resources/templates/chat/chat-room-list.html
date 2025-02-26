@@ -5,14 +5,13 @@
 <head>
     <meta charset="UTF-8">
     <title>채팅방 목록</title>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" th:href="@{/chat/css/chat-room-list.css}">
     <script defer th:src="@{/chat/js/chat-room-list.js}" type="text/javascript"></script>
 </head>
 <body>
     <div layout:fragment="content">
         <div class="container">
-            <div id="chatRoomsContainer"
+            <div id="chat-room-container"
                 th:data-member-id="${memberId}"
             >
             </div>

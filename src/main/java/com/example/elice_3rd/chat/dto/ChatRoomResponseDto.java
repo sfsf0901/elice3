@@ -1,6 +1,6 @@
 package com.example.elice_3rd.chat.dto;
 
-import com.example.elice_3rd.chat.entity.ChatRoom;
+import com.example.elice_3rd.chat.entity.mysql.ChatRoom;
 import com.example.elice_3rd.chat.entity.status.RoomStatus;
 import lombok.*;
 
