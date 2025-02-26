@@ -17,7 +17,7 @@
 ![Spring](https://img.shields.io/badge/spring_data_jpa-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
 <img src="https://img.shields.io/badge/ollama-000000?style=for-the-badge&logo=ollama&logoColor=white">
-![Meta](https://img.shields.io/badge/llama3-%230467DF.svg?style=for-the-meta&logo=llama3&logoColor=white)
+![Meta](https://img.shields.io/badge/llama-%230467DF.svg?style=for-the-badge&logo=Meta&logoColor=white)
 
 ![MySQL](https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white)
 ![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)
