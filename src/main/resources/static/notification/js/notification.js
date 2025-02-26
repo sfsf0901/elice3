@@ -19,7 +19,7 @@ function checkLogin() {
             }
         })
         .catch(error => {
-            console.error('Error checking login status:', error);
+            console.error('Error checking login status:');
         });
 }
 
@@ -33,7 +33,7 @@ function fetchUnreadNotifications() {
             updateBadge();
         })
         .catch(error => {
-            console.error("'Error fetching unread notifications:", error);
+            console.error("'Error fetching unread notifications:");
         });
 }
 
@@ -53,7 +53,7 @@ function connectSSE() {
     };
 
     eventSource.onerror = (e) => {
-        console.error("Error occurred while receiving SSE events:", e);
+        console.error("Error occurred while receiving SSE events:");
         setTimeout(() => {
             eventSource.close();
             connectSSE();
@@ -112,7 +112,7 @@ function markAsRead(notificationId, notificationItem) {
             notificationList.removeChild(notificationItem);
         })
         .catch(error => {
-            console.error("Error marking notification as read:", error);
+            console.error("Error marking notification as read");
         });
 }
 

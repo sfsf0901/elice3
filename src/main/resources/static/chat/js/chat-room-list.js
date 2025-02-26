@@ -15,7 +15,7 @@ function fetchChatRooms() {
             }
         })
         .catch((error) => {
-            console.error("Error fetching chat rooms:", error);
+            console.error("Error fetching chat rooms");
         });
 }
 
@@ -111,7 +111,7 @@ function leaveChatRoom(chatRoomId) {
             fetchChatRooms();
         })
         .catch(error => {
-            console.error("Error: ", error)
+            console.error("Error leave chat room")
             alert("채팅방을 나가는 데 실패했습니다. 다시 시도해 주세요");
         });
 }
