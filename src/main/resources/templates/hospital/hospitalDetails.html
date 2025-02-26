@@ -10,7 +10,14 @@
     <script th:inline="javascript">
       const kakaoApiKey = /*[[${kakaoApiKey}]]*/ 'default_key';
     </script>
-  <script th:src="|https://dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoApiKey}&libraries=services|"></script>
+    <script th:src="|https://dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoApiKey}&libraries=services|"></script>
+    <style>
+      .btn-tel {
+        background-color: #ff7a00;
+        color: white;
+        border: none;
+      }
+    </style>
 </head>
 <body>
     <div layout:fragment="content">
@@ -113,7 +120,7 @@
         </div>
 
         <div>
-          <a th:href="|tel:${hospital.phone}|" class="btn btn-primary py-3 mt-3 w-100">전화 예약하기</a>
+          <a th:href="|tel:${hospital.phone}|" class="btn btn-tel py-3 mt-3 w-100">전화 예약하기</a>
         </div>
 
       </div>

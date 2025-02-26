@@ -107,7 +107,7 @@
         <h5>어떻게 아프세요?</h5>
         <div class="symptom-list mt-5">
             <div class="symptom-item" th:each="symptom : ${symptoms}">
-                <a href="#" class="symptom-tag" th:text="'#' + ${symptom.name}"
+                <a href="#" class="symptom-tag text-muted" th:text="'#' + ${symptom.name}"
                    th:data-symptom-name="${symptom.name}"
                    onclick="searchHandler(event, this)">
                 </a>
@@ -116,7 +116,7 @@
     </div>
 
     <script>
-        window.onload = function () {
+        window.onload = function ()  {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     function (position) {
