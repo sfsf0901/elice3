@@ -50,20 +50,14 @@ document.getElementById("confirm-button").addEventListener("click", () => {
     console.log(error);
   })
 })
-
-const currentPassword = document.getElementById("current-password");
 const newPassword = document.getElementById("new-password");
 const confirmPassword = document.getElementById("confirm-password");
 const submitBtn = document.getElementById("confirm-button");
 
 function validateForm() {
-  if (currentPassword.value && newPassword.value && confirmPassword.value && newPassword.value === confirmPassword.value) {
+  if (newPassword.value && confirmPassword.value && newPassword.value === confirmPassword.value) {
     submitBtn.disabled = false;
   } else {
     submitBtn.disabled = true;
   }
 }
-
-currentPassword.addEventListener("input", validateForm);
-newPassword.addEventListener("input", validateForm);
-confirmPassword.addEventListener("input", validateForm);
