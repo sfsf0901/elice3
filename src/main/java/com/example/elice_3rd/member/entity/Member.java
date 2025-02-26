@@ -36,6 +36,9 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
     private LocalDateTime deletedDate;
+    @Column(nullable = false)
+    @ColumnDefault("false")
+    private Boolean isOauth;
 
     public MemberResponseDto toResponseDto(){
         return MemberResponseDto.builder()
