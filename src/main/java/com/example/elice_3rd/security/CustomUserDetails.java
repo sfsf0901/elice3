@@ -40,6 +40,10 @@ public class CustomUserDetails implements UserDetails {
         return memberDetail.getIsDeleted();
     }
 
+    public Boolean isOauth(){
+        return memberDetail.getIsOauth();
+    }
+
 //    @Override
 //    public boolean isAccountNonExpired() {
 //        return true;

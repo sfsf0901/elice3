@@ -1,5 +1,6 @@
 package com.example.elice_3rd.security.jwt;
 
+import com.example.elice_3rd.member.repository.MemberRepository;
 import com.example.elice_3rd.security.CustomUserDetails;
 import com.example.elice_3rd.security.MemberDetail;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -23,6 +24,7 @@ import java.io.PrintWriter;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
+    private final MemberRepository memberRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -74,11 +76,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String email = jwtUtil.getEmail(accessToken);
         String role = jwtUtil.getRole(accessToken);
 
-        MemberDetail memberDetail = MemberDetail.builder()
-                .email(email)
-                .password("temppassword")
-                .role(role)
-                .build();
+        MemberDetail memberDetail = memberRepository.findByEmail(email).orElseThrow().toDetail();
 
         CustomUserDetails customUserDetails = new CustomUserDetails(memberDetail);
 

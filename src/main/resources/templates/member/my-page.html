@@ -172,16 +172,15 @@
                 </div>
                 <span class="text-gray-500 pr-4">&gt;</span>
               </div>
-              <div th:text="${#authentication.principal}"></div>
-              <div
+              <a th:if="${!member.isOauth()}" href="/update-password"
                   class="itemList w-full border-t border-gray-100 text-gray-600 py-4 pl-6 pr-3 hover:bg-gray-100 transition duration-150 flex items-center justify-between" style="cursor: pointer"
-                  data-bs-toggle="modal" data-bs-target="#quit-modal">
+                  >
                 <div class="flex items-center">
-                  <span class="pr-2">🚪</span>
-                  <span class="text-lg">회원 탈퇴</span>
+                  <span class="pr-2">🔒</span>
+                  <span class="text-lg">비밀번호 변경</span>
                 </div>
                 <span class="text-gray-500 pr-4">&gt;</span>
-              </div>
+              </a>
               <div
                   class="itemList w-full border-t border-gray-100 text-gray-600 py-4 pl-6 pr-3 hover:bg-gray-100 transition duration-150 flex items-center justify-between" style="cursor: pointer"
                   data-bs-toggle="modal" data-bs-target="#quit-modal">

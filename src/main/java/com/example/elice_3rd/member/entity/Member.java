@@ -54,6 +54,7 @@ public class Member extends BaseEntity {
                 .password(password)
                 .role(role.getKey())
                 .isDeleted(isDeleted)
+                .isOauth(isOauth)
                 .build();
     }
 
