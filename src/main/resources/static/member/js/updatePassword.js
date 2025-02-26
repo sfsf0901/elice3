@@ -1,5 +1,38 @@
 import api from "/common/js/API.js";
 
+(() => {
+  'use strict';
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  const forms = document.querySelectorAll('.needs-validation');
+
+  // Loop over them and prevent submission
+  Array.prototype.slice.call(forms).forEach((form) => {
+    form.addEventListener('input', (event) => {
+      const password = document.getElementById("new-password");
+      const confirmPassword = document.getElementById("confirm-password");
+      const passwordMatch = password.value === confirmPassword.value && password.length > 0;
+
+      if (password.value !== confirmPassword.value) {
+        confirmPassword.setCustomValidity("비밀번호가 일치하지 않습니다.");
+      } else {
+        confirmPassword.setCustomValidity(""); // 문제 없으면 초기화
+      }
+
+      if (!form.checkValidity()) {
+        document.getElementById("submit-button").disabled = true;
+        event.preventDefault();
+        event.stopPropagation();
+      } else{
+        document.getElementById("submit-button").disabled = false;
+      }
+      form.classList.add('was-validated');
+
+    }, false);
+
+  });
+})();
+
 document.getElementById("confirm-button").addEventListener("click", () => {
   api.patch("members/password", {
     currentPassword: document.getElementById("current-password").value,
