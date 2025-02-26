@@ -1,17 +1,17 @@
-#check-chat-room-btn {
+.check-chat-room-btn {
     color: #000000;
     background-color: #FFFFFF;
     border: 2px solid #FF8D00;
     transition: all 0.3s ease;
 }
 
-#check-chat-room-btn:hover {
+.check-chat-room-btn:hover {
     background-color: #FF8D00;
     color: #FFFFFF;
     border-color: #FF8D00;
 }
 
-#check-chat-room-btn:active {
+.check-chat-room-btn:active {
     background-color: #FF8D00;
     color: #FFFFFF;
     border-color: #FF8D00;

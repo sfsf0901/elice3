@@ -169,7 +169,10 @@ public class NotificationService {
     @Transactional
     public void notificationAsRead(Long notificationId) {
         Notification notification = notificationRepository.findById(notificationId)
-                .orElseThrow(() -> new EntityNotFoundException("Notification not found"));
+                .orElseThrow(() -> {
+                    log.error("Notification with ID {} not found", notificationId);
+                    return new EntityNotFoundException("Notification not found");
+                });
         notification.setReadStatus(true);
         notificationRepository.save(notification);
         log.info("Notification with ID {} marked as read", notificationId);

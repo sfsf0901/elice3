@@ -7,7 +7,11 @@ function fetchChatRooms() {
             const chatRoomsContainer = document.getElementById("chat-room-container");
 
             if (chatRooms.length === 0) {
-                chatRoomsContainer.innerHTML = "<p>참여하고 있는 채팅방이 없습니다.</p>";
+                chatRoomsContainer.innerHTML =
+                    `<div class="d-flex flex-column align-items-center justify-content-center text-center" style="height: 60vh;">
+                        <i class="fa-solid fa-triangle-exclamation h2"></i>
+                        <h5 class="mt-2">상담내역이 존재하지 않습니다.</h5>
+                    </div>`;
             } else {
                 chatRooms.forEach(room => {
                     displayChatRoom(room);

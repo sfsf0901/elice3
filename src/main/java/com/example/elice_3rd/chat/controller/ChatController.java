@@ -23,23 +23,34 @@ public class ChatController {
     @GetMapping("/chat-room/{chatRoomId}/{memberId}")
     public String getChatRoom(@PathVariable Long chatRoomId, @PathVariable Long memberId, Model model) {
         if (!chatService.isChatRoomExist(chatRoomId)) {
+            log.error("Chat room with ID {} not found", chatRoomId);
             return "redirect:/";
         }
-        ChatRoomMemberDto chatRoomMemberDto = chatService.findOtherMemberInChatRoom(chatRoomId, memberId);
-        model.addAttribute("chatRoomMemberDto", chatRoomMemberDto);
-
+        try {
+            ChatRoomMemberDto chatRoomMemberDto = chatService.findOtherMemberInChatRoom(chatRoomId, memberId);
+            model.addAttribute("chatRoomMemberDto", chatRoomMemberDto);
+        } catch (Exception e) {
+            log.error("Error retrieving chat room member information for chat room ID {}: {}", chatRoomId, e.getMessage());
+        }
         return "chat/chat-room";
     }
 
     @GetMapping("/chat-rooms")
     public String getChatRoomsPage(Model model, Principal principal) {
-        Long loggedInUserId = chatService.findByMemberId(principal.getName());
-        log.debug("Logged In User ID: {}", loggedInUserId);
+        try {
+            if (principal == null) {
+                log.warn("User ID is null for principal {}", principal.getName());
+            }
+            Long loggedInUserId = chatService.findByMemberId(principal.getName());
+            log.debug("Logged In User ID: {}", loggedInUserId);
 
-        if (loggedInUserId == null) {
-            return "redirect:/member/another-login";
+            if (loggedInUserId == null) {
+                return "redirect:/member/login";
+            }
+            model.addAttribute("memberId", loggedInUserId);
+        } catch (Exception e) {
+            log.error("Error retrieving user ID for principal {}: {}", principal.getName(), e.getMessage());
         }
-        model.addAttribute("memberId", loggedInUserId);
 
         return "chat/chat-room-list";
     }
