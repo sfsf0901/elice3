@@ -11,7 +11,7 @@
 ## 팀원 구성
 
 ## 기술 스택
-#6DB33F
+<img src"https://img.shields.io/badge/Spring Boot-6DB33F?style=flat-square&logo=SpringBoot&logoColor=white"/>
 
 ## 와이어 프레임
 
