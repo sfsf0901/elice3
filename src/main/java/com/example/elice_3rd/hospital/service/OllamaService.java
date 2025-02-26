@@ -12,7 +12,7 @@ public class OllamaService {
 
     private final WebClient webClient = WebClient.builder()
 //            .baseUrl("http://localhost:11434/api/generate") // Ollama API 엔드포인트
-            .baseUrl("http://34.47.78.233:11434/api/generate")
+            .baseUrl("http://34.64.254.152:11434/api/generate")
             .build();
 
     public String analyzeKeyword(String keyword) {
