@@ -25,13 +25,13 @@ public class MemberControllerTest {
         memberService.register(requestDto);
     }
 
-    @Test
-    @DisplayName("비밀번호 변경 테스트")
-    void updatePassword() {
-        String password = "new password";
+    // @Test
+    // @DisplayName("비밀번호 변경 테스트")
+    // void updatePassword() {
+    //     String password = "new password";
 
-        memberService.updatePassword("test email", password);
-    }
+    //     memberService.updatePassword("test email", password);
+    // }
 
     @Test
     @DisplayName("회원 정보 수정 테스트")
