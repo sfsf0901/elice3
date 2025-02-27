@@ -1,6 +1,5 @@
 package com.example.elice_3rd.security;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,7 +7,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 
-//TODO member 객체에 getter를 안쓸 수 있는 방법 모색
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
     private final MemberDetail memberDetail;

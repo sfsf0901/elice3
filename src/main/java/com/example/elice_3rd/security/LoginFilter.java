@@ -39,8 +39,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
         CustomUserDetails memberDetails = (CustomUserDetails) authentication.getPrincipal();
-        if(memberDetails.isDeleted())
+        if(memberDetails.isDeleted()){
+            log.error("로그인 실패: 탈퇴한 회원 정보");
             throw new BadRequestException("탈퇴한 회원입니다.");
+        }
 
         String email = memberDetails.getUsername();
 

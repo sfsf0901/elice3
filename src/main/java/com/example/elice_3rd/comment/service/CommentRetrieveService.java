@@ -24,7 +24,6 @@ public class CommentRetrieveService {
     private final MemberRepository memberRepository;
 
     public Page<CommentResponseDto> retrieveAll(Long counselId, Pageable pageable){
-        // TODO exception 처리
         Counsel counsel = counselRepository.findById(counselId).orElseThrow(() ->
                 new NoSuchDataException("답변 조회 실패: 상담 아이디와 일치하는 상담 게시글이 존재하지 않습니다."));
         return commentRepository.findAllByCounsel(counsel, pageable).map(Comment::toDto);

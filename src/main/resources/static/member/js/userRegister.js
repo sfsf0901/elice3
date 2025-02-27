@@ -12,6 +12,39 @@ import api from "/common/js/API.js";
       const password = document.getElementById("password");
       const confirmPassword = document.getElementById("confirmPassword");
       const passwordMatch = password.value === confirmPassword.value && password.length > 0;
+      const passwordVal = password.value;
+
+      const lengthCheck = passwordVal.length >= 8;
+      const uppercaseCheck = /[A-Z]/.test(passwordVal);
+      const specialCharCheck = /[!@#$%^&*(),.?":{}|<>]/.test(passwordVal);
+      const numberCheck = /[0-9]/.test(passwordVal);
+
+      const lengthError = document.getElementById("lengthCheck");
+      const upperError = document.getElementById("uppercaseCheck");
+      const specialError = document.getElementById("specialCheck");
+      const numberError = document.getElementById("numberCheck");
+
+      if(lengthCheck)
+        lengthError.style.display = "none";
+      else
+        lengthError.style.display = "block";
+
+      if(uppercaseCheck)
+        upperError.style.display = "none";
+      else
+        upperError.style.display = "block";
+
+      if(specialCharCheck)
+        specialError.style.display = "none";
+      else
+        specialError.style.display = "block";
+
+      if(numberCheck)
+        numberError.style.display = "none";
+      else
+        numberError.style.display = "block";
+
+
 
       if (password.value !== confirmPassword.value) {
         confirmPassword.setCustomValidity("비밀번호가 일치하지 않습니다.");

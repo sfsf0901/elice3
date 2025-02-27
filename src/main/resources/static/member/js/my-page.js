@@ -1,5 +1,29 @@
 import api from "/common/js/API.js";
 
+(() => {
+  'use strict';
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  const forms = document.querySelectorAll('.needs-validation');
+
+  // Loop over them and prevent submission
+  Array.prototype.slice.call(forms).forEach((form) => {
+    form.addEventListener('input', (event) => {
+
+      if (!form.checkValidity()) {
+        document.getElementById("name-confirm-button").disabled = true;
+        event.preventDefault();
+        event.stopPropagation();
+      } else{
+        document.getElementById("name-confirm-button").disabled = false;
+      }
+      form.classList.add('was-validated');
+
+    }, false);
+
+  });
+})();
+
 function popup() {
   let url = "/license";
   let name = "면허 인증";
@@ -39,8 +63,7 @@ document.getElementById("quit-confirm-button").addEventListener("click", () => {
         alert(response.data.message);
       } else {
         alert("탈퇴가 완료되었습니다.");
-        api.post("http://localhost:8080/logout");
-        location.href = "/";
+        fetch("/logout", {method: "POST"}).then(() => {location.href = "/";});
       }
     }).catch(error => {
       alert(error.response.data.message);
