@@ -71,9 +71,15 @@ public class NotificationService {
 
                     // 오프라인 상태인 경우에만 알림 생성
                     if (memberStatus.getStatus() == MemberStatusType.OFFLINE) {
+                        // 발송자 이름 추가
+                        Member sender = memberRepository.findById(chatMessage.getSenderId())
+                                .orElseThrow(() -> new EntityNotFoundException("Sender not found"));
+                        String senderName = sender.getName();
+
                         Notification notification = new Notification();
                         notification.setChatRoomId(chatRoom);
                         notification.setReceiverId(receiver);
+                        notification.setSenderName(senderName);
                         notification.setChatMessageId(chatMessage.getChatMessageId());
                         notification.setMessage(chatMessage.getMessage());
                         notificationRepository.save(notification);

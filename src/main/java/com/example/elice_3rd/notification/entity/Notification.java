@@ -28,6 +28,8 @@ public class Notification extends BaseEntity {
     @JoinColumn(name = "receiver_id", nullable = false)
     private Member receiverId;
 
+    private String senderName;
+
     private String chatMessageId;
 
     @Column(nullable = false)
