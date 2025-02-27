@@ -24,7 +24,7 @@ document.getElementById("licenseForm").addEventListener("submit", async function
 
   const data = (await api.post('https://datahub-dev.scraping.co.kr/scrap/common/mohw/MedicalLicenseInquirySimple',
     formData, // 본문 데이터
-    { headers: { "Authorization": "74d7823acb384f5db0b54ab9e40839aec2a13b46" } } // 올바른 headers 위치
+    { headers: { "Authorization": "74d7823acb384f5db0b54ab9e40839aec2a13b46" } }
   )).data;
 
   console.log(data);
