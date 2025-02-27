@@ -43,12 +43,13 @@ public class JwtUtil {
         this.key = Keys.hmacShaKeyFor(byteSecretKey);
     }
 
-    public String createAccessToken(String email, String role, String name) {
+    public String createAccessToken(String email, String role, String name, Boolean isOauth) {
         Claims claims = Jwts.claims();
         claims.put("category", "access");
         claims.put("email", email);
         claims.put("role", role);
         claims.put("name", name);
+        claims.put("isOauth", isOauth);
         Date now = new Date(System.currentTimeMillis());
         Date expireDate = new Date(now.getTime() + accessExpirationTime);
 
@@ -60,12 +61,13 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String createRefreshToken(String email, String role, String name) {
+    public String createRefreshToken(String email, String role, String name, Boolean isOauth) {
         Claims claims = Jwts.claims();
         claims.put("category", "refresh");
         claims.put("email", email);
         claims.put("role", role);
         claims.put("name", name);
+        claims.put("isOauth", isOauth);
         Date now = new Date(System.currentTimeMillis());
         Date expireDate = new Date(now.getTime() + refreshExpirationTime);
 
@@ -127,6 +129,15 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody()
                 .get("name", String.class);
+    }
+
+    public Boolean isOauth(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("isOauth", Boolean.class);
     }
 
     public String getCategory(String token) {
@@ -208,9 +219,10 @@ public class JwtUtil {
         String email = getEmail(refreshToken);
         String role = getRole(refreshToken);
         String name = getName(refreshToken);
+        Boolean isOauth = isOauth(refreshToken);
 
-        String newAccessToken = createAccessToken(email, role, name);
-        String newRefreshToken = createRefreshToken(email, role, name);
+        String newAccessToken = createAccessToken(email, role, name, isOauth);
+        String newRefreshToken = createRefreshToken(email, role, name, isOauth);
 
         addRefreshToken(email, newRefreshToken);
         response.addCookie(createCookie("access", newAccessToken));
