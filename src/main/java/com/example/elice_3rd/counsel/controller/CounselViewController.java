@@ -7,6 +7,7 @@ import com.example.elice_3rd.security.CustomUserDetails;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,7 +31,13 @@ public class CounselViewController {
     }
 
     @GetMapping("/{counselId}")
-    public String detail(Model model, @PathVariable Long counselId) throws JsonProcessingException {
+    public String detail(Model model, @PathVariable Long counselId, Principal principal) throws JsonProcessingException {
+        if (principal == null) {
+            throw new InsufficientAuthenticationException("Member is not authenticated");
+        }
+        String loggedInUserId = principal.getName();
+
+        model.addAttribute("loggedInUserId", loggedInUserId);
         model.addAttribute("counsel", counselService.retrieveDetail(counselId));
         model.addAttribute("isCommentExist", commentService.isExist(counselId));
         return "counsel/detail";

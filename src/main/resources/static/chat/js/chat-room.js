@@ -43,11 +43,19 @@ function displayChatMessage(message) {
         deleteButton.style.visibility = "hidden";
 
         messageContentElement.addEventListener("click", () => {
-            deleteButton.style.visibility = "visible";
+            if (deleteButton.style.visibility === "hidden") {
+                deleteButton.style.visibility = "visible";
+            } else {
+                deleteButton.style.visibility = "hidden";
+            }
         });
 
         deleteButton.addEventListener("click", (e) => {
             e.stopPropagation();
+            const isConfirmed = confirm("메세지를 삭제하시겠습니까?");
+            if (!isConfirmed) {
+                return;
+            }
             deleteMessage(message.chatMessageId, messageElement);
         });
 

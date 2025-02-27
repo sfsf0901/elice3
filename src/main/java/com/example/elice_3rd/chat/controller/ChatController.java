@@ -2,8 +2,12 @@ package com.example.elice_3rd.chat.controller;
 
 import com.example.elice_3rd.chat.dto.ChatRoomMemberDto;
 import com.example.elice_3rd.chat.service.ChatService;
+import com.example.elice_3rd.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,14 +25,25 @@ public class ChatController {
     private final ChatService chatService;
 
     @GetMapping("/chat-room/{chatRoomId}/{memberId}")
-    public String getChatRoom(@PathVariable Long chatRoomId, @PathVariable Long memberId, Model model) {
+    public String getChatRoom(@PathVariable Long chatRoomId, @PathVariable Long memberId, Model model, Principal principal) {
         if (!chatService.isChatRoomExist(chatRoomId)) {
             log.error("Chat room with ID {} not found", chatRoomId);
             return "redirect:/";
         }
         try {
+            if (principal == null) {
+                log.warn("User ID is null for principal {}", principal.getName());
+                throw new InsufficientAuthenticationException("Member is not authenticated");
+            }
+            CustomUserDetails customUserDetails = (CustomUserDetails) ((Authentication) principal).getPrincipal();
+            String role = customUserDetails.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .findFirst()
+                    .orElse("USER");
+
             ChatRoomMemberDto chatRoomMemberDto = chatService.findOtherMemberInChatRoom(chatRoomId, memberId);
             model.addAttribute("chatRoomMemberDto", chatRoomMemberDto);
+            model.addAttribute("role", role);
         } catch (Exception e) {
             log.error("Error retrieving chat room member information for chat room ID {}: {}", chatRoomId, e.getMessage());
         }
@@ -40,6 +55,7 @@ public class ChatController {
         try {
             if (principal == null) {
                 log.warn("User ID is null for principal {}", principal.getName());
+                throw new InsufficientAuthenticationException("Member is not authenticated");
             }
             Long loggedInUserId = chatService.findByMemberId(principal.getName());
             log.debug("Logged In User ID: {}", loggedInUserId);
