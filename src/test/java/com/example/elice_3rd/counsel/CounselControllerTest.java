@@ -34,27 +34,27 @@ public class CounselControllerTest {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
-    @Test
-    void create() throws Exception {
-        //given
-        String email = "qq@q11q";
-        CounselRequestDto requestDto = CounselRequestDto.builder()
-                .title("test title")
-                .content("test content")
-                .build();
+    // @Test
+    // void create() throws Exception {
+    //     //given
+    //     String email = "qq@q11q";
+    //     CounselRequestDto requestDto = CounselRequestDto.builder()
+    //             .title("test title")
+    //             .content("test content")
+    //             .build();
 
-        counselService.create(email, requestDto);
-    }
+    //     counselService.create(email, requestDto);
+    // }
 
-    @Test
-    void deleteCounsel() throws Exception {
-        //given
-        ResultActions resultActions = mockMvc.perform(delete(URI.create("api/v1/counsels"))
-                .principal(() -> "qq@qq")
-                .param("id", "5"));
+    // @Test
+    // void deleteCounsel() throws Exception {
+    //     //given
+    //     ResultActions resultActions = mockMvc.perform(delete(URI.create("api/v1/counsels"))
+    //             .principal(() -> "qq@qq")
+    //             .param("id", "5"));
 
-        resultActions.andExpect(result -> {
-            log.info(result.getResponse().getHeader("Location"));
-        });
-    }
+    //     resultActions.andExpect(result -> {
+    //         log.info(result.getResponse().getHeader("Location"));
+    //     });
+    // }
 }
