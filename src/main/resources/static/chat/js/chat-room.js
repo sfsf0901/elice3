@@ -71,7 +71,7 @@ function displayChatMessage(message) {
 
         const senderNameElement = document.createElement("span");
         senderNameElement.classList.add("sender-name");
-        senderNameElement.textContent = `${message.senderId}`;
+        senderNameElement.textContent = `${message.senderName}`;
         messageElement.appendChild(senderNameElement);
 
         const messageTextElement = document.createElement("div");

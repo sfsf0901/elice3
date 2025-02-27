@@ -15,11 +15,8 @@
         <div class="chat-container">
             <div class="chat-header">
                 <button id="cancelBtn" class="bi-chevron-left"></button>
-                <h3 th:if="${role == 'USER'}">
-                    <span th:text="${chatRoomMemberDto.name}"></span> 에 문의하기
-                </h3>
-                <h3 th:if="${role == 'DOCTOR'}">
-                    상담자 <span th:text="${chatRoomMemberDto.name}"></span>
+                <h3>
+                    <span th:text="${chatRoomMemberDto.name}"></span>
                 </h3>
                 <button id="leaveBtn"
                         th:data-chat-room-id="${chatRoomId}" class="bi-box-arrow-right">
