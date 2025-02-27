@@ -1,6 +1,7 @@
 package com.example.elice_3rd.hospital.repository;
 
 import com.example.elice_3rd.hospital.dto.request.HospitalSearchWithEmergencyCondition;
+import com.example.elice_3rd.hospital.entity.Hospital;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberExpression;
@@ -8,6 +9,7 @@ import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -23,6 +25,7 @@ import static com.example.elice_3rd.hospital.entity.QHospitalCategory.*;
 import static com.querydsl.core.types.dsl.Expressions.numberTemplate;
 
 @Repository
+@Slf4j
 public class HospitalQueryRepository {
 
     private static final double LATITUDE_DELTA = 0.27;
@@ -99,6 +102,15 @@ public class HospitalQueryRepository {
                 .fetch();
     }
 
+    public Hospital findByLatitudeAndLongitude(Double latitude, Double longitude) {
+        return queryFactory
+                .selectFrom(hospital)
+                .where(
+                        hospital.latitude.eq(latitude),
+                        hospital.longitude.eq(longitude)
+                )
+                .fetchOne();
+    }
 
     private BooleanExpression categoryIdEq(Long categoryId) {
         return categoryId != null ? hospitalCategory.category.id.eq(categoryId) : null;
@@ -160,6 +172,7 @@ public class HospitalQueryRepository {
         }
 
         // 현재 시간 (HHmm 형식, 예: 10:30 → 1030)
+        log.info("########Current Server Time: {}", LocalTime.now());
         int now = LocalTime.now().getHour() * 100 + LocalTime.now().getMinute();
 
         // 병원의 운영시간을 정수로 변환하여 비교 (QueryDSL)
