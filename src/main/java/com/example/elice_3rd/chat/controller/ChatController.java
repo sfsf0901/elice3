@@ -43,6 +43,7 @@ public class ChatController {
                 log.warn("User ID is null for principal {}", principal.getName());
                 throw new InsufficientAuthenticationException("Member is not authenticated");
             }
+            String loggedInUserName = principal.getName();
             Long loggedInUserId = chatService.findByMemberId(principal.getName());
             log.debug("Logged In User ID: {}", loggedInUserId);
 
@@ -50,6 +51,7 @@ public class ChatController {
                 return "redirect:/member/login";
             }
             model.addAttribute("memberId", loggedInUserId);
+            model.addAttribute("memberName", loggedInUserName);
         } catch (Exception e) {
             log.error("Error retrieving user ID for principal {}: {}", principal.getName(), e.getMessage());
         }
