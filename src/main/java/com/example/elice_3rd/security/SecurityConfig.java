@@ -71,9 +71,9 @@ public class SecurityConfig {
         });
 
 
-        http.addFilterBefore(new JwtFilter(jwtUtil, memberRepository), LoginFilter.class);
+        http.addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class);
         http.addFilterBefore(new CustomLogoutFilter(jwtUtil), LogoutFilter.class);
-        http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, memberRepository), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

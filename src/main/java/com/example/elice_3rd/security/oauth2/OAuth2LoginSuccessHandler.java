@@ -1,6 +1,7 @@
 package com.example.elice_3rd.security.oauth2;
 
 import com.example.elice_3rd.common.exception.NoSuchDataException;
+import com.example.elice_3rd.member.entity.Member;
 import com.example.elice_3rd.member.repository.MemberRepository;
 import com.example.elice_3rd.security.CustomUserDetails;
 import com.example.elice_3rd.security.MemberDetail;
@@ -44,12 +45,16 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         String email = "";
         if(userInfo.get("email") != null)
             email = userInfo.get("email").toString();
-        String role = memberRepository.findByEmail(email).orElseThrow(() ->
-                new NoSuchDataException("회원 조회 실패: 이메일과 일치하는 회원이 존재하지 않습니다.")
-        ).getRole().getKey();
 
-        String accessToken = jwtUtil.createAccessToken(email, role);
-        String refreshToken = jwtUtil.createRefreshToken(email, role);
+        Member member = memberRepository.findByEmail(email).orElseThrow(() ->
+                new NoSuchDataException("회원 조회 실패: 이메일과 일치하는 회원이 존재하지 않습니다.")
+        );
+
+        String role = member.getRole().getKey();
+        String name = member.getName();
+
+        String accessToken = jwtUtil.createAccessToken(email, role, name);
+        String refreshToken = jwtUtil.createRefreshToken(email, role, name);
 
         jwtUtil.addRefreshToken(email, refreshToken);
 

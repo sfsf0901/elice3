@@ -1,5 +1,8 @@
 package com.example.elice_3rd.security;
 
+import com.example.elice_3rd.common.exception.NoSuchDataException;
+import com.example.elice_3rd.member.repository.MemberRepository;
+import com.example.elice_3rd.member.service.MemberService;
 import com.example.elice_3rd.security.jwt.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +27,7 @@ import java.util.Iterator;
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    private final MemberRepository memberRepository;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -51,9 +55,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         GrantedAuthority auth = iterator.next();
 
         String role = auth.getAuthority();
+        String name = memberRepository.findByEmail(email).orElseThrow(() ->
+                new NoSuchDataException("로그인 실패: 이메일과 일치하는 회원 정보가 없습니다.")
+        ).getName();
 
-        String accessToken = jwtUtil.createAccessToken(email, role);
-        String refreshToken = jwtUtil.createRefreshToken(email, role);
+        String accessToken = jwtUtil.createAccessToken(email, role, name);
+        String refreshToken = jwtUtil.createRefreshToken(email, role, name);
 
         jwtUtil.addRefreshToken(email, refreshToken);
 

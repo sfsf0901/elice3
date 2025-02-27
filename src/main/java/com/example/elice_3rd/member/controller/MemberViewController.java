@@ -25,7 +25,6 @@ public class MemberViewController {
 
     @GetMapping("/my-page")
     public String myPage(@AuthenticationPrincipal CustomUserDetails member, Model model) {
-        model.addAttribute("member", member);
         return "member/my-page";
     }
 
