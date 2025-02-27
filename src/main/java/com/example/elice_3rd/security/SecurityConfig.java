@@ -41,12 +41,12 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(authorize -> {
             authorize
-                    .requestMatchers(
-                            "/my-page/**",
-                            "/update-password/**",
-                            "/counsels/write/**",
-                            "/counsels/update/**",
-                            "/chat/**").authenticated()
+//                    .requestMatchers(
+//                            "/my-page/**",
+//                            "/update-password/**",
+//                            "/counsels/write/**",
+//                            "/counsels/update/**",
+//                            "/chat/**").authenticated()
                     .anyRequest().permitAll();
         });
 
