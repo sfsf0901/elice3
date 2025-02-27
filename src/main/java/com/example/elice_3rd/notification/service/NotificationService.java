@@ -52,11 +52,7 @@ public class NotificationService {
                 .orElseThrow(() -> new EntityNotFoundException("Member not found"));
 
         NotificationLoginResponseDto responseDto = new NotificationLoginResponseDto();
-        if (member == null) {
-            responseDto.setIsLogin(false);
-        } else {
-            responseDto.setIsLogin(true);
-        }
+        responseDto.setIsLogin(member != null);
         return responseDto;
     }
 
@@ -75,9 +71,15 @@ public class NotificationService {
 
                     // 오프라인 상태인 경우에만 알림 생성
                     if (memberStatus.getStatus() == MemberStatusType.OFFLINE) {
+                        // 발송자 이름 추가
+                        Member sender = memberRepository.findById(chatMessage.getSenderId())
+                                .orElseThrow(() -> new EntityNotFoundException("Sender not found"));
+                        String senderName = sender.getName();
+
                         Notification notification = new Notification();
                         notification.setChatRoomId(chatRoom);
                         notification.setReceiverId(receiver);
+                        notification.setSenderName(senderName);
                         notification.setChatMessageId(chatMessage.getChatMessageId());
                         notification.setMessage(chatMessage.getMessage());
                         notificationRepository.save(notification);
@@ -173,7 +175,10 @@ public class NotificationService {
     @Transactional
     public void notificationAsRead(Long notificationId) {
         Notification notification = notificationRepository.findById(notificationId)
-                .orElseThrow(() -> new EntityNotFoundException("Notification not found"));
+                .orElseThrow(() -> {
+                    log.error("Notification with ID {} not found", notificationId);
+                    return new EntityNotFoundException("Notification not found");
+                });
         notification.setReadStatus(true);
         notificationRepository.save(notification);
         log.info("Notification with ID {} marked as read", notificationId);

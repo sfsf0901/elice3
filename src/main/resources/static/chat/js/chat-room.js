@@ -1,5 +1,6 @@
 const chatRoomId = document.getElementById("messages").getAttribute("data-chat-room-id");
 const memberId = document.getElementById("messages").getAttribute("data-member-id");
+const memberName = document.getElementById("messages").getAttribute("data-member-name");
 
 function fetchChat() {
     axios.get(`/api/chat/${chatRoomId}`)
@@ -9,7 +10,7 @@ function fetchChat() {
             });
         })
         .catch(error => {
-            console.error("초기 메시지 로드 실패", error);
+            console.error("Error load chat messages");
         });
 
     connectWebSocket();
@@ -43,11 +44,19 @@ function displayChatMessage(message) {
         deleteButton.style.visibility = "hidden";
 
         messageContentElement.addEventListener("click", () => {
-            deleteButton.style.visibility = "visible";
+            if (deleteButton.style.visibility === "hidden") {
+                deleteButton.style.visibility = "visible";
+            } else {
+                deleteButton.style.visibility = "hidden";
+            }
         });
 
         deleteButton.addEventListener("click", (e) => {
             e.stopPropagation();
+            const isConfirmed = confirm("메세지를 삭제하시겠습니까?");
+            if (!isConfirmed) {
+                return;
+            }
             deleteMessage(message.chatMessageId, messageElement);
         });
 
@@ -63,7 +72,7 @@ function displayChatMessage(message) {
 
         const senderNameElement = document.createElement("span");
         senderNameElement.classList.add("sender-name");
-        senderNameElement.textContent = `${message.senderId}`;
+        senderNameElement.textContent = `${message.senderName}`;
         messageElement.appendChild(senderNameElement);
 
         const messageTextElement = document.createElement("div");
@@ -110,7 +119,7 @@ function connectWebSocket() {
     stompClient = Stomp.over(socket);
 
     stompClient.connect({}, (frame) => {
-        console.log("WebSocket 연결 성공: " + frame);
+        console.log("WebSocket Connection Successful: " + frame);
         isWebSocketConnected = true;
 
         stompClient.subscribe(`/topic/${chatRoomId}`, (response) => {
@@ -121,7 +130,7 @@ function connectWebSocket() {
         enableMessageActions();
 
     }, (error) => {
-         console.error("WebSocket 연결 실패", error);
+         console.error("WebSocket Connection Failed: ", error);
          setTimeout(connectWebSocket, 5000);  // 5초 후 재연결 시도
     });
 }
@@ -132,6 +141,7 @@ function sendMessage() {
         const message = {
             message: messageContent,
             senderId: memberId,
+            senderName: memberName,
             chatRoomId: chatRoomId
         };
 
@@ -155,11 +165,10 @@ function deleteMessage(chatMessageId, messageElement) {
         .then(response => {
             if (response.status === 204) {
                 messageElement.remove();
-                console.log("메시지 삭제 성공!");
             }
         })
         .catch(error => {
-            console.error("메시지 삭제 실패", error);
+            console.error("Error delete chat message");
             alert("메시지 삭제에 실패했습니다. 다시 시도해 주세요.");
         });
 }
@@ -171,7 +180,7 @@ function leaveChatRoom(chatRoomId) {
             window.location.href = "/chat/chat-rooms";
         })
         .catch(error => {
-            console.error("Error: ", error)
+            console.error("Error leave chat room")
             alert("채팅방을 나가는 데 실패했습니다. 다시 시도해 주세요");
         });
 }

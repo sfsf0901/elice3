@@ -4,12 +4,18 @@
       layout:decorate="~{common/layout/layout}">
 <head>
   <meta charset="UTF-8">
-  <title>상담 리스트</title>
+  <title>우리동네병원-상담 내역</title>
   <link rel="stylesheet" href="/counsel/css/list.css">
+  <style>
+    .pagination .page-item.active .page-link {
+      background-color: #FF8D00 !important;
+      border-color: #FF8D00 !important;
+    }
+  </style>
 </head>
 <body>
 <div layout:fragment="content">
-  <div class="search-container d-flex justify-content-around">
+  <div class="search-container d-flex justify-content-center" style="margin-right: 170px">
     <div style="width: 50%;" class="search-box">
       <input type="search" id="search-input" class="search-input" placeholder="진료과목, 증상">
       <i id="search" class="fa-solid fa-magnifying-glass search-icon"></i>
@@ -20,7 +26,7 @@
     <button onclick="location.href = 'counsels/write'">질문 하기</button>
     <br>
     <nav aria-label="..." class="d-flex justify-content-center">
-      <ul id="pagination" class="pagination">
+      <ul id="pagination" class="pagination" style="cursor: pointer">
       </ul>
     </nav>
   </div>

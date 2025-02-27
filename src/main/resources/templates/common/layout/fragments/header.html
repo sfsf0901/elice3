@@ -27,12 +27,12 @@
         <ul class="dropdown-menu" id="notification-list">
         </ul>
       </li>
-      <li class="nav-item" sec:authorize="isAuthenticated()">
+      <li class="nav-item ms-2" sec:authorize="isAuthenticated()">
         <a class="nav-link" th:href="@{/my-page}">
-          <span sec:authentication="name">마이페이지</span>
+          <span th:text="${#authentication.principal.name}">마이페이지</span>
         </a>
       </li>
-      <li class="nav-item" sec:authorize="isAuthenticated()">
+      <li class="nav-item ms-2" sec:authorize="isAuthenticated()">
         <form action="/logout" method="post" class="m-0">
           <button class="btn btn-sm btn-custom-outline" type="submit">로그아웃</button>
         </form>

@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>회원가입</title>
+    <title>우리동네병원-회원가입</title>
+    <link rel="icon" href="/images/logo-icon.png">
     <link rel="stylesheet" href="/member/css/register.css">
     <link rel="stylesheet" href="/common/css/bootstrap.min.css">
 </head>
 <body>
 <div class="signup-container">
-    <h1>회원가입</h1>
+    <h1 style="text-align: center">회원가입</h1>
     <form id="signupForm" class="signup-form needs-validation d-flex flex-column justify-content-start">
         <div class="form-group">
             <label for="email">이메일</label>
@@ -28,8 +29,12 @@
             <label for="password">비밀번호</label>
             <input type="password" id="password" name="password" class="input-field form-control" placeholder="비밀번호를 입력하세요"
                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$" required>
-            <span class="error-message" id="passwordError"></span>
-            <small class="invalid-feedback" style="font-size: 12px">비밀번호는 영문, 숫자, 특수문자를 포함하여 8자이상이어야합니다.</small>
+            <div class="invalid-feedback align-item-start">
+                <div id="lengthCheck" style="font-size: 12px">❌ 8자 이상</div>
+                <div id="uppercaseCheck" style="font-size: 12px">❌ 대문자 포함</div>
+                <div id="specialCheck" style="font-size: 12px">❌ 특수 기호 포함</div>
+                <div id="numberCheck" style="font-size: 12px">❌ 숫자 포함</div>
+            </div>
         </div>
 
         <div class="form-group">
@@ -47,10 +52,10 @@
             <span class="simple-signup-text">간편 가입</span>
             <span class="separator"></span>
         </div>
-        <div style="margin: 5px">
-            <a href="/oauth2/authorization/kakao"><img class="margin10" src="/member/image/KakaoTalk_logo.svg" alt="kakao" width="50"/></a>
-            <a href="/oauth2/authorization/naver"><img href="/oauth2/authorization/naver" class="margin10" src="/member/image/naver-icon-file.png" alt="naver" width="50"/></a>
-            <a href="/oauth2/authorization/google"><img href="/oauth2/authorization/google" class="margin10" src="/member/image/Google_logo.svg" alt="google" width="50"/></a>
+        <div style="margin: 5px; text-align: center">
+            <a href="/oauth2/authorization/kakao"><img class="margin10" src="/images/KakaoTalk_logo.svg" alt="kakao" width="50"/></a>
+            <a href="/oauth2/authorization/naver"><img href="/oauth2/authorization/naver" class="margin10" src="/images/naver-icon-file.png" alt="naver" width="50"/></a>
+            <a href="/oauth2/authorization/google"><img href="/oauth2/authorization/google" class="margin10" src="/images/Google_logo.svg" alt="google" width="50"/></a>
         </div>
     </form>
 </div>

@@ -20,6 +20,8 @@ public class ChatMessageDto {
 
     private Long senderId;
 
+    private String senderName;
+
     private String message;
 
     private LocalDateTime createdDate;
@@ -29,6 +31,7 @@ public class ChatMessageDto {
                 .chatMessageId(chatMessage.getChatMessageId())
                 .chatRoomId(chatMessage.getChatRoomId())
                 .senderId(chatMessage.getSenderId())
+                .senderName(chatMessage.getSenderName())
                 .message(chatMessage.getMessage())
                 .createdDate(chatMessage.getCreatedDate())
                 .build();
@@ -38,6 +41,7 @@ public class ChatMessageDto {
         return ChatMessage.builder()
                 .chatRoomId(chatRoomId)
                 .senderId(senderId)
+                .senderName(senderName)
                 .message(message)
                 .build();
     }

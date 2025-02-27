@@ -53,8 +53,8 @@ async function renderComment(data) {
     commentDiv.innerHTML = `
       <div class="comment">
         <div class="comment-meta">${item.name} | ${time(item.createdDate)}
-            <button id="check-chat-room-btn"
-                class="btn btn-outline-secondary btn-sm bi bi-chat-fill"
+            <button class="btn btn-outline-secondary btn-sm check-chat-room-btn bi bi-chat-fill"
+                data-doctor-user-id="${item.memberId}"
             >
             상담
             </button>
@@ -64,14 +64,14 @@ async function renderComment(data) {
     `
 
     commentList.appendChild(commentDiv);
-
-    const chatButton = document.getElementById(`check-chat-room-btn`);
-    if (chatButton) {
-      chatButton.addEventListener("click", (e) =>
-        startChat(item.memberId)
-      );
-    }
-  })
+  });
+  const chatButtons = document.querySelectorAll(".check-chat-room-btn");
+  chatButtons.forEach(button => {
+    button.addEventListener("click", (e) => {
+      const doctorUserId = e.target.getAttribute("data-doctor-user-id");
+      startChat(doctorUserId);
+    });
+  });
 }
 
 function renderPagination(data) {

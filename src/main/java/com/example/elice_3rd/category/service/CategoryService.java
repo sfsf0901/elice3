@@ -72,14 +72,17 @@ public class CategoryService {
         return category.getId();
     }
 
+    @Transactional(readOnly = true)
     public Category findByCategoryId(Long categoryId) {
         return categoryRepository.findById(categoryId).orElseThrow(() -> new IllegalArgumentException("해당 카테고리는 존재하지 않습니다. categoryId: " + categoryId));
     }
 
+    @Transactional(readOnly = true)
     public Category findByName(String name) {
         return categoryRepository.findByName(name).orElse(null);
     }
 
+    @Transactional(readOnly = true)
     public List<Category> findAll() {
         return categoryRepository.findAll();
     }

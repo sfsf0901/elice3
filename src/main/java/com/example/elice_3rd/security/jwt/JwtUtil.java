@@ -1,5 +1,6 @@
 package com.example.elice_3rd.security.jwt;
 
+import com.example.elice_3rd.common.exception.NoSuchDataException;
 import com.example.elice_3rd.security.jwt.entity.RefreshToken;
 import com.example.elice_3rd.security.jwt.repository.RefreshTokenRepository;
 import io.jsonwebtoken.Claims;
@@ -42,11 +43,13 @@ public class JwtUtil {
         this.key = Keys.hmacShaKeyFor(byteSecretKey);
     }
 
-    public String createAccessToken(String email, String role) {
+    public String createAccessToken(String email, String role, String name, Boolean isOauth) {
         Claims claims = Jwts.claims();
         claims.put("category", "access");
         claims.put("email", email);
         claims.put("role", role);
+        claims.put("name", name);
+        claims.put("isOauth", isOauth);
         Date now = new Date(System.currentTimeMillis());
         Date expireDate = new Date(now.getTime() + accessExpirationTime);
 
@@ -58,11 +61,13 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String createRefreshToken(String email, String role) {
+    public String createRefreshToken(String email, String role, String name, Boolean isOauth) {
         Claims claims = Jwts.claims();
         claims.put("category", "refresh");
         claims.put("email", email);
         claims.put("role", role);
+        claims.put("name", name);
+        claims.put("isOauth", isOauth);
         Date now = new Date(System.currentTimeMillis());
         Date expireDate = new Date(now.getTime() + refreshExpirationTime);
 
@@ -117,6 +122,24 @@ public class JwtUtil {
                 .before(new Date());
     }
 
+    public String getName(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("name", String.class);
+    }
+
+    public Boolean isOauth(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("isOauth", Boolean.class);
+    }
+
     public String getCategory(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
@@ -147,7 +170,7 @@ public class JwtUtil {
     public String getRefreshToken(String accessToken) {
         // 예외 메시지 더욱 상세하게 코드를 모르는 사람도 메시지를 보고 알아볼 수 있을 정도로
         RefreshToken refreshToken = tokenRepository.findByEmail(getEmail(accessToken)).orElseThrow(
-                () -> new IllegalArgumentException("getRefreshToken failed: 토큰 정보와 일치하는 refresh token이 존재하지 않습니다.")
+                () -> new NoSuchDataException("getRefreshToken failed: 토큰 정보와 일치하는 refresh token이 존재하지 않습니다.")
         );
         return refreshToken.getRefreshToken();
     }
@@ -195,9 +218,11 @@ public class JwtUtil {
 
         String email = getEmail(refreshToken);
         String role = getRole(refreshToken);
+        String name = getName(refreshToken);
+        Boolean isOauth = isOauth(refreshToken);
 
-        String newAccessToken = createAccessToken(email, role);
-        String newRefreshToken = createRefreshToken(email, role);
+        String newAccessToken = createAccessToken(email, role, name, isOauth);
+        String newRefreshToken = createRefreshToken(email, role, name, isOauth);
 
         addRefreshToken(email, newRefreshToken);
         response.addCookie(createCookie("access", newAccessToken));

@@ -20,7 +20,7 @@ function startChat(doctorUserId) {
       }
     })
     .catch(error =>
-      console.error("Error: ", error)
+      console.error("Error check chat room")
     );
 }
 

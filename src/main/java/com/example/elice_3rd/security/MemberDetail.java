@@ -12,4 +12,5 @@ public class MemberDetail {
     private String role;
     private Boolean isDeleted;
     private Boolean isOauth;
+    private String name;
 }
