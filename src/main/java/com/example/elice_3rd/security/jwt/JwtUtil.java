@@ -43,11 +43,12 @@ public class JwtUtil {
         this.key = Keys.hmacShaKeyFor(byteSecretKey);
     }
 
-    public String createAccessToken(String email, String role) {
+    public String createAccessToken(String email, String role, String name) {
         Claims claims = Jwts.claims();
         claims.put("category", "access");
         claims.put("email", email);
         claims.put("role", role);
+        claims.put("name", name);
         Date now = new Date(System.currentTimeMillis());
         Date expireDate = new Date(now.getTime() + accessExpirationTime);
 
@@ -59,11 +60,12 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String createRefreshToken(String email, String role) {
+    public String createRefreshToken(String email, String role, String name) {
         Claims claims = Jwts.claims();
         claims.put("category", "refresh");
         claims.put("email", email);
         claims.put("role", role);
+        claims.put("name", name);
         Date now = new Date(System.currentTimeMillis());
         Date expireDate = new Date(now.getTime() + refreshExpirationTime);
 
@@ -116,6 +118,15 @@ public class JwtUtil {
                 .getBody()
                 .getExpiration()
                 .before(new Date());
+    }
+
+    public String getName(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("name", String.class);
     }
 
     public String getCategory(String token) {
@@ -196,9 +207,10 @@ public class JwtUtil {
 
         String email = getEmail(refreshToken);
         String role = getRole(refreshToken);
+        String name = getName(refreshToken);
 
-        String newAccessToken = createAccessToken(email, role);
-        String newRefreshToken = createRefreshToken(email, role);
+        String newAccessToken = createAccessToken(email, role, name);
+        String newRefreshToken = createRefreshToken(email, role, name);
 
         addRefreshToken(email, newRefreshToken);
         response.addCookie(createCookie("access", newAccessToken));

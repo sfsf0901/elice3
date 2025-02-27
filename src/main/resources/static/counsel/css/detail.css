@@ -23,6 +23,8 @@
 .counsel-content {
   font-size: 16px;
   line-height: 1.6;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .comment-container {

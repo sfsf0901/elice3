@@ -1,6 +1,5 @@
 package com.example.elice_3rd.security.jwt;
 
-import com.example.elice_3rd.member.repository.MemberRepository;
 import com.example.elice_3rd.security.CustomUserDetails;
 import com.example.elice_3rd.security.MemberDetail;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -11,7 +10,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,12 +22,13 @@ import java.io.PrintWriter;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
-    private final MemberRepository memberRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String accessToken = null;
         Cookie[] cookies = request.getCookies();
+        log.warn("URI: {} METHOD: {}", request.getRequestURI(), request.getMethod());
+        log.info("JWTFilter called");
 
         if(cookies != null){
             for (Cookie cookie : cookies){
@@ -52,9 +51,6 @@ public class JwtFilter extends OncePerRequestFilter {
         try {
             jwtUtil.isExpired(accessToken);
         } catch (ExpiredJwtException e){
-//            PrintWriter writer = response.getWriter();
-//            writer.print("access token is expired");
-
             // 토큰 재발급
             try {
                 jwtUtil.reissue(request, response);
@@ -75,8 +71,14 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String email = jwtUtil.getEmail(accessToken);
         String role = jwtUtil.getRole(accessToken);
+        String name = jwtUtil.getName(accessToken);
 
-        MemberDetail memberDetail = memberRepository.findByEmail(email).orElseThrow().toDetail();
+        // TODO memberRepository 안쓰기
+        MemberDetail memberDetail = MemberDetail.builder()
+                .email(email)
+                .role(role)
+                .name(name)
+                .build();
 
         CustomUserDetails customUserDetails = new CustomUserDetails(memberDetail);
 
@@ -84,5 +86,12 @@ public class JwtFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
         filterChain.doFilter(request, response);
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+
+        return path.endsWith(".js") || path.endsWith(".css") || path.startsWith("/images") || path.endsWith(".map");
     }
 }
