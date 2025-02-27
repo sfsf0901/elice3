@@ -80,7 +80,7 @@
                 </div>
                 <span class="text-gray-500 pr-4">&gt;</span>
               </div>
-              <a th:if="${!member.isOauth()}" href="/update-password"
+              <a th:if="${#authentication.principal.isOauth}" href="/update-password"
                   class="itemList w-full border-t border-gray-100 text-gray-600 py-4 pl-6 pr-3 hover:bg-gray-100 transition duration-150 flex items-center justify-between" style="cursor: pointer"
                   >
                 <div class="flex items-center">
