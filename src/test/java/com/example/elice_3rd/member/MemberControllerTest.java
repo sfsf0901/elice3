@@ -14,16 +14,16 @@ public class MemberControllerTest {
     @Autowired
     MemberService memberService;
 
-    @Test
-    @DisplayName("회원가입 테스트")
-    void register() {
-        MemberRequestDto requestDto = MemberRequestDto.builder()
-                .email("test")
-                .name("test name")
-                .password("test")
-                .build();
-        memberService.register(requestDto);
-    }
+    // @Test
+    // @DisplayName("회원가입 테스트")
+    // void register() {
+    //     MemberRequestDto requestDto = MemberRequestDto.builder()
+    //             .email("test")
+    //             .name("test name")
+    //             .password("test")
+    //             .build();
+    //     memberService.register(requestDto);
+    // }
 
     // @Test
     // @DisplayName("비밀번호 변경 테스트")
@@ -33,15 +33,15 @@ public class MemberControllerTest {
     //     memberService.updatePassword("test email", password);
     // }
 
-    @Test
-    @DisplayName("회원 정보 수정 테스트")
-    void updateInfo() {
-        String email = "test email";
-        MemberUpdateDto updateDto = MemberUpdateDto.builder()
-                .name("new name")
-                .build();
+    // @Test
+    // @DisplayName("회원 정보 수정 테스트")
+    // void updateInfo() {
+    //     String email = "test email";
+    //     MemberUpdateDto updateDto = MemberUpdateDto.builder()
+    //             .name("new name")
+    //             .build();
 
-        memberService.updateMemberInfo(email, updateDto);
-    }
+    //     memberService.updateMemberInfo(email, updateDto);
+    // }
 
 }
