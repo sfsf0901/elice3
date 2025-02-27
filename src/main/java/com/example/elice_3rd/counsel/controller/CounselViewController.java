@@ -31,13 +31,7 @@ public class CounselViewController {
     }
 
     @GetMapping("/{counselId}")
-    public String detail(Model model, @PathVariable Long counselId, Principal principal) throws JsonProcessingException {
-        if (principal == null) {
-            throw new InsufficientAuthenticationException("Member is not authenticated");
-        }
-        String loggedInUserId = principal.getName();
-
-        model.addAttribute("loggedInUserId", loggedInUserId);
+    public String detail(Model model, @PathVariable Long counselId) throws JsonProcessingException {
         model.addAttribute("counsel", counselService.retrieveDetail(counselId));
         model.addAttribute("isCommentExist", commentService.isExist(counselId));
         return "counsel/detail";

@@ -50,22 +50,14 @@ async function renderComment(data) {
     const commentDiv = document.createElement("div");
     commentDiv.className = "comment";
 
-    const loggedInUserId = [[${loggedInUserId}]];
-    let chatButtonHTML = "";
-    if (item.email !== loggedInUserId) {
-      chatButtonHTML = `
-        <button class="btn btn-outline-secondary btn-sm check-chat-room-btn bi bi-chat-fill"
-                data-doctor-user-id="${item.memberId}"
-        >
-          상담
-        </button>
-      `;
-    }
-
     commentDiv.innerHTML = `
       <div class="comment">
         <div class="comment-meta">${item.name} | ${time(item.createdDate)}
-            ${chatButtonHTML}
+            <button class="btn btn-outline-secondary btn-sm check-chat-room-btn bi bi-chat-fill"
+                data-doctor-user-id="${item.memberId}"
+            >
+            상담
+            </button>
         </div>
         <div class="comment-item">${item.content}</div>
       </div>
