@@ -27,7 +27,7 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String accessToken = null;
         Cookie[] cookies = request.getCookies();
-        log.warn(request.getRequestURI());
+        log.warn("URI: {} METHOD: {}", request.getRequestURI(), request.getMethod());
         log.info("JWTFilter called");
 
         if(cookies != null){
