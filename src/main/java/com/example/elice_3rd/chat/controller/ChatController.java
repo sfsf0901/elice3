@@ -22,12 +22,20 @@ public class ChatController {
     private final ChatService chatService;
 
     @GetMapping("/chat-room/{chatRoomId}/{memberId}")
-    public String getChatRoom(@PathVariable Long chatRoomId, @PathVariable Long memberId, Model model) {
+    public String getChatRoom(@PathVariable Long chatRoomId, @PathVariable Long memberId, Model model, Principal principal) {
         if (!chatService.isChatRoomExist(chatRoomId)) {
             log.error("Chat room with ID {} not found", chatRoomId);
             return "redirect:/";
         }
         try {
+            if (principal == null) {
+                log.warn("User ID is null for principal {}", principal.getName());
+                throw new InsufficientAuthenticationException("Member is not authenticated");
+            }
+            String loggedInUserName = chatService.getMemberName(principal.getName());
+            log.debug("Logged In User Name: {}", loggedInUserName);
+            model.addAttribute("memberName", loggedInUserName);
+
             ChatRoomMemberDto chatRoomMemberDto = chatService.findOtherMemberInChatRoom(chatRoomId, memberId);
             model.addAttribute("chatRoomMemberDto", chatRoomMemberDto);
         } catch (Exception e) {
@@ -43,7 +51,6 @@ public class ChatController {
                 log.warn("User ID is null for principal {}", principal.getName());
                 throw new InsufficientAuthenticationException("Member is not authenticated");
             }
-            String loggedInUserName = principal.getName();
             Long loggedInUserId = chatService.findByMemberId(principal.getName());
             log.debug("Logged In User ID: {}", loggedInUserId);
 
@@ -51,7 +58,6 @@ public class ChatController {
                 return "redirect:/member/login";
             }
             model.addAttribute("memberId", loggedInUserId);
-            model.addAttribute("memberName", loggedInUserName);
         } catch (Exception e) {
             log.error("Error retrieving user ID for principal {}: {}", principal.getName(), e.getMessage());
         }
