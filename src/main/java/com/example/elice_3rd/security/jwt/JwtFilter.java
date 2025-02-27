@@ -27,6 +27,8 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String accessToken = null;
         Cookie[] cookies = request.getCookies();
+        log.warn(request.getRequestURI());
+        log.info("JWTFilter called");
 
         if(cookies != null){
             for (Cookie cookie : cookies){
@@ -49,9 +51,6 @@ public class JwtFilter extends OncePerRequestFilter {
         try {
             jwtUtil.isExpired(accessToken);
         } catch (ExpiredJwtException e){
-//            PrintWriter writer = response.getWriter();
-//            writer.print("access token is expired");
-
             // 토큰 재발급
             try {
                 jwtUtil.reissue(request, response);
@@ -73,8 +72,6 @@ public class JwtFilter extends OncePerRequestFilter {
         String email = jwtUtil.getEmail(accessToken);
         String role = jwtUtil.getRole(accessToken);
         String name = jwtUtil.getName(accessToken);
-        log.warn(request.getRequestURI());
-        log.info("JWTFilter called");
 
         // TODO memberRepository 안쓰기
         MemberDetail memberDetail = MemberDetail.builder()
@@ -92,9 +89,9 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+    protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
 
-        return path.startsWith("/css/") || path.startsWith("/js/") || path.startsWith("/images") || path.startsWith("/static/");
+        return path.endsWith(".js") || path.endsWith(".css") || path.startsWith("/images") || path.endsWith(".map");
     }
 }
