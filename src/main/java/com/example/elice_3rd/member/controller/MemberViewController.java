@@ -14,12 +14,18 @@ import java.security.Principal;
 //@RequestMapping("/members")
 public class MemberViewController {
     @GetMapping("/register")
-    public String register(){
+    public String register(Principal principal){
+        if(principal != null)
+            return "redirect:/";
+
         return "member/register";
     }
 
     @GetMapping("/login")
-    public String login(){
+    public String login(Principal principal){
+        if(principal != null)
+            return "redirect:/";
+
         return "member/login";
     }
 
