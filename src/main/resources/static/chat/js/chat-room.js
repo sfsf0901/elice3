@@ -1,5 +1,6 @@
 const chatRoomId = document.getElementById("messages").getAttribute("data-chat-room-id");
 const memberId = document.getElementById("messages").getAttribute("data-member-id");
+const memberName = document.getElementById("messages").getAttribute("data-member-name");
 
 function fetchChat() {
     axios.get(`/api/chat/${chatRoomId}`)
@@ -140,6 +141,7 @@ function sendMessage() {
         const message = {
             message: messageContent,
             senderId: memberId,
+            senderName: memberName,
             chatRoomId: chatRoomId
         };
 

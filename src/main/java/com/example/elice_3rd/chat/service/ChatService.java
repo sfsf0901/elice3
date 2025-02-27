@@ -241,6 +241,11 @@ public class ChatService {
                 .flatMapMany(exists -> exists ? chatMessages : Flux.empty());
     }
 
+    public String getMemberName (String email){
+        Member member = memberRepository.findByEmail(email).orElseThrow(()
+                -> new EntityNotFoundException("Member not found"));
+        return member.getName();
+    }
 
     // 채팅방 상대 표시를 위해 멤버중 1명 추출
     public ChatRoomMemberDto findOtherMemberInChatRoom(Long chatRoomId, Long loggedInUserId) {
