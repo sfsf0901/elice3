@@ -68,6 +68,11 @@
         let map, infowindow;
         let hospitalMarkers = [];
 
+        // 카카오 지도 API가 로드되면 initMap 실행
+        kakao.maps.load(function() {
+            getUserLocation();
+        });
+
         function initMap(lat, lng) {
             console.log(`사용자 위치: ${lat}, ${lng}`);
 
