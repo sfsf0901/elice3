@@ -33,6 +33,7 @@
 
 
 ## 와이어 프레임
+![와이어프레임](/uploads/4fd607f4ae18bd7fa96ae887f3680585/와이어프레임.png)
 
 ## ERD
 ![erd](/uploads/883965b24339c90fc1649d40ad450b34/erd.png)
