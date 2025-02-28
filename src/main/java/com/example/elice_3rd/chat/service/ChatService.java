@@ -222,9 +222,13 @@ public class ChatService {
         // 채팅방 메시지 조회와 동시에 읽음 상태를 업데이트
         Flux<ChatMessageDto> chatMessages = chatMessageRepository.findByChatRoomIdAndCreatedDateAfter(chatRoomId, messageFetchStartTime)
                 .doOnNext(chatMessage -> {
+                    // memberStatus.getStatusOnlineChangedDate() NPE 발생
+                    LocalDateTime temp = memberStatus.getStatusOnlineChangedDate();
+                    if(temp == null)
+                        temp = LocalDateTime.now();
                     // 상태가 ONLINE으로 변경된 시점 이전의 메시지들에 대해 읽음 상태 처리
                     if (memberStatus.getStatus() == MemberStatusType.ONLINE &&
-                            !chatMessage.getCreatedDate().isAfter(memberStatus.getStatusOnlineChangedDate())) {
+                            !chatMessage.getCreatedDate().isAfter(temp)) {
                         // 온라인 상태로 변경된 시점 이전에 발송된 메시지들을 읽음 처리
                         ChatReadStatus readStatus = chatReadStatusRepository.findByChatMessageIdAndReceiver_memberId(
                                         chatMessage.getChatMessageId(), memberId)

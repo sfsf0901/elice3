@@ -5,11 +5,13 @@ const memberName = document.getElementById("messages").getAttribute("data-member
 function fetchChat() {
     axios.get(`/api/chat/${chatRoomId}`)
         .then(response => {
+            console.log(response.data);
             response.data.forEach(message => {
                 displayChatMessage(message);
             });
         })
         .catch(error => {
+            console.log(error.response)
             console.error("Error load chat messages");
         });
 
@@ -212,3 +214,5 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchChat();
     disableMessageActions();
 });
+
+fetchChat();

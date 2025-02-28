@@ -27,6 +27,9 @@ public class ChatMessageDto {
     private LocalDateTime createdDate;
 
     public static ChatMessageDto toDto(ChatMessage chatMessage) {
+        if(chatMessage.getCreatedDate() == null)
+            chatMessage.setCreatedDate(LocalDateTime.now());
+
         return ChatMessageDto.builder()
                 .chatMessageId(chatMessage.getChatMessageId())
                 .chatRoomId(chatMessage.getChatRoomId())

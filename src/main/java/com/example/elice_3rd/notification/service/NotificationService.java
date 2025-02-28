@@ -106,7 +106,8 @@ public class NotificationService {
 
     // 새로운 emitter 추가
     public SseEmitter addEmitter(Long memberId) {
-        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
+//        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
+        SseEmitter emitter = new SseEmitter(60000L);
         emitters.put(memberId, emitter);
 
         emitter.onCompletion(() -> {
