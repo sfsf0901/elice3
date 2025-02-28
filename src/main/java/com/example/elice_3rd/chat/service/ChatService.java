@@ -13,7 +13,6 @@ import com.example.elice_3rd.chat.repository.ChatRoomRepository;
 import com.example.elice_3rd.chat.repository.MemberStatusRepository;
 import com.example.elice_3rd.member.entity.Member;
 import com.example.elice_3rd.member.repository.MemberRepository;
-import com.example.elice_3rd.notification.dto.NotificationDto;
 import com.example.elice_3rd.notification.entity.Notification;
 import com.example.elice_3rd.notification.repository.NotificationRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -130,7 +129,7 @@ public class ChatService {
             MemberStatus memberStatus = new MemberStatus();
             memberStatus.setChatRoom(chatRoom);
             memberStatus.setMember(member);
-            memberStatus.setStatus(MemberStatusType.ONLINE);
+            memberStatus.setStatus(MemberStatusType.OFFLINE);
             memberStatusRepository.save(memberStatus);
         }
 
@@ -388,13 +387,18 @@ public class ChatService {
 
     // WebSocket 연결이 끊어졌을 때 호출
     public void updateMemberStatusToOffline(Long memberId) {
-        MemberStatus memberStatus = memberStatusRepository.findOneByMemberMemberId(memberId)
-                .orElseThrow(() -> new EntityNotFoundException("MemberStatus not found"));
+        List<MemberStatus> memberStatuses = memberStatusRepository.findAllByMemberMemberId(memberId);
 
-        // 상태를 OFFLINE으로 변경
-        memberStatus.setStatus(MemberStatusType.OFFLINE);
-        memberStatusRepository.save(memberStatus);
+        if (memberStatuses.isEmpty()) {
+            throw new EntityNotFoundException("No MemberStatus found for memberId " + memberId);
+        }
 
-        log.info("Member {} status updated to OFFLINE due to WebSocket disconnection.", memberId);
+        for (MemberStatus memberStatus : memberStatuses) {
+            memberStatus.setStatus(MemberStatusType.OFFLINE);
+        }
+
+        memberStatusRepository.saveAll(memberStatuses);
+
+        log.info("Member {} status updated to OFFLINE for all chat rooms due to WebSocket disconnection.", memberId);
     }
 }

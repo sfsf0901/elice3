@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface MemberStatusRepository extends JpaRepository<MemberStatus, Long> {
 
-    Optional<MemberStatus> findOneByMemberMemberId(Long memberId);
+    List<MemberStatus> findAllByMemberMemberId(Long memberId);
 
     List<MemberStatus> findByMemberMemberIdAndStatusNot(Long memberId, MemberStatusType status);
 
