@@ -22,15 +22,11 @@ public class WebSocketEventListener {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
 
         // 연결이 끊어진 유저의 ID를 가져옴
-//        String userName = accessor.getUser().getName();
-//        Long memberId = chatService.findByMemberId(userName);
-
-        // 테스트용
-        Long memberId = 1L;
-        //
+        String userName = accessor.getUser().getName();
+        Long memberId = chatService.findByMemberId(userName);
 
         // WebSocket 연결이 종료되었을 때 상태를 OFFLINE으로 변경
         chatService.updateMemberStatusToOffline(memberId);
-        log.info("User with ID {} has disconnected, status updated to OFFLINE.", memberId);
+        log.info("Member with ID {} has disconnected, status updated to OFFLINE.", memberId);
     }
 }
