@@ -1,11 +1,40 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <nav th:fragment="sideNavFragment(currentMenu)" class="nav flex-column">
-  <a class="nav-link" th:classappend="${currentMenu == 'password'} ? 'active'" th:href="@{/}">실시간 의료 상담</a>
-  <a class="nav-link" th:classappend="${currentMenu == 'orders'} ? 'active'" th:href="@{/}">진료중인 병원 찾기</a>
-  <a class="nav-link" th:classappend="${currentMenu == 'address'} ? 'active'" th:href="@{/}">응급실 정보</a>
-  <a class="nav-link" th:classappend="${currentMenu == 'info'} ? 'active'" th:href="@{/}">야간진료 병원 정보</a>
-  <a class="nav-link" th:classappend="${currentMenu == 'withdrawal'} ? 'active'" th:href="@{/}">마이페이지</a>
+  <a class="nav-link" th:classappend="${currentMenu == 'password'} ? 'active'"
+     th:href="@{/counsels}" >
+    🩺&nbsp;&nbsp;&nbsp;실시간 의료 상담
+  </a>
+  <a class="nav-link mt-3" th:classappend="${currentMenu == 'main'} ? 'active'" th:href="@{/}">🏥&nbsp;&nbsp;&nbsp;병원 찾기</a>
+  <a class="nav-link mt-3" th:classappend="${currentMenu == 'emergency'} ? 'active'" href="#" onclick="submitLocationForEmergency(); return false;">🚑&nbsp;&nbsp;&nbsp;응급실 찾기</a>
+  <a class="nav-link mt-3" th:classappend="${currentMenu == 'map'} ? 'active'" th:href="@{/hospitals/map}">📍&nbsp;&nbsp;&nbsp;지도로 병원 찾기</a>
+  <a class="nav-link mt-3" th:classappend="${currentMenu == 'myPage'} ? 'active'" th:href="@{/my-page}" sec:authorize="isAuthenticated()">👤&nbsp;&nbsp;&nbsp;마이페이지</a>
+
+  <!-- 응급실 위치 폼 -->
+  <form id="emergencyForm" action="/hospitals/emergency" method="get" style="display:none;">
+    <input type="hidden" name="latitude" id="latitudeInput">
+    <input type="hidden" name="longitude" id="longitudeInput">
+  </form>
+
+  <script th:inline="javascript">
+    function submitLocationForEmergency() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+          document.getElementById('latitudeInput').value = position.coords.latitude;
+          document.getElementById('longitudeInput').value = position.coords.longitude;
+          document.getElementById('emergencyForm').submit();
+        }, function () {
+          document.getElementById('latitudeInput').value = '37.5665';
+          document.getElementById('longitudeInput').value = '126.9780';
+          document.getElementById('emergencyForm').submit();
+        });
+      } else {
+        alert('이 브라우저에서는 위치 정보를 지원하지 않습니다.');
+      }
+    }
+  </script>
+
 </nav>
 </html>

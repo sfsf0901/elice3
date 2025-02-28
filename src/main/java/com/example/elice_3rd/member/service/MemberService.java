@@ -3,6 +3,7 @@ package com.example.elice_3rd.member.service;
 import com.example.elice_3rd.member.dto.MemberRequestDto;
 import com.example.elice_3rd.member.dto.MemberResponseDto;
 import com.example.elice_3rd.member.dto.MemberUpdateDto;
+import com.example.elice_3rd.member.dto.PasswordDto;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,8 +22,8 @@ public class MemberService {
         return retrieveService.retrieve(email);
     }
 
-    public void updatePassword(String email, String password){
-        managementService.updatePassword(email, password);
+    public void updatePassword(String email, PasswordDto passwordDto){
+        managementService.updatePassword(email, passwordDto);
     }
 
     public void updateMemberInfo(String email, MemberUpdateDto updateDto){
@@ -31,5 +32,13 @@ public class MemberService {
 
     public void quit(String email){
         managementService.quit(email);
+    }
+
+    public void updateRole(String email){
+        managementService.updateRole(email);
+    }
+
+    public Boolean isExist(String email){
+        return retrieveService.isExist(email);
     }
 }

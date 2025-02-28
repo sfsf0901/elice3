@@ -15,7 +15,6 @@ public class OAuth2Attributes {
     private String nameAttributeKey;
     private String name;
     private String email;
-    private String contact;
     private Role role;
     private String provider;
     private String providerId;
@@ -34,8 +33,6 @@ public class OAuth2Attributes {
                 .attributes(attributes)
                 .name(attributes.get("name").toString())
                 .email(attributes.get("email").toString())
-                //TODO 실제 연락처 넣어야함
-                .contact("test contact")
                 .provider(registrationId)
                 .providerId(attributes.get("sub").toString())
                 .nameAttributeKey(userNameAttributeName)
@@ -49,7 +46,6 @@ public class OAuth2Attributes {
                 .attributes(attributes)
                 .name(response.get("name").toString())
                 .email(response.get("email").toString())
-                .contact(response.get("mobile").toString())
                 .provider(registrationId)
                 .providerId(response.get("id").toString())
                 .nameAttributeKey(userNameAttributeName)
@@ -58,15 +54,12 @@ public class OAuth2Attributes {
 
     public static OAuth2Attributes ofKakao(String registrationId, String userNameAttributeName, Map<String, Object> attributes){
         Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
-        String interNationalContact = kakaoAccount.get("phone_number").toString();
-        String contact = "0" + interNationalContact.split(" ")[1];
 
 
         return OAuth2Attributes.builder()
                 .attributes(attributes)
                 .name(kakaoAccount.get("name").toString())
                 .email(kakaoAccount.get("email").toString())
-                .contact(contact)
                 .provider(registrationId)
                 .providerId(attributes.get("id").toString())
                 .nameAttributeKey(userNameAttributeName)
@@ -77,8 +70,8 @@ public class OAuth2Attributes {
         return Member.builder()
                 .name(name)
                 .email(email)
-                .contact(contact)
                 .role(Role.USER)
+                .isOauth(true)
                 .password(UUID.randomUUID().toString())
                 .build();
     }

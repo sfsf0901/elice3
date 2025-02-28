@@ -4,9 +4,6 @@ import com.example.elice_3rd.member.dto.MemberResponseDto;
 import com.example.elice_3rd.member.dto.MemberUpdateDto;
 import com.example.elice_3rd.member.entity.Member;
 import com.example.elice_3rd.member.repository.MemberRepository;
-import com.example.elice_3rd.security.jwt.JwtUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -27,8 +24,6 @@ import java.util.Collections;
 @Transactional
 public class CustomOAuth2UserService implements OAuth2UserService {
     private final MemberRepository memberRepository;
-    private final JwtUtil jwtUtil;
-    private final ObjectMapper objectMapper;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -47,12 +42,6 @@ public class CustomOAuth2UserService implements OAuth2UserService {
 
         MemberResponseDto memberDto = member.toResponseDto();
 
-        try {
-            log.warn(objectMapper.writeValueAsString(attributes) );
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority(memberDto.getRole().getKey())),
                 attributes.getAttributes(),
@@ -63,7 +52,6 @@ public class CustomOAuth2UserService implements OAuth2UserService {
     private Member saveOrUpdate(OAuth2Attributes attributes){
         MemberUpdateDto updateDto = MemberUpdateDto.builder()
                 .name(attributes.getName())
-                .contact(attributes.getContact())
                 .build();
 
         Member member = memberRepository.findByEmail(attributes.getEmail())

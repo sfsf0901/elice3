@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>병원 목록</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+<div layout:fragment="content">
+
+    <div class="d-flex align-items-center">
+        <p class="mb-0 fs-4 h4">응급실</p>
+        <img th:src="@{/images/응급실.png}" class="ms-1" style="width: 30px; height: 30px;">
+    </div>
+
+    <!-- 병원 리스트 & 더보기 버튼 -->
+    <div id="hospitalList" class="mt-4">
+        <div th:each="hospital : ${hospitals}">
+            <div class="row py-2">
+                <div class="col-10">
+                    <h5>
+                        <a th:href="@{/hospital/{hospitalName}(hospitalName=${hospital.hospitalName}, ykiho=${hospital.ykiho})}"
+                           class="text-dark text-decoration-none"
+                           th:text="${hospital.hospitalName}"></a>
+                    </h5>
+
+                    <div>
+                        <small class="text-muted" th:text="${hospital.hospitalType}"></small>
+                    </div>
+
+                    <div class="text-muted">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <small class="distance-text" th:data-distance="${hospital.distanceFromUser}"></small>
+                        <small class="text-muted address-text" th:data-address="${hospital.address}"></small>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <a th:href="|tel:${hospital.getEmergencyContact()}|" class="btn btn-danger py-2">응급실 연결</a>
+                </div>
+            </div>
+            <hr>
+        </div>
+
+        <!-- 더보기 버튼을 감싸는 래퍼 -->
+        <div th:if="${hospitals != null and not hospitals.empty and not hospitals.last}"
+             class="d-flex justify-content-center mt-3"
+             id="loadMoreWrapper">
+            <button id="loadMoreBtn" class="btn btn-outline-secondary"
+                    th:data-next-page="${hospitals.number + 1}"
+                    th:data-lat="${latitude}"
+                    th:data-lng="${longitude}">
+                더보기
+            </button>
+        </div>
+
+
+
+        <div th:if="${hospitals != null and hospitals.empty}" class="alert alert-light my-5" role="alert">
+            <div class="d-flex flex-column align-items-center justify-content-center text-center" style="height: 20vh;">
+                <i class="fa-solid fa-triangle-exclamation h2"></i>
+                <h5 class="mt-2">찾으시는 병원이 없어요.</h5>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $('#hospitalList').on('click', '#loadMoreBtn', function () {
+            const nextPage = $(this).data('next-page');
+            const lat = $(this).data('lat');
+            const lng = $(this).data('lng');
+
+            $.ajax({
+                url: `/api/hospitals/emergency`,
+                type: 'GET',
+                data: { latitude: lat, longitude: lng, page: nextPage },
+                success: function (response) {
+                    response.hospitals.forEach(hospital => {
+                        const hospitalHtml = `
+                                <div class="row py-2">
+                                    <div class="col-10">
+                                        <h5>
+                                            <a href="/hospital/${hospital.hospitalName}?ykiho=${hospital.ykiho}" class="text-dark text-decoration-none">${hospital.hospitalName}</a>
+                                        </h5>
+                                        <div>
+                                            <small class="text-muted">${hospital.hospitalType}</small>
+                                        </div>
+                                        <div class="text-muted">
+                                            <i class="fa-solid fa-location-dot"></i>
+                                            <small class="distance-text" data-distance="${hospital.distanceFromUser}"></small>
+                                            <small class="text-muted address-text" data-address="${hospital.address}"></small>
+                                        </div>
+                                    </div>
+                                    <div class="col-2 d-flex align-items-center">
+                                        <a href="tel:${hospital.emergencyContact}" class="btn btn-danger py-2">응급실 연결</a>
+                                    </div>
+                                </div>
+                                <hr>
+                            `;
+                        $('#loadMoreWrapper').before(hospitalHtml);
+                    });
+
+                    if (response.nextPage !== null) {
+                        $('#loadMoreBtn').data('next-page', response.nextPage);
+                    } else {
+                        $('#loadMoreWrapper').remove();
+                    }
+
+                    formatDistanceText();
+                    formatAddressText();
+                },
+                error: function () {
+                    alert('데이터를 불러오는데 실패했습니다.');
+                }
+            });
+        });
+
+        function formatDistanceText() {
+            $('.distance-text').each(function () {
+                const distance = parseInt($(this).data('distance'), 10);
+                if (distance >= 1000) {
+                    $(this).text((distance / 1000).toFixed(1) + 'km');
+                } else {
+                    $(this).text(distance + 'm');
+                }
+            });
+        }
+
+        function formatAddressText() {
+            $('.address-text').each(function () {
+                const fullAddress = $(this).data('address');
+                const words = fullAddress.split(' ');
+
+                if (words.length >= 3) {
+                    $(this).text(words.slice(0, 3).join(' '));
+                } else {
+                    $(this).text(fullAddress);
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            formatDistanceText();
+            formatAddressText();
+        });
+    </script>
+</div>
+</body>
+</html>

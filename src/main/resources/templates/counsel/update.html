@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout/layout}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>우리동네병원-상담 수정</title>
+  <link rel="stylesheet" href="/counsel/css/write.css">
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="container">
+    <h1>질문 수정</h1>
+
+    <form id="counselForm" action="/api/v1/counsels" method="post">
+      <!-- 제목 입력 -->
+      <label for="title">제목</label>
+      <input class="form-control" type="text" id="title" name="title" minlength="2" maxlength="30" required placeholder="제목은 2자 이상 30자 이하로 입력해주세요">
+
+      <!-- 내용 입력 -->
+      <label for="content">내용</label>
+      <textarea class="form-control" id="content" name="content" minlength="2" maxlength="1000" required placeholder="내용은 2자 이상 1000자 이하로 입력해주세요"></textarea>
+
+      <!-- 카테고리 선택 -->
+      <label for="category">카테고리</label>
+      <select class="form-select" id="category" name="category" required>
+
+      </select>
+
+      <!-- 질문하기 버튼 -->
+      <button id="submit-button" type="button">질문하기</button>
+    </form>
+  </div>
+  <div>
+  </div>
+  <script type="module" src="/counsel/js/update.js"></script>
+</div>
+</body>
+</html>

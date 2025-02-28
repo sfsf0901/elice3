@@ -24,10 +24,8 @@ public class Member extends BaseEntity {
     private Long memberId;
     @Column(nullable = false, unique = true)
     private String email;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 8)
     private String name;
-    @Column(nullable = false)
-    private String contact;
     @Column(nullable = false)
     private String password;
     @Column(nullable = false)
@@ -38,18 +36,14 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
     private LocalDateTime deletedDate;
-    @Column
-    @ColumnDefault("'none'")
-    private String provider;
-    @Column
-    @ColumnDefault("'none'")
-    private String providerId;
+    @Column(nullable = false)
+    @ColumnDefault("false")
+    private Boolean isOauth;
 
     public MemberResponseDto toResponseDto(){
         return MemberResponseDto.builder()
                 .email(email)
                 .name(name)
-                .contact(contact)
                 .role(role)
                 .build();
     }
@@ -58,7 +52,10 @@ public class Member extends BaseEntity {
         return MemberDetail.builder()
                 .email(email)
                 .password(password)
+                .name(name)
                 .role(role.getKey())
+                .isDeleted(isDeleted)
+                .isOauth(isOauth)
                 .build();
     }
 
@@ -68,12 +65,15 @@ public class Member extends BaseEntity {
 
     public Member updateInfo(MemberUpdateDto updateDto){
         name = updateDto.getName();
-        contact = updateDto.getContact();
 
         return this;
     }
 
     public void quit(){
         isDeleted = true;
+    }
+
+    public void updateRoleDoctor(){
+        role = Role.DOCTOR;
     }
 }

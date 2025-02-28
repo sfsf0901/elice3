@@ -10,4 +10,7 @@ public class MemberDetail {
     private String email;
     private String password;
     private String role;
+    private Boolean isDeleted;
+    private Boolean isOauth;
+    private String name;
 }

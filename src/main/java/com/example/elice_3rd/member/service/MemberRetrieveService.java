@@ -16,9 +16,13 @@ import java.util.NoSuchElementException;
 public class MemberRetrieveService {
     private final MemberRepository memberRepository;
 
-    public MemberResponseDto retrieve(String email){
+    MemberResponseDto retrieve(String email){
         log.warn("email : {}", email);
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원"));
         return member.toResponseDto();
+    }
+
+    Boolean isExist(String email){
+        return memberRepository.existsByEmail(email);
     }
 }

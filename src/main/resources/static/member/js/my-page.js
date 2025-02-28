@@ -1,45 +1,74 @@
+import api from "/common/js/API.js";
 
+(() => {
+  'use strict';
 
-// 특정 섹션 보이기
-function showSection(sectionId) {
-    document.querySelectorAll('.content-section').forEach(section => {
-        section.style.display = 'none';
-    });
-    document.getElementById(sectionId).style.display = 'block';
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  const forms = document.querySelectorAll('.needs-validation');
+
+  // Loop over them and prevent submission
+  Array.prototype.slice.call(forms).forEach((form) => {
+    form.addEventListener('input', (event) => {
+
+      if (!form.checkValidity()) {
+        document.getElementById("name-confirm-button").disabled = true;
+        event.preventDefault();
+        event.stopPropagation();
+      } else{
+        document.getElementById("name-confirm-button").disabled = false;
+      }
+      form.classList.add('was-validated');
+
+    }, false);
+
+  });
+})();
+
+function popup() {
+  let url = "/license";
+  let name = "면허 인증";
+  let option = "width = 800, height = 500, top = 100, left = 200, location = no, resizable = no"
+  window.open(url, name, option);
 }
 
-// 회원탈퇴 확인
-function confirmWithdrawal() {
-    if (confirm("정말로 탈퇴하시겠습니까?")) {
-        alert("회원탈퇴가 완료되었습니다.");
-        window.location.href = "/";  // 메인 페이지로 이동
-    }
+if(document.getElementById("doctor-verification") !== null)
+  document.getElementById("doctor-verification").addEventListener("click", popup);
+
+function renderMemberInfo(data) {
+  console.log(document.getElementById("email"));
+  document.getElementById("name").textContent = data.name;
+  document.getElementById("email").textContent = `(${data.email})`;
+  document.getElementById("current-name").textContent = data.name;
 }
 
-// 회원정보 수정 제출
-document.getElementById("editProfileForm").addEventListener("submit", function(event) {
-    event.preventDefault();
-    alert("회원 정보가 수정되었습니다.");
-});
+document.getElementById("name-confirm-button").addEventListener("click", () => {
+  api.patch("members/info", {
+    name: document.getElementById("name-input").value
+  }).then(response => {
+    alert("닉네임이 변경되었습니다.");
+    location.href = "/my-page";
+  })
+})
 
-// 비밀번호 변경 제출
-document.getElementById("changePasswordForm").addEventListener("submit", function(event) {
-    event.preventDefault();
-    const newPassword = document.getElementById("new-password").value;
-    const confirmPassword = document.getElementById("confirm-new-password").value;
+api.get("members/info")
+  .then(response => {
+    console.log(response.data);
+    renderMemberInfo(response.data);
+  })
 
-    if (newPassword !== confirmPassword) {
-        alert("새 비밀번호가 일치하지 않습니다.");
-        return;
-    }
-
-    alert("비밀번호가 변경되었습니다.");
-});
-
-async function test() {
-    const member = await (await fetch("api/v1/members/info")).json()
-    document.getElementById("name").textContent = member.name;
-    document.getElementById("email").textContent = "(" + member.email + ")";
-}
-
-test();
+document.getElementById("quit-confirm-button").addEventListener("click", () => {
+  if (confirm("정말 탈퇴하시겠습니까?")) {
+    api.patch("members/quit").then(response => {
+      if(response.status !== 200){
+        alert(response.data.message);
+      } else {
+        alert("탈퇴가 완료되었습니다.");
+        fetch("/logout", {method: "POST"}).then(() => {location.href = "/";});
+      }
+    }).catch(error => {
+      alert(error.response.data.message);
+      console.log("error : " + error);
+      console.log(error);
+    })
+  }
+})

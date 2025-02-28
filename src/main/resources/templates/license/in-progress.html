@@ -1,42 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="/images/logo-icon.png">
+  <title>우리동네병원-본인 인증 대기</title>
+  <link rel="stylesheet" href="/license/css/in-progress.css">
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f8f9fa;
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      text-align: center;
+    }
+    .loader {
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #3498db;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
-    본인인증 완료 이후 버튼을 눌러주세요
-<button onclick="complete()">인증 완료</button>
+<div class="container">
+  <h2>본인 인증을 확인 중입니다...</h2>
+  <div class="loader"></div>
+  <p>어플리케이션 인증 이후 아래의 버튼을 눌러서 인증을 완료해주세요</p>
+  <a style="color: #FFF; text-decoration: none; text-align: center; cursor: pointer;" onclick="window.close()"
+     target="_blank"><p
+      style="display: inline-block; width: 210px; height: 45px; margin: 30px 5px 40px; background-color: #919191; line-height: 45px; vertical-align: middle; font-size: 16px;">
+    취소
+  </p></a>
+  <a id="complete" style="color: #FFF; text-decoration: none; text-align: center; cursor: pointer;"
+      target="_blank"><p onclick="complete()"
+      style="display: inline-block; width: 210px; height: 45px; margin: 30px 5px 40px; background-color: #FF8D00; line-height: 45px; vertical-align: middle; font-size: 16px;">
+    인증 완료</p></a>
+</div>
+<script type="module" src="/license/js/in-progress.js"></script>
 </body>
-<script>
-    async function complete() {
-        const request = {
-            callbackId: localStorage.getItem("callbackId"),
-            callbackType: localStorage.getItem("callbackType")
-        };
-
-        const response = await (await fetch("https://datahub-dev.scraping.co.kr/scrap/captcha", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                "Authorization": "74d7823acb384f5db0b54ab9e40839aec2a13b46"
-            },
-            body: JSON.stringify(request)
-        })).json();
-
-        // 인증 안하고 버튼 눌렀을 때 에러코드 2090
-        if(response.data.ECODE !== "ERR_MLCOM_MSG50255") {
-            localStorage.removeItem("callbackId");
-            localStorage.removeItem("callbackType");
-        }
-
-        alert(response.data.ERRMSG)
-        console.log(response)
-
-        if(response.data.ECODE === "ERR_MLMOG_MSG00001") {
-            window.close();
-        }
-
-    }
-</script>
 </html>

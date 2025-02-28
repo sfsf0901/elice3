@@ -1,5 +1,6 @@
 package com.example.elice_3rd.security;
 
+import com.example.elice_3rd.member.repository.MemberRepository;
 import com.example.elice_3rd.security.jwt.JwtFilter;
 import com.example.elice_3rd.security.jwt.JwtUtil;
 import com.example.elice_3rd.security.oauth2.CustomOAuth2UserService;
@@ -28,6 +29,7 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    private final MemberRepository memberRepository;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -38,7 +40,13 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.authorizeHttpRequests(authorize -> {
-            authorize.requestMatchers("/doctor").hasRole("DOCTOR")
+            authorize
+//                    .requestMatchers(
+//                            "/my-page/**",
+//                            "/update-password/**",
+//                            "/counsels/write/**",
+//                            "/counsels/update/**",
+//                            "/chat/**").authenticated()
                     .anyRequest().permitAll();
         });
 
@@ -50,13 +58,13 @@ public class SecurityConfig {
                     .permitAll();
         });
 
-//        http.oauth2Login(oauth2 -> {
-//            oauth2.loginPage("/login");
-//            oauth2.successHandler(oAuth2LoginSuccessHandler);
-//            oauth2.userInfoEndpoint(userInfoEndpointConfig -> {
-//                userInfoEndpointConfig.userService(customOAuth2UserService);
-//            });
-//        });
+        http.oauth2Login(oauth2 -> {
+            oauth2.loginPage("/login");
+            oauth2.successHandler(oAuth2LoginSuccessHandler);
+            oauth2.userInfoEndpoint(userInfoEndpointConfig -> {
+                userInfoEndpointConfig.userService(customOAuth2UserService);
+            });
+        });
 
         http.exceptionHandling(e -> {
             e.authenticationEntryPoint(((request, response, authException) -> {
@@ -71,7 +79,7 @@ public class SecurityConfig {
 
         http.addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class);
         http.addFilterBefore(new CustomLogoutFilter(jwtUtil), LogoutFilter.class);
-        http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, memberRepository), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

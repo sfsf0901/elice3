@@ -1,11 +1,16 @@
 package com.example.elice_3rd.security;
 
+import com.example.elice_3rd.common.exception.NoSuchDataException;
+import com.example.elice_3rd.member.entity.Member;
+import com.example.elice_3rd.member.repository.MemberRepository;
+import com.example.elice_3rd.member.service.MemberService;
 import com.example.elice_3rd.security.jwt.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,6 +28,7 @@ import java.util.Iterator;
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    private final MemberRepository memberRepository;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -38,6 +44,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
         CustomUserDetails memberDetails = (CustomUserDetails) authentication.getPrincipal();
+        if(memberDetails.isDeleted()){
+            log.error("로그인 실패: 탈퇴한 회원 정보");
+            throw new BadRequestException("탈퇴한 회원입니다.");
+        }
+
         String email = memberDetails.getUsername();
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
@@ -45,9 +56,15 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         GrantedAuthority auth = iterator.next();
 
         String role = auth.getAuthority();
+        Member member = memberRepository.findByEmail(email).orElseThrow(() ->
+                new NoSuchDataException("로그인 실패: 이메일과 일치하는 회원 정보가 없습니다.")
+        );
+        String name = member.getName();
+        Boolean isOauth = member.getIsOauth();
 
-        String accessToken = jwtUtil.createAccessToken(email, role);
-        String refreshToken = jwtUtil.createRefreshToken(email, role);
+
+        String accessToken = jwtUtil.createAccessToken(email, role, name, isOauth);
+        String refreshToken = jwtUtil.createRefreshToken(email, role, name, isOauth);
 
         jwtUtil.addRefreshToken(email, refreshToken);
 

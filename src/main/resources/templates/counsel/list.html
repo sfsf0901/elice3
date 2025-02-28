@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout/layout}">
+<head>
+  <meta charset="UTF-8">
+  <title>우리동네병원-상담 내역</title>
+  <link rel="stylesheet" href="/counsel/css/list.css">
+  <style>
+    .pagination .page-item.active .page-link {
+      background-color: #FF8D00 !important;
+      border-color: #FF8D00 !important;
+    }
+  </style>
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="search-container d-flex justify-content-center" style="margin-right: 170px">
+    <div style="width: 50%;" class="search-box">
+      <input type="search" id="search-input" class="search-input" placeholder="진료과목, 증상">
+      <i id="search" class="fa-solid fa-magnifying-glass search-icon"></i>
+    </div>
+  </div>
+  <div style="width: 600px" class="d-flex flex-column">
+    <div id="list-container" class="counsel-container"></div>
+    <button onclick="location.href = 'counsels/write'">질문 하기</button>
+    <br>
+    <nav aria-label="..." class="d-flex justify-content-center">
+      <ul id="pagination" class="pagination" style="cursor: pointer">
+      </ul>
+    </nav>
+  </div>
+<script type="module" src="/counsel/js/list.js"></script>
+</div>
+</body>
+</html>

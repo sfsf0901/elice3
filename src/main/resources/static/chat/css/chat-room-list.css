@@ -1,0 +1,77 @@
+#chat-room-container {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.chat-room {
+    display: flex;
+    justify-content: space-between;
+    height: 80px;
+}
+
+.chat-room p {
+    margin-bottom: 0;
+}
+
+.chat-room .opponent-name {
+    color: #FF8D00;
+    font-weight: bold;
+}
+
+.chat-content {
+    display: grid;
+    align-items: center;
+    align-content: center;
+}
+
+.chat-content p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 20ch;
+}
+
+.chat-side-content {
+    display:grid;
+    justify-items: end;
+    align-items: center;
+    align-content: center;
+}
+
+.chat-side-content-detail{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.chat-side-content-detail .badge{
+    margin-right: 5px;
+}
+
+.chat-side-content-detail p{
+    margin-bottom: 0;
+}
+
+.badge {
+    font-side: 30px;
+    font-weight: bold;
+    color: #FF8D00;
+}
+
+.leaveBtn {
+    width: 25px;
+    height: 25px;
+    background-color: #FFFFFF;
+    border: #FF8D00;
+    color: #FF8D00;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.leaveBtn:hover {
+    background-color: #DCDCDC;
+    color: #FF8D00;
+}

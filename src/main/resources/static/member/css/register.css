@@ -21,7 +21,6 @@ body {
     max-width: 400px;
     background-color: white;
     padding: 20px;
-    text-align: center;
 }
 
 /* 제목 스타일 */
@@ -75,9 +74,7 @@ label {
 
 /* 에러 메시지 스타일 */
 .error-message {
-    color: red;
-    font-size: 12px;
-    display: none;
+    font-size: 8px;
 }
 
 /* 간편 가입 섹션 스타일 */
@@ -108,3 +105,4 @@ label {
 .margin10{
     margin: 5px;
 }
+

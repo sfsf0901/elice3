@@ -1,37 +1,44 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
 <nav th:fragment="headerFragment" class="navbar navbar-expand-lg border-bottom">
-  <div class="container-fluid py-1 my-1">
-    <a class="navbar-brand" th:href="@{/}">우리동네병원</a>
+  <div class="container-fluid d-flex justify-content-between align-items-center w-100 px-0">
+    <!-- 왼쪽: 로고 -->
+    <a class="navbar-brand" th:href="@{/}">
+      <img th:src="@{/images/logo.png}" alt="logo" style="max-width: 230px">
+    </a>
 
-    <div>
-      <!-- 우측 메뉴 -->
-      <ul class="navbar-nav d-flex align-items-center">
-        <li class="nav-item me-2" sec:authorize="!isAuthenticated()">
-          <a class="btn btn-outline-dark" th:href="@{/login}">로그인</a>
-        </li>
-        <li class="nav-item" sec:authorize="!isAuthenticated()">
-          <a class="btn btn-primary" th:href="@{/signup}">회원가입</a>
-        </li>
+    <!-- 오른쪽: 메뉴 -->
+    <ul class="navbar-nav d-flex align-items-center">
+      <!-- 비로그인 상태 -->
+      <li class="nav-item me-2" sec:authorize="!isAuthenticated()">
+        <a class="btn btn-sm btn-custom-outline" th:href="@{/login}">로그인</a>
+      </li>
+      <li class="nav-item" sec:authorize="!isAuthenticated()">
+        <a class="btn btn-sm btn-custom" th:href="@{/register}">회원가입</a>
+      </li>
 
-        <li class="nav-item" sec:authorize="isAuthenticated()">
-          <a class="nav-link" th:href="@{/}">
-            <i class="fa-solid fa-bell"></i>
-          </a>
-        </li>
-        <li class="nav-item" sec:authorize="isAuthenticated()">
-          <a class="nav-link" th:href="@{/}">
-            <span sec:authentication="name">마이페이지</span>
-          </a>
-        </li>
-        <li class="nav-item" sec:authorize="isAuthenticated()">
-          <a class="btn btn-outline-dark" th:href="@{/logout}">
-            로그아웃
-          </a>
-        </li>
-      </ul>
-    </div>
+      <!-- 로그인 상태 -->
+      <li class="nav-item" sec:authorize="isAuthenticated()">
+        <i class="fa-solid fa-bell dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+          <span id="notification-badge" class="badge" style="display:none;">0</span>
+        </i>
+        <ul class="dropdown-menu" id="notification-list">
+        </ul>
+      </li>
+      <li class="nav-item ms-2" sec:authorize="isAuthenticated()">
+        <a class="nav-link" th:href="@{/my-page}">
+          <span th:text="${#authentication.principal.name}">마이페이지</span>
+        </a>
+      </li>
+      <li class="nav-item ms-2" sec:authorize="isAuthenticated()">
+        <form action="/logout" method="post" class="m-0">
+          <button class="btn btn-sm btn-custom-outline" type="submit">로그아웃</button>
+        </form>
+      </li>
+    </ul>
   </div>
 </nav>
+
 </html>
