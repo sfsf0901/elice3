@@ -214,5 +214,3 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchChat();
     disableMessageActions();
 });
-
-fetchChat();
