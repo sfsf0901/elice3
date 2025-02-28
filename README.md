@@ -23,7 +23,7 @@
 <br>
 
 ## ⚙️ 기술 스택
-### 백엔드
+### ▶ 백엔드
 <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"> 
 <img src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white">
 <img src="https://img.shields.io/badge/spring_boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
@@ -44,7 +44,7 @@
 ![Meta](https://img.shields.io/badge/llama3-%230467DF.svg?style=for-the-badge&logo=Meta&logoColor=white)
 
 
-### 데이터베이스
+### ❯ 데이터베이스
 ![MySQL](https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white)
 ![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
