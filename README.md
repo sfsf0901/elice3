@@ -32,10 +32,10 @@
 ![Apache Kafka](https://img.shields.io/badge/Apache%20Kafka-000?style=for-the-badge&logo=apachekafka)
 
 
-## 와이어 프레임
+## 📝 와이어 프레임
 ![와이어프레임](/uploads/4fd607f4ae18bd7fa96ae887f3680585/와이어프레임.png)
 
-## ERD
+## 📐 ERD
 ![erd](/uploads/883965b24339c90fc1649d40ad450b34/erd.png)
 
-## 주요 기능
+## 🛠️ 주요 기능
