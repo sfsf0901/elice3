@@ -12,8 +12,8 @@ public class OllamaService {
 
     private final WebClient webClient = WebClient.builder()
 //            .baseUrl("http://localhost:11434/api/generate") // Ollama API 엔드포인트
-            .baseUrl("http://34.47.78.233:11434/api/generate")
-//            .baseUrl("http://43.200.132.134:11434/api/generate")
+//            .baseUrl("http://34.47.78.233:11434/api/generate")
+            .baseUrl("http://43.200.132.134:11434/api/generate")
             .build();
 
     public String analyzeKeyword(String keyword) {
@@ -21,6 +21,7 @@ public class OllamaService {
         Map<String, Object> requestBody = Map.of(
                 "model", "llama3",  // 사용 중인 모델 (llama2도 가능)
                 "prompt", "사용자가 입력한 단어를 증상, 병원이름, 주소 중 하나로 분류해."  +
+                "증상일 때는 1을 사용하고, 병원이름일 때는 2를 사용하고, 주소일 때는 3을 사용해서 구분할거야.\n" +
                 "카테고리는 다음과 같이 19개가 있어. 가정의학과,내과,마취통증의학과,비뇨기과,산부인과,성형외과,신경과,신경외과,안과,영상의학과,외과,응급의학과,이비인후과,재활의학과,정신건강의학과,정형외과,치과,피부과,한의원.\n" +
                 "넌 존스홉킨스의 유능한 의사야.\n" +
                 "증상으로 분류되면 19개 카테고리 중에 가장 관련이 높은 것을 골라.\n" +
