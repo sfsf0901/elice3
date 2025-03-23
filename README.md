@@ -66,8 +66,7 @@
 <br>
 
 ## 📐 ERD
-![erd](/uploads/883965b24339c90fc1649d40ad450b34/erd.png)
-
+![Image](https://github.com/user-attachments/assets/d0d68106-9272-42bd-aef5-98ce24f03994)
 <br>
 
 ## 🛠️ 주요 기능
