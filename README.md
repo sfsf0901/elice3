@@ -17,8 +17,9 @@
 
 ## 👥 팀원 구성
 + 진경천 : 팀리더, 회원/QNA 상담 담당
-+ 김주희 : 실시간 채팅/알림 담당
 + 조은이 : 병원 조회 담당
++ 김주희 : 실시간 채팅/알림 담당
+
 
 <br>
 
@@ -56,13 +57,6 @@
 ![Thymeleaf](https://img.shields.io/badge/Thymeleaf-%23005C0F.svg?style=for-the-badge&logo=Thymeleaf&logoColor=white)
 <img src="https://img.shields.io/badge/bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white">
 
-
-<br>
-
-
-## 📝 와이어 프레임
-![와이어프레임](/uploads/4fd607f4ae18bd7fa96ae887f3680585/와이어프레임.png)
-
 <br>
 
 ## 📐 ERD
@@ -78,14 +72,14 @@
 - 회원 정보 조회
 - 회원 정보 수정
 - 비밀번호 수정
-- 회원 의사 전화
+- 의사 자격 인증
 
 ### 병원검색
 - 공공데이터 OPEN API로 병원 데이터 구축
 - 진료과목으로 병원 조회
 - 증상으로 병원 조회
 - 응급실 조회
-- 지도로 병원 조회
+- 지도에서 병원 조회
 - 진료중인 병원 필터
 - 야간진료 병원 필터
 
@@ -104,6 +98,5 @@
 - 상담 채팅방 메시지 목록 조회
 - 상담 채팅방 메시지 삭제
 - 안 읽은 알림 내역 조회
-- 로그인 여부 조회
 - 알림 내역 조회
-- 실시간 상남 알림 읽음 처리
+- 실시간 상담 알림 읽음 처리
