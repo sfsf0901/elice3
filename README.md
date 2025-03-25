@@ -45,11 +45,16 @@
 
 <br>
 
+## 🛠️ 시스템 아키텍처
+![Image](https://github.com/user-attachments/assets/b66d414f-5892-4f5f-b883-8204381136f4)
+
+<br>
+
 ## 📐 ERD
 ![Image](https://github.com/user-attachments/assets/d0d68106-9272-42bd-aef5-98ce24f03994)
 <br>
 
-## 🛠️ 주요 기능
+## 🚀 주요 기능
 ### 회원
 - 일반 회원가입
     - 이메일 중복 체크 
